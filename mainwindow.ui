@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>220</width>
+    <height>384</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>10</y>
+      <width>60</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Accueil</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>191</width>
+      <height>131</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Consultation</string>
+    </property>
+    <widget class="QPushButton" name="btn_consult_membres">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>61</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Membres</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_consult_activites">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>61</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Activités</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_consult_lieux">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>60</y>
+       <width>41</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Lieux</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_consult_participantes">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>80</y>
+       <width>91</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Participantes</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_consult_type_activite">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>100</y>
+       <width>101</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Type d'activité</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>170</y>
+      <width>191</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Gestion</string>
+    </property>
+    <widget class="QPushButton" name="btn_gest_evenments">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>101</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Évènements</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_gest_membres_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>81</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Membres</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_gest_activites">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>81</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Activités</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_gest_lieux">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>100</y>
+       <width>61</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Lieux</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_gest_participantes">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>120</y>
+       <width>111</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Participantes</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_gest_type_activite">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>113</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Type d'activité</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>220</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuConsultation">
+    <property name="title">
+     <string>Consultation</string>
+    </property>
+    <addaction name="act_consult_membres"/>
+    <addaction name="act_consult_activites"/>
+    <addaction name="act_consult_lieux"/>
+    <addaction name="act_consult_participantes"/>
+    <addaction name="act_consult_type_activite"/>
+   </widget>
+   <widget class="QMenu" name="menuGestion">
+    <property name="title">
+     <string>Gestion</string>
+    </property>
+    <addaction name="act_gest_evenement"/>
+    <addaction name="act_gest_membres"/>
+    <addaction name="act_gest_activite"/>
+    <addaction name="act_gest_type_activite"/>
+    <addaction name="act_gest_lieux"/>
+    <addaction name="act_gest_participantes"/>
+   </widget>
+   <addaction name="menuConsultation"/>
+   <addaction name="menuGestion"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="act_consult_membres">
+   <property name="text">
+    <string>Membres</string>
+   </property>
+  </action>
+  <action name="act_consult_activites">
+   <property name="text">
+    <string>Activités</string>
+   </property>
+  </action>
+  <action name="act_consult_lieux">
+   <property name="text">
+    <string>Lieux</string>
+   </property>
+  </action>
+  <action name="act_consult_participantes">
+   <property name="text">
+    <string>Participantes</string>
+   </property>
+  </action>
+  <action name="act_consult_type_activite">
+   <property name="text">
+    <string>Type d'activité</string>
+   </property>
+  </action>
+  <action name="act_gest_evenement">
+   <property name="text">
+    <string>Évènement</string>
+   </property>
+  </action>
+  <action name="act_gest_membres">
+   <property name="text">
+    <string>Membres</string>
+   </property>
+  </action>
+  <action name="act_gest_activite">
+   <property name="text">
+    <string>Activités</string>
+   </property>
+  </action>
+  <action name="act_gest_type_activite">
+   <property name="text">
+    <string>Type d'activité</string>
+   </property>
+  </action>
+  <action name="act_gest_lieux">
+   <property name="text">
+    <string>Lieux</string>
+   </property>
+  </action>
+  <action name="act_gest_participantes">
+   <property name="text">
+    <string>Participantes</string>
+   </property>
+  </action>
+  <action name="actionMembres_3">
+   <property name="text">
+    <string>Membres</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
