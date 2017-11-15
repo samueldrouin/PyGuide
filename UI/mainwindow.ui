@@ -39,7 +39,7 @@
       <x>10</x>
       <y>30</y>
       <width>191</width>
-      <height>131</height>
+      <height>141</height>
      </rect>
     </property>
     <property name="title">
@@ -49,9 +49,9 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>20</y>
+       <y>30</y>
        <width>61</width>
-       <height>32</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
@@ -65,9 +65,9 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>40</y>
+       <y>50</y>
        <width>61</width>
-       <height>32</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
@@ -81,9 +81,9 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>60</y>
+       <y>70</y>
        <width>41</width>
-       <height>32</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
@@ -97,9 +97,9 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>80</y>
+       <y>90</y>
        <width>91</width>
-       <height>32</height>
+       <height>20</height>
       </rect>
      </property>
      <property name="text">
@@ -113,9 +113,9 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>100</y>
+       <y>110</y>
        <width>101</width>
-       <height>32</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">

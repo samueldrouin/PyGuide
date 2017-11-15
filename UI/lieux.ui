@@ -71,7 +71,7 @@
     <string>Ville :</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit">
+  <widget class="QLineEdit" name="txt_name">
    <property name="geometry">
     <rect>
      <x>120</x>
@@ -81,7 +81,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_2">
+  <widget class="QLineEdit" name="txt_road">
    <property name="geometry">
     <rect>
      <x>120</x>
@@ -91,7 +91,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_3">
+  <widget class="QLineEdit" name="txt_city">
    <property name="geometry">
     <rect>
      <x>120</x>
@@ -101,7 +101,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="btn_add">
    <property name="geometry">
     <rect>
      <x>270</x>
@@ -114,7 +114,7 @@
     <string>Ajouter</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="btn_cancel">
    <property name="geometry">
     <rect>
      <x>160</x>
