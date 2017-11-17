@@ -6,9 +6,9 @@ from PyQt5.QtCore import QRegExp
 Update RegExp below
 DO NOT change caracter limit unless database VARCHAR limit is updated
 """
-name = "^[0-9a-zA-Z -]{0,45}$"
-address = "^[0-9a-zA-Z -.]{0,45}$"
-city = "^[a-zA-Z -]{0,45}$"
+name = "^[0-9a-zA-ZÀ-ÿ -]{0,45}$"
+address = "^[0-9a-zA-ZÀ-ÿ -.]{0,45}$"
+city = "^[a-zA-ZÀ-ÿ -]{0,45}$"
 
 """
 This code pattern SHOULD NOT be changed
