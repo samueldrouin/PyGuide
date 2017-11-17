@@ -6,7 +6,7 @@ import pymysql.cursors
 
 # Project import
 from consultation import Consultation
-from place import Place
+import place
 
 # Variable
 g_host = 'localhost'
@@ -82,5 +82,5 @@ class MainWindow(QMainWindow):
         Ouvrir la fenêtre de gestion des lieux
         :return: Aucune
         """
-        self.place = Place()
-        self.place.show()
+        self.create_place = place.CreatePlace()
+        self.create_place.show()
