@@ -30,16 +30,6 @@ def execute_query_return_all(sql):
         connection.close()
         return results
 
-
-def load_places():
-    """
-    Load places list from database
-    :return: Places dictionnary
-    """
-    sql = "SELECT name, road, city FROM places"
-    return execute_query_return_all(sql)
-
-
 def create_place(name, road, city):
     """
     Create a new place in database
@@ -54,9 +44,6 @@ def create_place(name, road, city):
                                  db=g_db,
                                  charset=g_charset,
                                  cursorclass=pymysql.cursors.DictCursor)
-
-    # This query is executed before because it requires to add new tag before reading the list
-    # therefore the connection needs to be commited. This way the commit does not affect the memory transaction
 
     try:
         with connection.cursor() as cursor:
