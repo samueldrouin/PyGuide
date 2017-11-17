@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QDialog, QTableWidgetItem
 import os
 
 # Project import
-from place import Place
+import place
 from Scripts import query
 
 """
@@ -38,25 +38,8 @@ class Consultation(QDialog):
         """
         Set window characteristics according to type
         DO NOT EDIT THE PATTERN of this section unless you know EXACTLY what you are doing
-        """
-        if type == 3:
-            self.lbl_title.setText(g_view_place_title)
-            self.window().setWindowTitle(g_view_place_title)
-            self.cbx_search.addItems(g_search_fields)
-            self.cbx_sort.addItems(g_sort_fields)
-            self.btn_add.clicked.connect(self.open_add_place)
-
-            # Tablewidget characteristics
-            self.tbl_result.setColumnCount(4)
-            self.tbl_result.setColumnHidden(0, True)
-            headers = ["Index","Nom","Rue","Ville"]
-            self.tbl_result.setHorizontalHeaderLabels(headers)
-            self.place_query()
-
-        """
-        Add new type above 
         
-        Follow this pattern (edit only when instructed to) :
+        Follow this pattern to add a new type (edit only when instructed to) :
         if type == 3:
             self.lbl_title.setText(g_view_place_title)
             self.window().setWindowTitle(g_view_place_title)
@@ -71,6 +54,20 @@ class Consultation(QDialog):
             self.tbl_result.setHorizontalHeadersItems(headers)
             self.place_query() # Use new type query
         """
+        if type == 3:
+            self.lbl_title.setText(g_view_place_title)
+            self.window().setWindowTitle(g_view_place_title)
+            self.cbx_search.addItems(g_search_fields)
+            self.cbx_sort.addItems(g_sort_fields)
+            self.btn_add.clicked.connect(self.open_add_place)
+
+            # Tablewidget characteristics
+            self.tbl_result.setColumnCount(4)
+            self.tbl_result.setColumnHidden(0, True)
+            headers = ["Index","Nom","Rue","Ville"]
+            self.tbl_result.setHorizontalHeaderLabels(headers)
+            self.place_query()
+            self.tbl_result.cellClicked.connect(self.edit_place)
 
     def update_search_placeholder_text(self):
         """
@@ -83,15 +80,22 @@ class Consultation(QDialog):
 
     """
     Following functions open the create dialog of the current type
+    
+    If a new type is added create a new function for this type
     """
     def open_add_place(self):
-        self.place = Place()
-        self.place.show()
+        self.create_place = place.CreatePlace()
+        self.create_place.show()
 
     """
     Following functions open the edit dialog of the current type
+    
+    If a new type is added create a new function for this type
     """
-
+    def edit_place(self, row, column):
+        place_id = self.tbl_result.item(row, 0).text()
+        self.edit_place = place.EditPlace(place_id)
+        self.edit_place.show()
 
     """
     Change the following code to update query
@@ -127,7 +131,7 @@ class Consultation(QDialog):
 
         r = 0
         for place in places:
-            self.tbl_result.setItem(r, 0, QTableWidgetItem(place["idplaces"]))
+            self.tbl_result.setItem(r, 0, QTableWidgetItem(str(place["idplaces"])))
             self.tbl_result.setItem(r, 1, QTableWidgetItem(place["name"]))
             self.tbl_result.setItem(r, 2, QTableWidgetItem(place["road"]))
             self.tbl_result.setItem(r, 3, QTableWidgetItem(place["city"]))

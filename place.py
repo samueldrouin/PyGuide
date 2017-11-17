@@ -41,5 +41,15 @@ class CreatePlace(Place):
 
 
 class EditPlace(Place):
-    def __init__(self):
+    def __init__(self, place_id):
         super(EditPlace, self).__init__()
+        self.place_id = place_id
+        self.get_current_record()
+
+    def get_current_record(self):
+        sql = "SELECT * FROM places WHERE idplaces = %s" % self.place_id
+        place = Scripts.query.execute_query_return_all(sql)
+        if place:
+            self.txt_name.setText(place[0]["name"])
+            self.txt_road.setText(place[0]["road"])
+            self.txt_city.setText(place[0]["city"])
