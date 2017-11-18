@@ -94,8 +94,8 @@ class Consultation(QDialog):
     """
     def edit_place(self, row, column):
         place_id = self.tbl_result.item(row, 0).text()
-        self.edit_place = place.EditPlace(place_id)
-        self.edit_place.show()
+        edit_place = place.EditPlace(place_id)
+        edit_place.exec()
 
     """
     Change the following code to update query

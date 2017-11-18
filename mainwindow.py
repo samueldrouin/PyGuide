@@ -43,7 +43,7 @@ class MainWindow(QMainWindow):
         :return: Aucun
         """
         self.consultation = Consultation(4)
-        self.consultation.exec()
+        self.consultation.show()
 
     def open_consult_membres(self):
         """
@@ -51,7 +51,7 @@ class MainWindow(QMainWindow):
         :return: Aucun
         """
         self.consultation = Consultation(1)
-        self.consultation.exec()
+        self.consultation.show()
 
     def open_consult_activite(self):
         """
@@ -59,7 +59,7 @@ class MainWindow(QMainWindow):
         :return: Aucun
         """
         self.consultation = Consultation(2)
-        self.consultation.exec()
+        self.consultation.show()
 
     def open_consult_lieux(self):
         """
@@ -67,7 +67,7 @@ class MainWindow(QMainWindow):
         :return: Aucun
         """
         self.consultation = Consultation(3)
-        self.consultation.exec()
+        self.consultation.show()
 
     def open_consult_type_activite(self):
         """
@@ -83,4 +83,4 @@ class MainWindow(QMainWindow):
         :return: Aucune
         """
         self.create_place = place.CreatePlace()
-        self.create_place.show()
+        self.create_place.exec()
