@@ -25,13 +25,15 @@ class Place(QDialog):
         self.txt_name.setValidator(Scripts.validator.name_validator())
         self.txt_city.setValidator(Scripts.validator.city_validator())
 
-
 class CreatePlace(Place):
     def __init__(self):
         super(CreatePlace, self).__init__()
 
         # Slots
         self.btn_add.clicked.connect(self.create_place)
+
+        # Label
+        self.window().setWindowTitle("Créer un lieu")
 
     def create_place(self):
         name = self.txt_name.text()
@@ -46,6 +48,13 @@ class EditPlace(Place):
         self.place_id = place_id
         self.get_current_record()
 
+        # Slots
+        self.btn_add.clicked.connect(self.edit_place)
+
+        # Label
+        self.window().setWindowTitle("Modifier un lieu")
+        self.btn_add.setText("Modifier")
+
     def get_current_record(self):
         sql = "SELECT * FROM places WHERE idplaces = %s" % self.place_id
         place = Scripts.query.execute_query_return_all(sql)
@@ -53,3 +62,10 @@ class EditPlace(Place):
             self.txt_name.setText(place[0]["name"])
             self.txt_road.setText(place[0]["road"])
             self.txt_city.setText(place[0]["city"])
+
+    def edit_place(self):
+        name = self.txt_name.text()
+        road = self.txt_road.text()
+        city = self.txt_city.text()
+        Scripts.query.edit_place(name, road, city, self.place_id)
+        self.close()

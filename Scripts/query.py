@@ -30,6 +30,7 @@ def execute_query_return_all(sql):
         connection.close()
         return results
 
+
 def create_place(name, road, city):
     """
     Create a new place in database
@@ -47,7 +48,36 @@ def create_place(name, road, city):
 
     try:
         with connection.cursor() as cursor:
-            sql = "INSERT INTO places (name, road, city) VALUES ('%s','%s','%s')" %(name, road, city)
+            sql = "INSERT INTO places (name, road, city) VALUES ('%s','%s','%s')" % (name, road, city)
+            cursor.execute(sql)
+            connection.commit()
+
+    except pymysql.Error as e:
+        connection.rollback()
+        print(e)
+        return e
+    finally:
+        connection.close()
+
+
+def edit_place(name, road, city, place_id):
+    """
+    Edit an existing place in database
+    :param name: Place name
+    :param road: Road in address
+    :param city: City in address
+    :return: True is successful
+    """
+    connection = pymysql.connect(host=g_host,
+                                 user=g_user,
+                                 password=g_password,
+                                 db=g_db,
+                                 charset=g_charset,
+                                 cursorclass=pymysql.cursors.DictCursor)
+
+    try:
+        with connection.cursor() as cursor:
+            sql = "UPDATE places SET name='%s', road='%s', city='%s' WHERE idplaces=%s" % (name, road, city, place_id)
             cursor.execute(sql)
             connection.commit()
 
