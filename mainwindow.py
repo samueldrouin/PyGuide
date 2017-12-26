@@ -3,6 +3,12 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTableWidget
 import os
 
+# Projet import
+from participante import Participante
+from lieu import Lieu
+from activite import Activite
+from categorie_activite import CategorieActivite
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -75,6 +81,17 @@ class CentralWidgetParticipantes(CentralWidget):
         self.table_widget = QTableWidget()
         self.layout.addWidget(self.table_widget)
 
+        # Slots
+        self.top_widget.btn_add.clicked.connect(self.nouvelle_participante)
+
+    def nouvelle_participante(self):
+        """
+        Ouvrir le dialog pour creer une nouvelle participante
+        :return:
+        """
+        participante = Participante(self)
+        participante.exec()
+
 
 class CentralWidgetActivite(CentralWidget):
     def __init__(self):
@@ -86,6 +103,17 @@ class CentralWidgetActivite(CentralWidget):
 
         self.table_widget = QTableWidget()
         self.layout.addWidget(self.table_widget)
+
+        # Slots
+        self.top_widget.btn_add.clicked.connect(self.nouvelle_activite)
+
+    def nouvelle_activite(self):
+        """
+        Ouvrir le dialog pour creer une nouvelle activite
+        :return:
+        """
+        activite = Activite(self)
+        activite.exec()
 
 
 class CentralWidgetLieux(CentralWidget):
@@ -99,6 +127,17 @@ class CentralWidgetLieux(CentralWidget):
         self.table_widget = QTableWidget()
         self.layout.addWidget(self.table_widget)
 
+        # Slots
+        self.top_widget.btn_add.clicked.connect(self.nouveau_lieu)
+
+    def nouveau_lieu(self):
+        """
+        Ouvrir le dialog pour créer un nouveau lieu
+        :return:
+        """
+        lieu = Lieu(self)
+        lieu.exec()
+
 
 class CentralWidgetCategorieActivite(CentralWidget):
     def __init__(self):
@@ -110,3 +149,14 @@ class CentralWidgetCategorieActivite(CentralWidget):
 
         self.table_widget = QTableWidget()
         self.layout.addWidget(self.table_widget)
+
+        # Slots
+        self.top_widget.btn_add.clicked.connect(self.nouvelle_categorie_activite)
+
+    def nouvelle_categorie_activite(self):
+        """
+        Ouvrir le dialog pour créer une nouvelle categorie d'activite
+        :return:
+        """
+        categorie_activite = CategorieActivite(self)
+        categorie_activite.exec()

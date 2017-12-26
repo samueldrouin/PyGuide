@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Consultation</string>
   </property>
   <widget class="QComboBox" name="cbx_sort">
    <property name="geometry">
