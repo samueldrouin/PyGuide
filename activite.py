@@ -4,8 +4,8 @@ from PyQt5 import uic
 import os
 
 class Activite(QDialog):
-    def __init__(self, type):
-        super(Activite, self).__init__()
+    def __init__(self):
+        super(Activite,self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'activite.ui')
         uic.loadUi(ui, self)
 

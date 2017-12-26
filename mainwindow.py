@@ -1,6 +1,7 @@
 # Python import
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTableWidget
+from PyQt5.Qt import QApplication
 import os
 
 # Projet import
@@ -8,6 +9,8 @@ from participante import Participante
 from lieu import Lieu
 from activite import Activite
 from categorie_activite import CategorieActivite
+from a_propos import APropos
+from settings import Settings
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -21,11 +24,27 @@ class MainWindow(QMainWindow):
         self.act_consult_activites.triggered.connect(self.set_activite_central_widget)
         self.act_consult_lieux.triggered.connect(self.set_lieux_central_widget)
         self.act_consult_type_activite.triggered.connect(self.set_categorie_activite_central_widget)
+        self.act_about.triggered.connect(self.a_propos)
+        self.act_about_qt.triggered.connect(QApplication.aboutQt)
+        self.act_reglage.triggered.connect(self.reglage)
+
+    def reglage(self):
+        """
+        Ouvre la fenetre des reglages
+        """
+        settings = Settings()
+        settings.exec()
+
+    def a_propos(self):
+        """
+        Affiche les informations sur l'application
+        """
+        a_propos = APropos()
+        a_propos.exec()
 
     def set_participantes_central_widget(self):
         """
         Affichage de la liste des participantes et des options de tri
-        :return: Aucun
         """
         central_widget = CentralWidgetParticipantes()
         self.setCentralWidget(central_widget)
@@ -33,7 +52,6 @@ class MainWindow(QMainWindow):
     def set_activite_central_widget(self):
         """
         Affichage de la liste des activites et des options de tri
-        :return: Aucun
         """
         central_widget = CentralWidgetActivite()
         self.setCentralWidget(central_widget)
@@ -41,7 +59,6 @@ class MainWindow(QMainWindow):
     def set_categorie_activite_central_widget(self):
         """
         Affichage de la liste des type d'activite et des options de tri
-        :return: Aucun
         """
         central_widget = CentralWidgetCategorieActivite()
         self.setCentralWidget(central_widget)
@@ -49,7 +66,6 @@ class MainWindow(QMainWindow):
     def set_lieux_central_widget(self):
         """
         Affichage des lieux et des options de tri
-        :return:
         """
         central_widget = CentralWidgetLieux()
         self.setCentralWidget(central_widget)
@@ -89,7 +105,7 @@ class CentralWidgetParticipantes(CentralWidget):
         Ouvrir le dialog pour creer une nouvelle participante
         :return:
         """
-        participante = Participante(self)
+        participante = Participante()
         participante.setWindowTitle("Nouvelle participante")
         participante.exec()
 
@@ -113,7 +129,7 @@ class CentralWidgetActivite(CentralWidget):
         Ouvrir le dialog pour creer une nouvelle activite
         :return:
         """
-        activite = Activite(self)
+        activite = Activite()
         activite.setWindowTitle("Nouvelle activité")
         activite.exec()
 
@@ -137,7 +153,7 @@ class CentralWidgetLieux(CentralWidget):
         Ouvrir le dialog pour créer un nouveau lieu
         :return:
         """
-        lieu = Lieu(self)
+        lieu = Lieu()
         lieu.setWindowTitle("Nouveau lieu")
         lieu.exec()
 
@@ -161,6 +177,6 @@ class CentralWidgetCategorieActivite(CentralWidget):
         Ouvrir le dialog pour créer une nouvelle categorie d'activite
         :return:
         """
-        categorie_activite = CategorieActivite(self)
+        categorie_activite = CategorieActivite()
         categorie_activite.setWindowTitle("Nouvelle catégorie d'activité")
         categorie_activite.exec()
