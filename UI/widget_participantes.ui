@@ -24,7 +24,38 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cbx_search"/>
+      <widget class="QComboBox" name="cbx_search">
+       <item>
+        <property name="text">
+         <string>Prénom</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Nom</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Ville</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Numéro de téléphone</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Numéro de membre</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string/>
+        </property>
+       </item>
+      </widget>
      </item>
      <item>
       <widget class="QLineEdit" name="txt_search">
@@ -65,7 +96,33 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cbx_sort"/>
+      <widget class="QComboBox" name="cbx_sort">
+       <item>
+        <property name="text">
+         <string>Prénom</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Nom</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Numéro de téléphone</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Date de naissance</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Numéro de membre</string>
+        </property>
+       </item>
+      </widget>
      </item>
      <item>
       <widget class="QCheckBox" name="chk_desc">
@@ -90,7 +147,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QCheckBox" name="checkBox">
+    <widget class="QCheckBox" name="chk_membre">
      <property name="text">
       <string>Membre</string>
      </property>

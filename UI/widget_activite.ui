@@ -24,7 +24,28 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cbx_search"/>
+      <widget class="QComboBox" name="cbx_search">
+       <item>
+        <property name="text">
+         <string>Nom de l'activité</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Responsable</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Type d'activité</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Lieu</string>
+        </property>
+       </item>
+      </widget>
      </item>
      <item>
       <widget class="QLineEdit" name="txt_search">
@@ -72,6 +93,41 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <item>
+        <property name="text">
+         <string>Nom de l'activité</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Responsable</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Type d'activité</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Lieu</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Prix</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Prix membre</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Date</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item>
@@ -106,7 +162,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QDateEdit" name="dateEdit"/>
+      <widget class="QDateEdit" name="ded_start"/>
      </item>
      <item>
       <widget class="QLabel" name="label_4">
@@ -116,7 +172,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QDateEdit" name="dateEdit_2"/>
+      <widget class="QDateEdit" name="ded_end"/>
      </item>
      <item>
       <spacer name="horizontalSpacer_2">

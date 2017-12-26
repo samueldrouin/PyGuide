@@ -24,7 +24,23 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cbx_search"/>
+      <widget class="QComboBox" name="cbx_search">
+       <item>
+        <property name="text">
+         <string>Nom de la catégorie d'activité</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Responsable</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Lieu</string>
+        </property>
+       </item>
+      </widget>
      </item>
      <item>
       <widget class="QLineEdit" name="txt_search">
@@ -49,7 +65,7 @@
      <item>
       <widget class="QPushButton" name="btn_add">
        <property name="text">
-        <string>Nouveau type d'activité</string>
+        <string>Nouvelle catégorie d'activité</string>
        </property>
       </widget>
      </item>
@@ -65,7 +81,33 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cbx_sort"/>
+      <widget class="QComboBox" name="cbx_sort">
+       <item>
+        <property name="text">
+         <string>Nom de la catégorie d'activité</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Responsable</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Lieu</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Prix membre</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Prix non membre</string>
+        </property>
+       </item>
+      </widget>
      </item>
      <item>
       <widget class="QCheckBox" name="chk_desc">

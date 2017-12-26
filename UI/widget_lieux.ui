@@ -24,7 +24,18 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cbx_search"/>
+      <widget class="QComboBox" name="cbx_search">
+       <item>
+        <property name="text">
+         <string>Nom du lieu</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Ville</string>
+        </property>
+       </item>
+      </widget>
      </item>
      <item>
       <widget class="QLineEdit" name="txt_search">
@@ -65,7 +76,18 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cbx_sort"/>
+      <widget class="QComboBox" name="cbx_sort">
+       <item>
+        <property name="text">
+         <string>Nom du lieu</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Ville</string>
+        </property>
+       </item>
+      </widget>
      </item>
      <item>
       <widget class="QCheckBox" name="chk_desc">
