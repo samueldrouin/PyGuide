@@ -8,56 +8,62 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         ui = os.path.join(os.path.dirname(__file__),'UI','mainwindow.ui')
         uic.loadUi(ui, self)
+        self.set_participantes_central_widget()
 
         # Actions
-        self.act_consult_participantes.triggered.connect(self.open_consult_participantes)
-        self.act_consult_activites.triggered.connect(self.open_consult_activite)
-        self.act_consult_lieux.triggered.connect(self.open_consult_lieux)
-        self.act_consult_type_activite.triggered.connect(self.open_consult_type_activite)
+        self.act_consult_participantes.triggered.connect(self.set_participantes_central_widget)
+        self.act_consult_activites.triggered.connect(self.set_activite_central_widget)
+        self.act_consult_lieux.triggered.connect(self.set_lieux_central_widget)
+        self.act_consult_type_activite.triggered.connect(self.set_type_activite_central_widget)
 
-    def open_consult_participantes(self):
+    def set_participantes_central_widget(self):
         """
-        Affiche le widget des options de tri pour les participantes
-        Affiche la liste des participantes correspondant aux options de tri
+        Affichage de la liste des participantes et des options de tri
         :return: Aucun
         """
         central_widget = CentralWidgetParticipantes()
         self.setCentralWidget(central_widget)
 
-    def open_consult_activite(self):
+    def set_activite_central_widget(self):
         """
-        Affiche le widget des options de tri pour les activités
-        Affiche la liste des activités correspondant aux options de tri
+        Affichage de la liste des activites et des options de tri
         :return: Aucun
         """
         central_widget = CentralWidgetActivite()
         self.setCentralWidget(central_widget)
 
-    def open_consult_type_activite(self):
+    def set_type_activite_central_widget(self):
         """
-        Affiche le widget des options de tri pour les types d'activites
-        Affiche la liste des types d'activites correspondant aux options de tri
+        Affichage de la liste des type d'activite et des options de tri
         :return: Aucun
         """
         central_widget = CentralWidgetTypeActivite()
         self.setCentralWidget(central_widget)
 
-    def open_consult_lieux(self):
+    def set_lieux_central_widget(self):
         """
-        Affiche le widget des options de tri pour les lieux
-        Affiche la liste des lieux correspondant aux options de tri
+        Affichage des lieux et des options de tri
         :return:
         """
         central_widget = CentralWidgetLieux()
         self.setCentralWidget(central_widget)
 
 
+"""
+Classe principale pour les CentralWidget
+Contient les fonction communes à tout les CentralWidget
+"""
 class CentralWidget(QWidget):
     def __init__(self):
         super(CentralWidget, self).__init__()
         self.layout = QVBoxLayout(self)
 
 
+"""
+CentralWidget spécifiques :
+- Options de tri spécifique
+- Tableau avec les informations à afficher
+"""
 class CentralWidgetParticipantes(CentralWidget):
     def __init__(self):
         super(CentralWidgetParticipantes, self).__init__()
