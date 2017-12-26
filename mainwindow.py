@@ -6,7 +6,7 @@ import os
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        ui = os.path.join(os.path.dirname(__file__),'UI','mainwindow.ui')
+        ui = os.path.join(os.path.dirname(__file__),'GUI','mainwindow.ui')
         uic.loadUi(ui, self)
         self.set_participantes_central_widget()
 
@@ -68,7 +68,7 @@ class CentralWidgetParticipantes(CentralWidget):
     def __init__(self):
         super(CentralWidgetParticipantes, self).__init__()
         self.top_widget = QWidget()
-        ui = os.path.join(os.path.dirname(__file__), 'UI', 'widget_participantes.ui')
+        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_participantes.ui')
         uic.loadUi(ui, self.top_widget)
         self.layout.addWidget(self.top_widget)
 
@@ -80,7 +80,7 @@ class CentralWidgetActivite(CentralWidget):
     def __init__(self):
         super(CentralWidgetActivite, self).__init__()
         self.top_widget = QWidget()
-        ui = os.path.join(os.path.dirname(__file__), 'UI', 'widget_activite.ui')
+        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_activite.ui')
         uic.loadUi(ui, self.top_widget)
         self.layout.addWidget(self.top_widget)
 
@@ -92,7 +92,7 @@ class CentralWidgetLieux(CentralWidget):
     def __init__(self):
         super(CentralWidgetLieux, self).__init__()
         self.top_widget = QWidget()
-        ui = os.path.join(os.path.dirname(__file__), 'UI', 'widget_lieux.ui')
+        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_lieux.ui')
         uic.loadUi(ui, self.top_widget)
         self.layout.addWidget(self.top_widget)
 
@@ -104,7 +104,7 @@ class CentralWidgetCategorieActivite(CentralWidget):
     def __init__(self):
         super(CentralWidgetCategorieActivite, self).__init__()
         self.top_widget = QWidget()
-        ui = os.path.join(os.path.dirname(__file__), 'UI', 'widget_categorie_activite.ui')
+        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_categorie_activite.ui')
         uic.loadUi(ui, self.top_widget)
         self.layout.addWidget(self.top_widget)
 
