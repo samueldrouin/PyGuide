@@ -14,7 +14,7 @@ class MainWindow(QMainWindow):
         self.act_consult_participantes.triggered.connect(self.set_participantes_central_widget)
         self.act_consult_activites.triggered.connect(self.set_activite_central_widget)
         self.act_consult_lieux.triggered.connect(self.set_lieux_central_widget)
-        self.act_consult_type_activite.triggered.connect(self.set_type_activite_central_widget)
+        self.act_consult_type_activite.triggered.connect(self.set_categorie_activite_central_widget)
 
     def set_participantes_central_widget(self):
         """
@@ -32,12 +32,12 @@ class MainWindow(QMainWindow):
         central_widget = CentralWidgetActivite()
         self.setCentralWidget(central_widget)
 
-    def set_type_activite_central_widget(self):
+    def set_categorie_activite_central_widget(self):
         """
         Affichage de la liste des type d'activite et des options de tri
         :return: Aucun
         """
-        central_widget = CentralWidgetTypeActivite()
+        central_widget = CentralWidgetCategorieActivite()
         self.setCentralWidget(central_widget)
 
     def set_lieux_central_widget(self):
@@ -100,11 +100,11 @@ class CentralWidgetLieux(CentralWidget):
         self.layout.addWidget(self.table_widget)
 
 
-class CentralWidgetTypeActivite(CentralWidget):
+class CentralWidgetCategorieActivite(CentralWidget):
     def __init__(self):
-        super(CentralWidgetTypeActivite, self).__init__()
+        super(CentralWidgetCategorieActivite, self).__init__()
         self.top_widget = QWidget()
-        ui = os.path.join(os.path.dirname(__file__), 'UI', 'widget_type_activite.ui')
+        ui = os.path.join(os.path.dirname(__file__), 'UI', 'widget_categorie_activite.ui')
         uic.loadUi(ui, self.top_widget)
         self.layout.addWidget(self.top_widget)
 
