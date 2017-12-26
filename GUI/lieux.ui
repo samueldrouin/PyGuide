@@ -7,126 +7,278 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>181</height>
+    <height>301</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>60</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Lieu</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>50</y>
-     <width>91</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Nom du lieu : </string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_3">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>80</y>
-     <width>60</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Rue :</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_4">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>110</y>
-     <width>60</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Ville :</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="txt_name">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>50</y>
-     <width>261</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="txt_road">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>80</y>
-     <width>261</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="txt_city">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>110</y>
-     <width>261</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btn_add">
-   <property name="geometry">
-    <rect>
-     <x>270</x>
-     <y>140</y>
-     <width>113</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Ajouter</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btn_cancel">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>140</y>
-     <width>113</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Annuler</string>
-   </property>
-  </widget>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>20</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Lieu</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Nom du lieu : </string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLineEdit" name="txt_nom">
+         <property name="placeholderText">
+          <string>Nom du lieu</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Rue :</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLineEdit" name="txt_adresse1">
+         <property name="placeholderText">
+          <string>Adresse</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Ville :</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QLineEdit" name="txt_ville">
+         <property name="placeholderText">
+          <string>Ville</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLineEdit" name="txt_adresse2">
+         <property name="placeholderText">
+          <string>Adresse 2 (facultatif)</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Province : </string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QComboBox" name="cbx_province">
+         <item>
+          <property name="text">
+           <string>Québec</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Alberta</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Colombie-Britannique</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Île-du-Prince-Édouard</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Manitoba</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Nouveau-Brunswick</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Nouvelle-Écosse</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Nunavut</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Ontario</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Saskatchewan</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Terre-Neuve-et-Labrador</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Territoires du Nord-Ouest</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Yukon</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Code postal : </string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QLineEdit" name="txt_code_postal">
+         <property name="placeholderText">
+          <string>Code postal</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_cancel">
+       <property name="text">
+        <string>Annuler</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_add">
+       <property name="text">
+        <string>Ajouter</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
