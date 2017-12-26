@@ -29,7 +29,7 @@
     <property name="title">
      <string>Gestion</string>
     </property>
-    <addaction name="act_gest_type_activite"/>
+    <addaction name="act_type_activite"/>
     <addaction name="act_responsables"/>
     <addaction name="separator"/>
     <addaction name="act_reglage"/>
@@ -121,7 +121,7 @@
     <string>Type d'activité</string>
    </property>
   </action>
-  <action name="act_gest_type_activite">
+  <action name="act_type_activite">
    <property name="text">
     <string>Type d'activité</string>
    </property>

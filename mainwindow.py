@@ -11,6 +11,7 @@ from activite import Activite
 from categorie_activite import CategorieActivite
 from a_propos import APropos
 from settings import Settings
+from consultation import Consultation
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -27,6 +28,22 @@ class MainWindow(QMainWindow):
         self.act_about.triggered.connect(self.a_propos)
         self.act_about_qt.triggered.connect(QApplication.aboutQt)
         self.act_reglage.triggered.connect(self.reglage)
+        self.act_type_activite.triggered.connect(self.consultation_type_activite)
+        self.act_responsables.triggered.connect(self.consultation_responsables)
+
+    def consultation_responsables(self):
+        """
+        Ouvre la fenetre de consultation des responsables
+        """
+        consultation = Consultation(2)
+        consultation.exec()
+
+    def consultation_type_activite(self):
+        """
+        Ouvrir la fenetre de consultation des types d'activite
+        """
+        consultation = Consultation(1)
+        consultation.exec()
 
     def reglage(self):
         """

@@ -15,7 +15,7 @@ class Consultation(QDialog):
             2 : Responsables
         """
         super(Consultation, self).__init__()
-        ui = os.path.join(os.path.dirname(__file__), 'UI', 'consultation.ui')
+        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'consultation.ui')
         uic.loadUi(ui, self)
 
         # Slots
@@ -37,7 +37,7 @@ class Consultation(QDialog):
 
         elif type == 2:
             self.lbl_title.setText("Consultation des responsables")
-            self.window().setWindowTitle("Consultation des types d'activité")
+            self.window().setWindowTitle("Consultation des responsables")
             self.cbx_search.addItems(["Nom", "Prénom"])
             self.cbx_sort.addItems(["Nom", "Prénom"])
             self.btn_add.clicked.connect(self.nouveau_responsable)
