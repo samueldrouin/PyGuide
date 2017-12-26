@@ -8,3 +8,6 @@ class Participante(QDialog):
         super(Participante, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'participante.ui')
         uic.loadUi(ui, self)
+
+        # Slots
+        self.btn_cancel.clicked.connect(self.close)

@@ -8,3 +8,6 @@ class Activite(QDialog):
         super(Activite, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'activite.ui')
         uic.loadUi(ui, self)
+
+        # Slots
+        self.btn_cancel.clicked.connect(self.close)

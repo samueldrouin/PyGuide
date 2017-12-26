@@ -8,3 +8,6 @@ class Lieu(QDialog):
         super(Lieu, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'lieu.ui')
         uic.loadUi(ui, self)
+
+        # Slots
+        self.btn_cancel.clicked.connect(self.close)

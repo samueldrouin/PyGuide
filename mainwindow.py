@@ -90,6 +90,7 @@ class CentralWidgetParticipantes(CentralWidget):
         :return:
         """
         participante = Participante(self)
+        participante.setWindowTitle("Nouvelle participante")
         participante.exec()
 
 
@@ -113,6 +114,7 @@ class CentralWidgetActivite(CentralWidget):
         :return:
         """
         activite = Activite(self)
+        activite.setWindowTitle("Nouvelle activité")
         activite.exec()
 
 
@@ -136,6 +138,7 @@ class CentralWidgetLieux(CentralWidget):
         :return:
         """
         lieu = Lieu(self)
+        lieu.setWindowTitle("Nouveau lieu")
         lieu.exec()
 
 
@@ -159,4 +162,5 @@ class CentralWidgetCategorieActivite(CentralWidget):
         :return:
         """
         categorie_activite = CategorieActivite(self)
+        categorie_activite.setWindowTitle("Nouvelle catégorie d'activité")
         categorie_activite.exec()

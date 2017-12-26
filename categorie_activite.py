@@ -9,3 +9,6 @@ class CategorieActivite(QDialog):
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'categorie_activite.ui')
         uic.loadUi(ui, self)
 
+        # Slots
+        self.btn_cancel.clicked.connect(self.close)
+
