@@ -60,20 +60,20 @@ class MainWindow(QMainWindow):
                 settings = QSettings("Samuel Drouin", "GUIDE-CFR")
                 database = settings.value("Database")
         # Demander le chemin vers la base de données tant qu'un chemin valide n'est pas entré
-        #while not pathlib.Path(database).is_file():
-        #    msgbox = QMessageBox()
-        #    msgbox.setText("Base de donnée inexistante")
-        #    msgbox.setInformativeText("Vous devez sélectionner la base de donnée existante dans les réglages avant de "
-        #                              "pouvoir utiliser le programme. ")
-        #    msgbox.setIcon(QMessageBox.Critical)
-        #    msgbox.setStandardButtons(QMessageBox.Ok)
-        #    msgbox.setDefaultButton(QMessageBox.Ok)
-        #    ret = msgbox.exec()
+        while not pathlib.Path(database).is_file():
+            msgbox = QMessageBox()
+            msgbox.setText("Base de donnée inexistante")
+            msgbox.setInformativeText("Vous devez sélectionner la base de donnée existante dans les réglages avant de "
+                                      "pouvoir utiliser le programme. ")
+            msgbox.setIcon(QMessageBox.Critical)
+            msgbox.setStandardButtons(QMessageBox.Ok)
+            msgbox.setDefaultButton(QMessageBox.Ok)
+            ret = msgbox.exec()
 
-        #    if ret == QMessageBox.Ok:
-        #        self.reglage()
-        #        settings = QSettings("Samuel Drouin", "GUIDE-CFR")
-        #        database = settings.value("Database")
+            if ret == QMessageBox.Ok:
+                self.reglage()
+                settings = QSettings("Samuel Drouin", "GUIDE-CFR")
+                database = settings.value("Database")
         # Connection à la base de données
         else:
             self.connection = sqlite3.connect(database)
@@ -164,6 +164,8 @@ CentralWidget spécifiques :
 - Options de tri spécifique
 - Tableau avec les informations à afficher
 """
+
+
 class CentralWidgetParticipantes(CentralWidget):
     def __init__(self):
         super(CentralWidgetParticipantes, self).__init__()
