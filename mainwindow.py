@@ -24,6 +24,12 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         ui = os.path.join(os.path.dirname(__file__),'GUI','mainwindow.ui')
         uic.loadUi(ui, self)
+
+        # Connection à la base de données
+        database = self.check_database_status()
+        self.connection = sqlite3.connect(database)
+
+        # Charger l'interface graphique
         self.set_participantes_central_widget()
 
         # Actions
@@ -38,10 +44,6 @@ class MainWindow(QMainWindow):
         self.act_responsables.triggered.connect(self.consultation_responsables)
         self.act_inscription.triggered.connect(self.inscription)
         self.act_facturation.triggered.connect(self.facturation)
-
-        # Connection à la base de données
-        database = self.check_database_status()
-        self.connection = sqlite3.connect(database)
 
     def check_database_status(self):
         """
@@ -132,28 +134,28 @@ class MainWindow(QMainWindow):
         """
         Affichage de la liste des participantes et des options de tri
         """
-        central_widget = CentralWidgetParticipantes()
+        central_widget = CentralWidgetParticipantes(self.connection)
         self.setCentralWidget(central_widget)
 
     def set_activite_central_widget(self):
         """
         Affichage de la liste des activites et des options de tri
         """
-        central_widget = CentralWidgetActivite()
+        central_widget = CentralWidgetActivite(self.connection)
         self.setCentralWidget(central_widget)
 
     def set_categorie_activite_central_widget(self):
         """
         Affichage de la liste des type d'activite et des options de tri
         """
-        central_widget = CentralWidgetCategorieActivite()
+        central_widget = CentralWidgetCategorieActivite(self.connection)
         self.setCentralWidget(central_widget)
 
     def set_lieux_central_widget(self):
         """
         Affichage des lieux et des options de tri
         """
-        central_widget = CentralWidgetLieux()
+        central_widget = CentralWidgetLieux(self.connection)
         self.setCentralWidget(central_widget)
 
 
@@ -190,12 +192,15 @@ class CentralWidgetParticipantes(CentralWidget):
         # Slots
         self.top_widget.btn_add.clicked.connect(self.nouvelle_participante)
 
+        # Global variable definition
+        self.connection = connection
+
     def nouvelle_participante(self):
         """
         Ouvrir le dialog pour creer une nouvelle participante
         :return:
         """
-        participante = Participante()
+        participante = Participante(self.connection)
         participante.setWindowTitle("Nouvelle participante")
         participante.exec()
 
@@ -213,6 +218,9 @@ class CentralWidgetActivite(CentralWidget):
 
         # Slots
         self.top_widget.btn_add.clicked.connect(self.nouvelle_activite)
+
+        # Global variable definition
+        self.connection = connection
 
     def nouvelle_activite(self):
         """
@@ -238,6 +246,9 @@ class CentralWidgetLieux(CentralWidget):
         # Slots
         self.top_widget.btn_add.clicked.connect(self.nouveau_lieu)
 
+        # Global variable definition
+        self.connection = connection
+
     def nouveau_lieu(self):
         """
         Ouvrir le dialog pour créer un nouveau lieu
@@ -261,6 +272,9 @@ class CentralWidgetCategorieActivite(CentralWidget):
 
         # Slots
         self.top_widget.btn_add.clicked.connect(self.nouvelle_categorie_activite)
+
+        # Global variable definition
+        self.connection = connection
 
     def nouvelle_categorie_activite(self):
         """
