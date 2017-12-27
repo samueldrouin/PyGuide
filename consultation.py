@@ -1,11 +1,12 @@
 # Python import
 from PyQt5 import uic
-from PyQt5.QtWidgets import QDialog, QTableWidgetItem
+from PyQt5.QtWidgets import QDialog
 import os
 
 # Project import
 from responsable import Responsable
 from type_activite import TypeActivite
+
 
 class Consultation(QDialog):
     def __init__(self, type):
