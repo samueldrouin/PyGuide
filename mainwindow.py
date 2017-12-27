@@ -192,7 +192,7 @@ class CentralWidgetParticipantes(CentralWidget):
         # Slots
         self.top_widget.btn_add.clicked.connect(self.nouvelle_participante)
 
-        # Global variable definition
+        # Instance variable definition
         self.connection = connection
 
     def nouvelle_participante(self):
@@ -219,7 +219,7 @@ class CentralWidgetActivite(CentralWidget):
         # Slots
         self.top_widget.btn_add.clicked.connect(self.nouvelle_activite)
 
-        # Global variable definition
+        # Instance variable definition
         self.connection = connection
 
     def nouvelle_activite(self):
@@ -246,7 +246,7 @@ class CentralWidgetLieux(CentralWidget):
         # Slots
         self.top_widget.btn_add.clicked.connect(self.nouveau_lieu)
 
-        # Global variable definition
+        # Instance variable definition
         self.connection = connection
 
     def nouveau_lieu(self):
@@ -273,7 +273,7 @@ class CentralWidgetCategorieActivite(CentralWidget):
         # Slots
         self.top_widget.btn_add.clicked.connect(self.nouvelle_categorie_activite)
 
-        # Global variable definition
+        # Instance variable definition
         self.connection = connection
 
     def nouvelle_categorie_activite(self):
