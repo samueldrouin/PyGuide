@@ -12,6 +12,8 @@ from categorie_activite import CategorieActivite
 from a_propos import APropos
 from settings import Settings
 from consultation import Consultation
+from facturation import Facturation
+from inscription import Inscription
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -30,6 +32,22 @@ class MainWindow(QMainWindow):
         self.act_reglage.triggered.connect(self.reglage)
         self.act_type_activite.triggered.connect(self.consultation_type_activite)
         self.act_responsables.triggered.connect(self.consultation_responsables)
+        self.act_inscription.triggered.connect(self.inscription)
+        self.act_facturation.triggered.connect(self.facturation)
+
+    def inscription(self):
+        """
+        Ouvre une fenetre pour une nouvelle inscription
+        """
+        inscription = Inscription()
+        inscription.exec()
+
+    def facturation(self):
+        """
+        Ouvre une fenetre pour une nouvelle facture
+        """
+        facturation = Facturation()
+        facturation.exec()
 
     def consultation_responsables(self):
         """
