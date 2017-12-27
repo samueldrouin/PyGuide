@@ -32,7 +32,7 @@ class Settings(QDialog):
         Chemin vers la base de donnees
         """
         fileName = QFileDialog.getOpenFileName(self, "Ouvrir la base de données", str(Path.home()),
-                                               "Base de donnée SQLite (*.db)")
+                                               "Base de donnée SQLite (*.GUIDE)")
         self.txt_base_donnee.setText(fileName[0])
 
     def save_settings(self):
