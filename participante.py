@@ -1,7 +1,7 @@
 # Python import
 from PyQt5.QtWidgets import QDialog, QCompleter
 from PyQt5.QtGui import QRegExpValidator
-from PyQt5.QtCore import QRegExp, Qt
+from PyQt5.QtCore import QRegExp, Qt, QDate
 from PyQt5 import uic
 import os
 
@@ -40,10 +40,22 @@ class Participante(QDialog):
         liste_ville = ["Saint-Jean-sur-Richelieu", "Saint-Blaire-sur-Richelieu", "Saint-Paul-de-l'Île-aux-Noix",
                        "Saint-Valentin", "Lacolle", "Noyan", "Saint-Sébastien", "Henryville", "Saint-Alexandre",
                        "Sainte-Anne-de-Sabrevois", "Sainte-Brigide-d'Iberville","Mont-Saint-Grégoire",
-                       "Venise-en-Québec", "Saint-George-de-Clarenceville"]
+                       "Venise-en-Québec", "Saint-Georges-de-Clarenceville"]
         completer = QCompleter(liste_ville)
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.txt_ville.setCompleter(completer)
+
+        # Default values
+        current_date = QDate.currentDate()
+        self.ded_date_naissance.setDate(current_date)
+
+        if QDate.currentDate().month() > 9:
+            annee_renouvellement = QDate.currentDate().year()+1
+        else:
+            annee_renouvellement = QDate.currentDate().year()
+
+        date_renouvellement = QDate(annee_renouvellement,9,1)
+        self.ded_renouvellement.setDate(date_renouvellement)
 
         # Slots
         self.btn_cancel.clicked.connect(self.close)
