@@ -39,8 +39,16 @@ class MainWindow(QMainWindow):
         self.act_inscription.triggered.connect(self.inscription)
         self.act_facturation.triggered.connect(self.facturation)
 
-        # Lecture des réglages
-        # Vérifier si une base de donnée est enregistrée
+        # Connection à la base de données
+        database = self.check_database_status()
+        self.connection = sqlite3.connect(database)
+
+    def check_database_status(self):
+        """
+        Lecture des réglages
+        Vérifier si une base de donnée est enregistrée
+        :return: Path to database
+        """
         settings = QSettings("Samuel Drouin", "GUIDE-CFR")
         database = settings.value("Database")
 
@@ -74,9 +82,8 @@ class MainWindow(QMainWindow):
                 self.reglage()
                 settings = QSettings("Samuel Drouin", "GUIDE-CFR")
                 database = settings.value("Database")
-        # Connection à la base de données
-        else:
-            self.connection = sqlite3.connect(database)
+
+        return database
 
     def inscription(self):
         """
@@ -113,6 +120,7 @@ class MainWindow(QMainWindow):
         settings = Settings()
         settings.exec()
 
+    @staticmethod
     def a_propos(self):
         """
         Affiche les informations sur l'application
@@ -153,6 +161,8 @@ class MainWindow(QMainWindow):
 Classe principale pour les CentralWidget
 Contient les fonction communes à tout les CentralWidget
 """
+
+
 class CentralWidget(QWidget):
     def __init__(self):
         super(CentralWidget, self).__init__()
@@ -167,7 +177,7 @@ CentralWidget spécifiques :
 
 
 class CentralWidgetParticipantes(CentralWidget):
-    def __init__(self):
+    def __init__(self, connection):
         super(CentralWidgetParticipantes, self).__init__()
         self.top_widget = QWidget()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_participantes.ui')
@@ -191,7 +201,7 @@ class CentralWidgetParticipantes(CentralWidget):
 
 
 class CentralWidgetActivite(CentralWidget):
-    def __init__(self):
+    def __init__(self, connection):
         super(CentralWidgetActivite, self).__init__()
         self.top_widget = QWidget()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_activite.ui')
@@ -215,7 +225,7 @@ class CentralWidgetActivite(CentralWidget):
 
 
 class CentralWidgetLieux(CentralWidget):
-    def __init__(self):
+    def __init__(self, connection):
         super(CentralWidgetLieux, self).__init__()
         self.top_widget = QWidget()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_lieux.ui')
@@ -239,7 +249,7 @@ class CentralWidgetLieux(CentralWidget):
 
 
 class CentralWidgetCategorieActivite(CentralWidget):
-    def __init__(self):
+    def __init__(self, connection):
         super(CentralWidgetCategorieActivite, self).__init__()
         self.top_widget = QWidget()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_categorie_activite.ui')
