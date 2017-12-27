@@ -1,6 +1,6 @@
 # Python import
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtCore import QRegExp
+from PyQt5.QtWidgets import QDialog, QCompleter
+from PyQt5.QtCore import QRegExp, Qt
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5 import uic
 import os
@@ -63,3 +63,17 @@ class Form(QDialog):
         """
         v = QRegExpValidator(QRegExp("^[0-9]{0,10}$"))
         return v
+
+    @staticmethod
+    def ville_completer():
+        """
+        Haut-Richelieu cities completer
+        :return: Completer
+        """
+        liste_ville = ["Saint-Jean-sur-Richelieu", "Saint-Blaire-sur-Richelieu", "Saint-Paul-de-l'Île-aux-Noix",
+                       "Saint-Valentin", "Lacolle", "Noyan", "Saint-Sébastien", "Henryville", "Saint-Alexandre",
+                       "Sainte-Anne-de-Sabrevois", "Sainte-Brigide-d'Iberville", "Mont-Saint-Grégoire",
+                       "Venise-en-Québec", "Saint-Georges-de-Clarenceville"]
+        c = QCompleter(liste_ville)
+        c.setCaseSensitivity(Qt.CaseInsensitive)
+        return c
