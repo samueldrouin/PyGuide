@@ -107,7 +107,11 @@
      <item row="2" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <widget class="QDateEdit" name="ded_unique"/>
+        <widget class="QDateEdit" name="ded_unique">
+         <property name="displayFormat">
+          <string notr="true">dd-MM-yyyy</string>
+         </property>
+        </widget>
        </item>
        <item>
         <spacer name="horizontalSpacer">
@@ -134,7 +138,11 @@
      <item row="3" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_5">
        <item>
-        <widget class="QDateEdit" name="ded_debut"/>
+        <widget class="QDateEdit" name="ded_debut">
+         <property name="displayFormat">
+          <string notr="true">dd-MM-yyyy</string>
+         </property>
+        </widget>
        </item>
        <item>
         <spacer name="horizontalSpacer_2">
@@ -161,7 +169,11 @@
      <item row="4" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_6">
        <item>
-        <widget class="QDateEdit" name="ded_fin"/>
+        <widget class="QDateEdit" name="ded_fin">
+         <property name="displayFormat">
+          <string notr="true">dd-MM-yyyy</string>
+         </property>
+        </widget>
        </item>
        <item>
         <spacer name="horizontalSpacer_3">
@@ -193,7 +205,11 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QDateEdit" name="ded_exclusion"/>
+          <widget class="QDateEdit" name="ded_exclusion">
+           <property name="displayFormat">
+            <string notr="true">dd-MM-yyyy</string>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="btn_ajouter_exclusion">
@@ -239,7 +255,11 @@
      <item row="6" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_7">
        <item>
-        <widget class="QTimeEdit" name="tim_debut"/>
+        <widget class="QTimeEdit" name="tim_debut">
+         <property name="displayFormat">
+          <string notr="true">hh:mm</string>
+         </property>
+        </widget>
        </item>
        <item>
         <spacer name="horizontalSpacer_4">
@@ -266,7 +286,11 @@
      <item row="7" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_8">
        <item>
-        <widget class="QTimeEdit" name="tim_fin"/>
+        <widget class="QTimeEdit" name="tim_fin">
+         <property name="displayFormat">
+          <string notr="true">hh:mm</string>
+         </property>
+        </widget>
        </item>
        <item>
         <spacer name="horizontalSpacer_5">

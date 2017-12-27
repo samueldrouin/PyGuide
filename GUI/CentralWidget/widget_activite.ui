@@ -162,7 +162,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QDateEdit" name="ded_start"/>
+      <widget class="QDateEdit" name="ded_start">
+       <property name="displayFormat">
+        <string notr="true">dd-MM-yyyy</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QLabel" name="label_4">
@@ -172,7 +176,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QDateEdit" name="ded_end"/>
+      <widget class="QDateEdit" name="ded_end">
+       <property name="displayFormat">
+        <string notr="true">dd-MM-yyyy</string>
+       </property>
+      </widget>
      </item>
      <item>
       <spacer name="horizontalSpacer_2">
