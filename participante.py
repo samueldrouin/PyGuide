@@ -7,9 +7,10 @@ import os
 
 # Project import
 from inscription_membre import InscriptionMembre
+from
 
 
-class Participante(QDialog):
+class Participante(Form):
     def __init__(self):
         super(Participante, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'participante.ui')
@@ -94,7 +95,7 @@ class Participante(QDialog):
         fields.append(nom)
 
         address1 = self.txt_adresse1.text()
-        if address1 is ""
+        if address1 is "":
             address1 = None
         fields.append(address1)
 
