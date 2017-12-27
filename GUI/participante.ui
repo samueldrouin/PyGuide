@@ -610,7 +610,7 @@
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
          <property name="formAlignment">
-          <set>Qt::AlignHCenter|Qt::AlignTop</set>
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
          </property>
          <item row="0" column="0">
           <widget class="QCheckBox" name="chk_membre">
@@ -629,7 +629,7 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QCheckBox" name="cbx_actif">
+          <widget class="QCheckBox" name="chk_actif">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -642,7 +642,7 @@
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="label_15">
+          <widget class="QLabel" name="lbl_numero_membre">
            <property name="text">
             <string>Numéro de membre</string>
            </property>
@@ -662,7 +662,7 @@
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QCheckBox" name="cbx_honoraire">
+          <widget class="QCheckBox" name="chk_honoraire">
            <property name="statusTip">
             <string>Activer le status de membre honoraire pour ce membre.</string>
            </property>
@@ -675,7 +675,7 @@
           </widget>
          </item>
          <item row="3" column="0">
-          <widget class="QLabel" name="label_14">
+          <widget class="QLabel" name="lbl_renouvellement">
            <property name="text">
             <string>Date de renouvellement</string>
            </property>
@@ -742,6 +742,9 @@
       <widget class="QPushButton" name="btn_add">
        <property name="text">
         <string>Ajouter</string>
+       </property>
+       <property name="default">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
