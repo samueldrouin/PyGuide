@@ -68,11 +68,6 @@
              </item>
              <item>
               <property name="text">
-               <string>Mlle.</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
                <string>M.</string>
               </property>
              </item>
@@ -84,6 +79,11 @@
              <item>
               <property name="text">
                <string>Organisme</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Autre</string>
               </property>
              </item>
             </widget>
@@ -486,6 +486,9 @@
              <property name="displayFormat">
               <string notr="true">dd-MM-yyyy</string>
              </property>
+             <property name="calendarPopup">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
            <item>
@@ -649,8 +652,14 @@
            <property name="readOnly">
             <bool>true</bool>
            </property>
+           <property name="buttonSymbols">
+            <enum>QAbstractSpinBox::NoButtons</enum>
+           </property>
            <property name="displayFormat">
             <string notr="true">dd-MM-yyyy</string>
+           </property>
+           <property name="calendarPopup">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
