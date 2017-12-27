@@ -1,8 +1,11 @@
 # Python import
 from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTableWidget
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTableWidget, QMessageBox
+from PyQt5.QtCore import QSettings
 from PyQt5.Qt import QApplication
 import os
+import sqlite3
+import pathlib
 
 # Projet import
 from participante import Participante
@@ -14,6 +17,7 @@ from settings import Settings
 from consultation import Consultation
 from facturation import Facturation
 from inscription import Inscription
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -34,6 +38,45 @@ class MainWindow(QMainWindow):
         self.act_responsables.triggered.connect(self.consultation_responsables)
         self.act_inscription.triggered.connect(self.inscription)
         self.act_facturation.triggered.connect(self.facturation)
+
+        # Lecture des réglages
+        # Vérifier si une base de donnée est enregistrée
+        settings = QSettings("Samuel Drouin", "GUIDE-CFR")
+        database = settings.value("Database")
+
+        # Demander le chemin de la base de donnée tant qu'un chemin n'est pas entré
+        while database is None:
+            msgbox = QMessageBox()
+            msgbox.setText("Aucune base de donnée")
+            msgbox.setInformativeText("Vous devez sélectionner la base de donnée dans les réglages avant de pouvoir "
+                                      "utiliser le programme. ")
+            msgbox.setIcon(QMessageBox.Critical)
+            msgbox.setStandardButtons(QMessageBox.Ok)
+            msgbox.setDefaultButton(QMessageBox.Ok)
+            ret = msgbox.exec()
+
+            if ret == QMessageBox.Ok:
+                self.reglage()
+                settings = QSettings("Samuel Drouin", "GUIDE-CFR")
+                database = settings.value("Database")
+        # Demander le chemin vers la base de données tant qu'un chemin valide n'est pas entré
+        #while not pathlib.Path(database).is_file():
+        #    msgbox = QMessageBox()
+        #    msgbox.setText("Base de donnée inexistante")
+        #    msgbox.setInformativeText("Vous devez sélectionner la base de donnée existante dans les réglages avant de "
+        #                              "pouvoir utiliser le programme. ")
+        #    msgbox.setIcon(QMessageBox.Critical)
+        #    msgbox.setStandardButtons(QMessageBox.Ok)
+        #    msgbox.setDefaultButton(QMessageBox.Ok)
+        #    ret = msgbox.exec()
+
+        #    if ret == QMessageBox.Ok:
+        #        self.reglage()
+        #        settings = QSettings("Samuel Drouin", "GUIDE-CFR")
+        #        database = settings.value("Database")
+        # Connection à la base de données
+        else:
+            self.connection = sqlite3.connect(database)
 
     def inscription(self):
         """
