@@ -1,13 +1,12 @@
 # Python import
-from PyQt5.QtWidgets import QDialog, QCompleter, QMessageBox
-from PyQt5.QtGui import QRegExpValidator
-from PyQt5.QtCore import QRegExp, Qt, QDate
+from PyQt5.QtWidgets import QCompleter, QMessageBox
+from PyQt5.QtCore import Qt, QDate
 from PyQt5 import uic
 import os
 
 # Project import
 from inscription_membre import InscriptionMembre
-from
+from form import Form
 
 
 class Participante(Form):
@@ -16,35 +15,21 @@ class Participante(Form):
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'participante.ui')
         uic.loadUi(ui, self)
 
-        # Validator definition
-        name_validator = QRegExpValidator(QRegExp("^[a-zA-ZÀ-ÿ -]{0,45}$"))
-        address_validator = QRegExpValidator(QRegExp("^[0-9a-zA-ZÀ-ÿ -.]{0,45}$"))
-        zip_code_validator = QRegExpValidator(QRegExp("^[A-Z]{1}[0-9]{1}[A-Z]{1}[0-9 ]{1}[0-9]{1}[A-Z]{1}[0-9]{1}$"))
-        telephone_validator = QRegExpValidator(QRegExp("^[0-9]{3}[0-9 ]{1}[0-9]{3}[0-9-]{1}[0-9]{4}$"))
-        poste_validator = QRegExpValidator(QRegExp("^[0-9]{0,5}$"))
-        numero_membre_validator = QRegExpValidator(QRegExp("^[0-9]{0,10}$"))
-
         # Validator
-        self.txt_prenom.setValidator(name_validator)
-        self.txt_nom.setValidator(name_validator)
-        self.txt_adresse1.setValidator(address_validator)
-        self.txt_adresse2.setValidator(address_validator)
-        self.txt_ville.setValidator(name_validator)
-        self.txt_code_postal.setValidator(zip_code_validator)
-        self.txt_telephone1.setValidator(telephone_validator)
-        self.txt_poste1.setValidator(poste_validator)
-        self.txt_telephone2.setValidator(telephone_validator)
-        self.txt_poste2.setValidator(poste_validator)
-        self.txt_numero_membre.setValidator(numero_membre_validator)
+        self.txt_prenom.setValidator(self.name_validator())
+        self.txt_nom.setValidator(self.name_validator())
+        self.txt_adresse1.setValidator(self.address_validator())
+        self.txt_adresse2.setValidator(self.address_validator())
+        self.txt_ville.setValidator(self.name_validator())
+        self.txt_code_postal.setValidator(self.zip_code_validator())
+        self.txt_telephone1.setValidator(self.phone_validator())
+        self.txt_poste1.setValidator(self.poste_validator())
+        self.txt_telephone2.setValidator(self.phone_validator())
+        self.txt_poste2.setValidator(self.poste_validator())
+        self.txt_numero_membre.setValidator(self.numero_membre_validator())
 
         # Completer
-        liste_ville = ["Saint-Jean-sur-Richelieu", "Saint-Blaire-sur-Richelieu", "Saint-Paul-de-l'Île-aux-Noix",
-                       "Saint-Valentin", "Lacolle", "Noyan", "Saint-Sébastien", "Henryville", "Saint-Alexandre",
-                       "Sainte-Anne-de-Sabrevois", "Sainte-Brigide-d'Iberville","Mont-Saint-Grégoire",
-                       "Venise-en-Québec", "Saint-Georges-de-Clarenceville"]
-        completer = QCompleter(liste_ville)
-        completer.setCaseSensitivity(Qt.CaseInsensitive)
-        self.txt_ville.setCompleter(completer)
+        self.txt_ville.setCompleter(self.ville_completer())
 
         # Default date values
         # Annee de naissance
@@ -154,6 +139,11 @@ class Participante(Form):
 
         fields.append(self.cbx_photo.isChecked())
 
+        self.process_data(fields)
+
+    def process_data(self, prepared_data):
+        pass
+
     def set_honoraire(self):
         """
         Confirme que le status du membre doit etre change pour honoraire
@@ -243,14 +233,15 @@ class Participante(Form):
 
 
 class NouvelleParticipante(Participante):
-    def __init__(self, connection):
+    def __init__(self, database):
         super(NouvelleParticipante, self).__init__()
 
         # Instance variable definition
-        self.connection = connection
+        self.database = database
 
         # Titre de la fenetre
         self.setWindowTitle("Nouvelle participante")
+        self.lbl_title.setText("Nouvelle participante")
 
         # Cacher les informations du membre
         self.chk_actif.setHidden(True)
@@ -260,6 +251,6 @@ class NouvelleParticipante(Participante):
         self.lbl_renouvellement.setHidden(True)
         self.ded_renouvellement.setHidden(True)
 
-    def add(self):
-
+    def process_data(self, prepared_data):
         c = self.connection.cursor()
+

@@ -26,8 +26,7 @@ class MainWindow(QMainWindow):
         uic.loadUi(ui, self)
 
         # Connection à la base de données
-        database = self.check_database_status()
-        self.connection = sqlite3.connect(database)
+        self.database = self.check_database_status()
 
         # Charger l'interface graphique
         self.set_participantes_central_widget()
@@ -134,28 +133,28 @@ class MainWindow(QMainWindow):
         """
         Affichage de la liste des participantes et des options de tri
         """
-        central_widget = CentralWidgetParticipantes(self.connection)
+        central_widget = CentralWidgetParticipantes(self.database)
         self.setCentralWidget(central_widget)
 
     def set_activite_central_widget(self):
         """
         Affichage de la liste des activites et des options de tri
         """
-        central_widget = CentralWidgetActivite(self.connection)
+        central_widget = CentralWidgetActivite(self.database)
         self.setCentralWidget(central_widget)
 
     def set_categorie_activite_central_widget(self):
         """
         Affichage de la liste des type d'activite et des options de tri
         """
-        central_widget = CentralWidgetCategorieActivite(self.connection)
+        central_widget = CentralWidgetCategorieActivite(self.database)
         self.setCentralWidget(central_widget)
 
     def set_lieux_central_widget(self):
         """
         Affichage des lieux et des options de tri
         """
-        central_widget = CentralWidgetLieux(self.connection)
+        central_widget = CentralWidgetLieux(self.database)
         self.setCentralWidget(central_widget)
 
 
@@ -179,7 +178,7 @@ CentralWidget spécifiques :
 
 
 class CentralWidgetParticipantes(CentralWidget):
-    def __init__(self, connection):
+    def __init__(self, database):
         super(CentralWidgetParticipantes, self).__init__()
         self.top_widget = QWidget()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_participantes.ui')
@@ -193,7 +192,7 @@ class CentralWidgetParticipantes(CentralWidget):
         self.top_widget.btn_add.clicked.connect(self.nouvelle_participante)
 
         # Instance variable definition
-        self.connection = connection
+        self.database = database
 
     def nouvelle_participante(self):
         """
@@ -205,7 +204,7 @@ class CentralWidgetParticipantes(CentralWidget):
 
 
 class CentralWidgetActivite(CentralWidget):
-    def __init__(self, connection):
+    def __init__(self, database):
         super(CentralWidgetActivite, self).__init__()
         self.top_widget = QWidget()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_activite.ui')
@@ -219,7 +218,7 @@ class CentralWidgetActivite(CentralWidget):
         self.top_widget.btn_add.clicked.connect(self.nouvelle_activite)
 
         # Instance variable definition
-        self.connection = connection
+        self.database = database
 
     def nouvelle_activite(self):
         """
@@ -232,7 +231,7 @@ class CentralWidgetActivite(CentralWidget):
 
 
 class CentralWidgetLieux(CentralWidget):
-    def __init__(self, connection):
+    def __init__(self, database):
         super(CentralWidgetLieux, self).__init__()
         self.top_widget = QWidget()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_lieux.ui')
@@ -246,7 +245,7 @@ class CentralWidgetLieux(CentralWidget):
         self.top_widget.btn_add.clicked.connect(self.nouveau_lieu)
 
         # Instance variable definition
-        self.connection = connection
+        self.database = database
 
     def nouveau_lieu(self):
         """
@@ -259,7 +258,7 @@ class CentralWidgetLieux(CentralWidget):
 
 
 class CentralWidgetCategorieActivite(CentralWidget):
-    def __init__(self, connection):
+    def __init__(self, database):
         super(CentralWidgetCategorieActivite, self).__init__()
         self.top_widget = QWidget()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_categorie_activite.ui')
@@ -273,7 +272,7 @@ class CentralWidgetCategorieActivite(CentralWidget):
         self.top_widget.btn_add.clicked.connect(self.nouvelle_categorie_activite)
 
         # Instance variable definition
-        self.connection = connection
+        self.database = database
 
     def nouvelle_categorie_activite(self):
         """
