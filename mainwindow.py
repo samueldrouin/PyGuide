@@ -8,7 +8,7 @@ import sqlite3
 import pathlib
 
 # Projet import
-from participante import Participante
+from participante import NouvelleParticipante
 from lieu import Lieu
 from activite import Activite
 from categorie_activite import CategorieActivite
@@ -200,9 +200,8 @@ class CentralWidgetParticipantes(CentralWidget):
         Ouvrir le dialog pour creer une nouvelle participante
         :return:
         """
-        participante = Participante(self.connection)
-        participante.setWindowTitle("Nouvelle participante")
-        participante.exec()
+        nouvelle_participante = NouvelleParticipante(self.connection)
+        nouvelle_participante.exec()
 
 
 class CentralWidgetActivite(CentralWidget):
