@@ -5,6 +5,9 @@ from PyQt5.QtCore import QRegExp, Qt, QDate
 from PyQt5 import uic
 import os
 
+# Project import
+from inscription_membre import InscriptionMembre
+
 
 class Participante(QDialog):
     def __init__(self, connection):
@@ -61,6 +64,29 @@ class Participante(QDialog):
         self.btn_cancel.clicked.connect(self.close)
         self.txt_code_postal.cursorPositionChanged.connect(self.zip_code_parsing)
         self.txt_telephone1.cursorPositionChanged.connect(self.phone_number_parsing)
+        self.chk_membre.clicked.connect(self.nouveau_membre)
+
+    def nouveau_membre(self):
+        """
+        Ouvre la fenetre pour inscrire un nouveau membre
+        """
+        inscription_membre = InscriptionMembre()
+        inscription_membre.inscrit.connect(self.membre_inscrit)
+        inscription_membre.cancelled.connect(self.inscription_annulee)
+        inscription_membre.exec()
+
+    def membre_inscrit(self):
+        """
+        Indique que le membre est inscrit
+        """
+        self.chk_membre.setChecked(True)
+        self.chk_membre.setEnabled(False)
+
+    def inscription_annulee(self):
+        """
+        Active le status de membre
+        """
+        self.chk_membre.setChecked(False)
 
     def zip_code_parsing(self, old, new):
         """

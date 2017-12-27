@@ -7,8 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>812</width>
-    <height>527</height>
+    <height>529</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Participante</string>
@@ -73,12 +79,22 @@
              </item>
              <item>
               <property name="text">
-               <string>Dr.</string>
+               <string>Organisme</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>Organisme</string>
+               <string>École</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Municipalité</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Employée</string>
               </property>
              </item>
              <item>
@@ -597,22 +613,31 @@
           <set>Qt::AlignHCenter|Qt::AlignTop</set>
          </property>
          <item row="0" column="0">
-          <widget class="QCheckBox" name="cbx_membre">
+          <widget class="QCheckBox" name="chk_membre">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
            <property name="text">
             <string>Membre</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
           <widget class="QCheckBox" name="cbx_actif">
            <property name="enabled">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
            <property name="text">
             <string>Actif</string>
            </property>
            <property name="checkable">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -625,6 +650,12 @@
          </item>
          <item row="1" column="1">
           <widget class="QLineEdit" name="txt_numero_membre">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
            <property name="placeholderText">
             <string>Numéro de membre</string>
            </property>
@@ -637,6 +668,9 @@
            </property>
            <property name="text">
             <string>Honoraire</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
