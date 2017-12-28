@@ -4,11 +4,10 @@ from PyQt5.QtWidgets import QDialog
 import os
 
 # Project import
-import Scripts.validator
-import Scripts.query
+from form import Form
 
 
-class Place(QDialog):
+class Place(Form):
     """
     Parent of CreatePlace and EditPlace classes
     """
@@ -21,9 +20,10 @@ class Place(QDialog):
         self.btn_cancel.clicked.connect(self.close)
 
         # Validator
-        self.txt_road.setValidator(Scripts.validator.address_validator())
-        self.txt_name.setValidator(Scripts.validator.name_validator())
-        self.txt_city.setValidator(Scripts.validator.city_validator())
+        self.txt_road.setValidator(self.address_validator())
+        self.txt_name.setValidator(self.name_validator())
+        self.txt_city.setValidator(self.name_validator())
+
 
 class CreatePlace(Place):
     def __init__(self):
