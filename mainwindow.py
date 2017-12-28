@@ -202,6 +202,8 @@ CentralWidget spécifiques :
 class CentralWidgetParticipantes(CentralWidget):
     def __init__(self, database):
         super(CentralWidgetParticipantes, self).__init__()
+
+        # GUI setup
         self.top_widget = QWidget()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_participantes.ui')
         uic.loadUi(ui, self.top_widget)
@@ -210,7 +212,10 @@ class CentralWidgetParticipantes(CentralWidget):
         self.table_widget = QTableWidget()
         self.layout.addWidget(self.table_widget)
 
-        # Table widget
+        # Instance variable definition
+        self.database = database
+
+        # Table widget parameters
         self.table_widget.setColumnCount(5)
         self.table_widget.setColumnHidden(0, True)
         headers = ["Index", "Nom", "Ville", "Courriel", "Telephone"]
@@ -223,12 +228,19 @@ class CentralWidgetParticipantes(CentralWidget):
         # Slots
         self.top_widget.btn_add.clicked.connect(self.nouvelle_participante)
         self.table_widget.clicked.connect(self.edit_participante)
+        self.top_widget.cbx_search.currentTextChanged.connect(self.update_search_placeholder)
 
-        # Instance variable definition
-        self.database = database
-
-        # Update Table Widget
+        # Update GUI elements
         self.update_list()
+        self.update_search_placeholder(self.top_widget.cbx_search.currentText())
+
+    def update_search_placeholder(self, text):
+        """
+        Update search placeholder text when combo box item is changed
+        :param text:
+        :return:
+        """
+        self.top_widget.txt_search.setPlaceholderText(text)
 
     def edit_participante(self, index):
         """

@@ -50,11 +50,6 @@
          <string>Numéro de membre</string>
         </property>
        </item>
-       <item>
-        <property name="text">
-         <string/>
-        </property>
-       </item>
       </widget>
      </item>
      <item>
