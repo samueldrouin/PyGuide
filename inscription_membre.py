@@ -6,9 +6,6 @@ from PyQt5.QtCore import pyqtSignal
 
 
 class InscriptionMembre(QDialog):
-    #Signals
-    cancelled = pyqtSignal()
-    inscrit = pyqtSignal()
 
     def __init__(self):
         super(InscriptionMembre, self).__init__()
@@ -23,12 +20,10 @@ class InscriptionMembre(QDialog):
         """
         Enregistre le status de membre lorsque l'inscritpion est completee
         """
-        self.inscrit.emit()
-        self.close()
+        self.accept()
 
     def cancel(self):
         """
         Annule l'inscription
         """
-        self.cancelled.emit()
-        self.close()
+        self.reject()

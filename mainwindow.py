@@ -212,7 +212,7 @@ class CentralWidgetParticipantes(CentralWidget):
 
         # Table widget
         self.table_widget.setColumnCount(5)
-        #self.table_widget.setColumnHidden(0, True)
+        self.table_widget.setColumnHidden(0, True)
         headers = ["Index", "Nom", "Ville", "Courriel", "Telephone"]
         self.table_widget.setHorizontalHeaderLabels(headers)
         self.table_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -231,25 +231,36 @@ class CentralWidgetParticipantes(CentralWidget):
         self.update_list()
 
     def edit_participante(self, index):
+        """
+        Ouvre le dialog pour modifier une participante
+        :param index: Index de la colonne
+        """
         participante_id = self.table_widget.item(index.row(), 0).text()
         modifier_participante = ModifierParticipante(participante_id, self.database)
+        modifier_participante.accepted.connect(self.update_list)
         modifier_participante.exec()
 
     def nouvelle_participante(self):
         """
         Ouvrir le dialog pour creer une nouvelle participante
-        :return:
         """
         nouvelle_participante = NouvelleParticipante(self.database)
+        nouvelle_participante.accepted.connect(self.update_list)
         nouvelle_participante.exec()
 
     def update_list(self):
+        """
+        Update participante list in table widget
+        """
         # Fetch data from database
         QSqlDatabase.database()
         query = QSqlQuery()
         query.exec("SELECT id_participante, prenom, nom, ville, courriel, telephone_1, poste_telephone_1 "
                    "FROM participante")
+
         # Show data in table widget
+        self.table_widget.setRowCount(0)
+
         while query.next():
             self.table_widget.insertRow(self.table_widget.rowCount())
             r = self.table_widget.rowCount()-1
@@ -269,6 +280,7 @@ class CentralWidgetParticipantes(CentralWidget):
             if query.value(6) is None:
                 phone_number = phone_number + " p. " + str(query.value(6))
             self.table_widget.setItem(r, 4, QTableWidgetItem(phone_number))
+
         self.table_widget.resizeColumnsToContents()
 
 class CentralWidgetActivite(CentralWidget):

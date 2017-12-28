@@ -39,7 +39,7 @@ class Participante(Form):
         self.ded_date_naissance.setDate(current_date)
 
         # Slots
-        self.btn_cancel.clicked.connect(self.close)
+        self.btn_cancel.clicked.connect(self.reject)
         self.txt_code_postal.cursorPositionChanged.connect(self.zip_code_parsing)
         self.txt_telephone1.cursorPositionChanged.connect(self.phone_number_parsing)
         self.txt_telephone2.cursorPositionChanged.connect(self.phone_number_parsing)
@@ -153,8 +153,8 @@ class Participante(Form):
         Ouvre la fenetre pour inscrire un nouveau membre
         """
         inscription_membre = InscriptionMembre()
-        inscription_membre.inscrit.connect(self.membre_inscrit)
-        inscription_membre.cancelled.connect(self.inscription_annulee)
+        inscription_membre.accepted.connect(self.membre_inscrit)
+        inscription_membre.rejected.connect(self.inscription_annulee)
         inscription_membre.exec()
 
     def membre_inscrit(self):
@@ -265,7 +265,7 @@ class NouvelleParticipante(Participante):
         query.bindValue(':consentementphoto', prepared_data['Consentement photo'])
         query.exec_()
 
-        self.close()
+        self.accept()
 
 
 class ModifierParticipante(Participante):
@@ -274,6 +274,7 @@ class ModifierParticipante(Participante):
 
         # Instance variable definition
         self.database = database
+        self.participante_id = participante_id
 
         # Titre de la fenetre
         self.setWindowTitle("Modifier une participante")
@@ -283,9 +284,9 @@ class ModifierParticipante(Participante):
         self.btn_add.setText("Modifier")
 
         # Afficher les informations de la participante
-        self.show_participante_informations(participante_id)
+        self.show_participante_informations()
 
-    def show_participante_informations(self, participante_id):
+    def show_participante_informations(self):
         """
         Affiche les informations de la participante
         """
@@ -295,7 +296,7 @@ class ModifierParticipante(Participante):
         query.prepare("SELECT appellation, prenom, nom, adresse_1, adresse_2, ville, province, code_postal," \
               "courriel, telephone_1, poste_telephone_1, telephone_2, poste_telephone_2, date_naissance, " \
               "personne_nourrie, consentement_photo FROM participante WHERE id_participante = :idparticipante")
-        query.bindValue(':idparticipante', participante_id)
+        query.bindValue(':idparticipante', int(self.participante_id))
         query.exec_()
 
         query.first()
@@ -327,8 +328,39 @@ class ModifierParticipante(Participante):
         self.txt_poste2.setText(str(query.value(12)))
         self.ded_date_naissance.setDate(QDate.fromJulianDay(int(query.value(13))))
         self.sbx_personnes_nourries.setValue(int(query.value(14)))
-
-        if  query.value(15) is True:
+        print(int(query.value(15)))
+        if int(query.value(15)):
             self.cbx_photo.setChecked(True)
         else:
             self.cbx_photo.setChecked(False)
+
+    def process_data(self, prepared_data):
+        query = QSqlQuery(self.database)
+        query.prepare("UPDATE participante "
+                      "SET appellation = :appelation, prenom = :prenom, nom = :nom, adresse_1 = :adresse1, "
+                      "adresse_2 = :adresse2, ville = :ville, province = :province, code_postal = :codepostal, "
+                      "courriel = :courriel, telephone_1 = :phone1, poste_telephone_1 = :poste1, "
+                      "telephone_2 = :phone2, poste_telephone_2 = :poste2, "
+                      "date_naissance = :anneenaissance, personne_nourrie = :personnenourries, "
+                      "consentement_photo = :consentementphoto "
+                      "WHERE id_participante = :id_participante")
+        query.bindValue(':appelation', prepared_data['Appelation'])
+        query.bindValue(':prenom', prepared_data['Prenom'])
+        query.bindValue(':nom', prepared_data['Nom'])
+        query.bindValue(':adresse1', prepared_data['Address1'])
+        query.bindValue(':adresse2', prepared_data['Address2'])
+        query.bindValue(':ville', prepared_data['Ville'])
+        query.bindValue(':province', prepared_data['Province'])
+        query.bindValue(':codepostal', prepared_data['Code Postal'])
+        query.bindValue(':courriel', prepared_data['Courriel'])
+        query.bindValue(':phone1', prepared_data['Phone Number 1'])
+        query.bindValue(':poste1', prepared_data['Poste 1'])
+        query.bindValue(':phone2', prepared_data['Phone Number 2'])
+        query.bindValue(':poste2', prepared_data['Poste 2'])
+        query.bindValue(':anneenaissance', prepared_data['Annee Naissance'])
+        query.bindValue(':personnenourries', prepared_data['Personne nourries'])
+        query.bindValue(':consentementphoto', prepared_data['Consentement photo'])
+        query.bindValue(':id_participante', int(self.participante_id))
+        query.exec_()
+
+        self.accept()
