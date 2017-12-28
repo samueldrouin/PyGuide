@@ -1,9 +1,9 @@
 # Python import
-from PyQt5.QtWidgets import QCompleter, QMessageBox
-from PyQt5.QtCore import Qt, QDate
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtCore import QDate
+from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 from PyQt5 import uic
 import os
-import sqlite3
 
 # Project import
 from inscription_membre import InscriptionMembre
@@ -257,3 +257,76 @@ class NouvelleParticipante(Participante):
         conn.commit()
         conn.close()
         self.close()
+
+
+class ModifierParticipante(Participante):
+    def __init__(self, participante_id, database):
+        super(ModifierParticipante, self).__init__()
+
+        # Instance variable definition
+        self.database = database
+
+        # Titre de la fenetre
+        self.setWindowTitle("Modifier une participante")
+        self.lbl_title.setText("Modifier une participante")
+
+        # Interface graphique
+        self.btn_add.setText("Modifier")
+
+        # Afficher les informations de la participante
+        self.show_participante_informations(participante_id)
+
+    def show_participante_informations(self, participante_id):
+        """
+        Affiche les informations de la participante
+        """
+        
+        conn = sqlite3.connect(self.database)
+        c = conn.cursor()
+
+        sql = "SELECT appellation, prenom, nom, adresse_1, adresse_2, ville, province, code_postal," \
+              "courriel, telephone_1, poste_telephone_1, telephone_2, poste_telephone_2, date_naissance, " \
+              "personne_nourrie, consentement_photo FROM participante WHERE id_participante = {}".format(participante_id)
+
+        c.execute(sql)
+        participante = c.fetchone()
+
+        conn.commit()
+        conn.close()
+
+        appelation = self.xstr(participante[0])
+        self.cbx_appelation.setCurrentText(appelation)
+
+        prenom = self.xstr(participante[1])
+        self.txt_prenom.setText(prenom)
+
+        nom = self.xstr(participante[2])
+        self.txt_nom.setText(nom)
+
+        adresse1 = self.xstr(participante[3])
+        self.txt_adresse1.setText(adresse1)
+
+        self.txt_adresse2.setText(participante[4])
+        self.txt_ville.setText(participante[5])
+        self.cbx_province.setCurrentText(participante[6])
+        self.txt_code_postal.setText(participante[7])
+        self.txt_email.setText(participante[8])
+
+        telephone1_str = str(participante[9])
+        telephone1 = telephone1_str[:3] + " " + telephone1_str[3:6] + "-" + telephone1_str[6:]
+
+        self.txt_telephone1.setText(telephone1)
+        self.txt_poste1.setText(str(participante[10]))
+
+        telephone2_str = str(participante[11])
+        telephone2 = telephone2_str[:3] + " " + telephone2_str[3:6] + "-" + telephone2_str[6:]
+
+        self.txt_telephone2.setText(telephone2)
+        self.txt_poste2.setText(str(participante[12]))
+        self.ded_date_naissance.setDate(QDate.fromJulianDay(int(participante[13])))
+        self.sbx_personnes_nourries.setValue(int(participante[14]))
+
+        if  participante[15] is True:
+            self.cbx_photo.setChecked(True)
+        else:
+            self.cbx_photo.setChecked(False)
