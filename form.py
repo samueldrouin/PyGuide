@@ -86,3 +86,42 @@ class Form(QDialog):
         c = QCompleter(liste_ville)
         c.setCaseSensitivity(Qt.CaseInsensitive)
         return c
+
+    @staticmethod
+    def check_string(s):
+        """
+        Check if the string s is empty for SQLite
+        :param s: String
+        :return: String or None
+        """
+        if s is "":
+            s = None
+        return s
+
+    @staticmethod
+    def check_int(s):
+        """
+        Convert s to an int for SQLite
+        :param s: String
+        :return: Int or None
+        """
+        if s is "":
+            s = None
+        else:
+            int(s)
+        return s
+
+    @staticmethod
+    def check_phone_number(s):
+        """
+        Convert s to phone number for SQLite
+        :param s: String
+        :return: Phone number Int or None
+        """
+        if s is not "":
+            s = s.replace(" ", "")
+            s = s.replace("-", "")
+            s = int(s)
+        else:
+            s = None
+        return s

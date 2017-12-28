@@ -72,80 +72,55 @@ class Participante(Form):
         """
         Prepare des donnees du formulaire pour l'envoie a la base de donnees
         """
-        fields = []
-        fields.append(self.cbx_appelation.currentText())
-        fields.append(self.txt_prenom.text())
+        fields = {}
 
-        nom = self.txt_nom.text()
-        if nom is "":
-            nom = None
-        fields.append(nom)
+        appelation = self.check_string(self.cbx_appelation.currentText())
+        fields['Appelation'] = appelation
 
-        address1 = self.txt_adresse1.text()
-        if address1 is "":
-            address1 = None
-        fields.append(address1)
+        prenom = self.check_string(self.txt_prenom.text())
+        fields['Prenom'] = prenom
 
-        address2 = self.txt_adresse2.text()
-        if address2 is "":
-            address2 = None
-        fields.append(address2)
+        nom = self.check_string(self.txt_nom.text())
+        fields['Nom'] = nom
 
-        ville = self.txt_ville.text()
-        if ville is "":
-            ville = None
-        fields.append(ville)
+        address1 = self.check_string(self.txt_adresse1.text())
+        fields['Address1'] = address1
 
-        fields.append(self.cbx_province.currentText())
+        address2 = self.check_string(self.txt_adresse2.text())
+        fields['Address2'] = address2
 
-        code_postal = self.txt_code_postal.text()
-        if code_postal is "":
-            code_postal = None
-        fields.append(code_postal)
+        ville = self.check_string(self.txt_ville.text())
+        fields['Ville'] = ville
 
-        courriel = self.txt_email.text()
-        if courriel is "":
-            courriel = None
-        fields.append(courriel)
+        province = self.check_string(self.cbx_province.currentText())
+        fields['Province'] = province
 
-        phone_number1 = self.txt_telephone1.text()
-        if phone_number1 is not "":
-            phone_number1 = phone_number1.replace(" ", "")
-            phone_number1 = phone_number1.replace("-", "")
-            phone_number1 = int(phone_number1)
-        else:
-            phone_number1 = None
-        fields.append(phone_number1)
+        code_postal = self.check_string(self.txt_code_postal.text())
+        fields['Code Postal'] = code_postal
 
-        poste1 = self.txt_poste1.text()
-        if poste1 is not "":
-            poste1 = int(poste1)
-        else:
-            poste1 = None
-        fields.append(poste1)
+        courriel = self.check_string(self.txt_email.text())
+        fields['Courriel'] = courriel
 
-        phone_number2 = self.txt_telephone2.text()
-        if phone_number2 is not "":
-            phone_number2 = phone_number2.replace(" ", "")
-            phone_number2 = phone_number2.replace("-", "")
-            phone_number2 = int(phone_number2)
-        else:
-            phone_number2 = None
-        fields.append(phone_number2)
+        phone_number1 = self.check_phone_number(self.txt_telephone1.text())
+        fields['Phone Number 1'] = phone_number1
 
-        poste2 = self.txt_poste2.text()
-        if poste2 is not "":
-            poste2 = int(poste2)
-        else:
-            poste2 = None
-        fields.append(poste2)
+        poste1 = self.check_int(self.txt_poste1.text())
+        fields['Poste 1'] = poste1
+
+        phone_number2 = self.check_phone_number(self.txt_telephone2.text())
+        fields['Phone Number 2'] = phone_number2
+
+        poste2 = self.check_int(self.txt_poste2.text())
+        fields['Poste 2'] = poste2
 
         annee_naissance = self.ded_date_naissance.date().toJulianDay()
-        fields.append(annee_naissance)
+        fields['Annee Naissance'] = annee_naissance
 
-        fields.append(self.sbx_personnes_nourries.value())
+        personne_nourries = self.sbx_personnes_nourries.value()
+        fields['Personne nourries']  = personne_nourries
 
-        fields.append(self.cbx_photo.isChecked())
+        consentement_photo = self.cbx_photo.isChecked()
+        fields['Consentement photo'] = consentement_photo
 
         self.process_data(fields)
 
@@ -268,8 +243,17 @@ class NouvelleParticipante(Participante):
         conn = sqlite3.connect(self.database)
         c = conn.cursor()
 
-        sql = "INSERT INTO participante VALUES ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})"\
-            .format(prepared_data[0], prepared_data[1], prepared_data[2], prepared_data[3], prepared_data[4],
-                    prepared_data[5], prepared_data[6], prepared_data[7], prepared_data[8], prepared_data[9],
-                    prepared_data[10], prepared_data[11], prepared_data[12], prepared_data[13], prepared_data[14])
-
+        sql = "INSERT INTO participante (appellation, prenom, nom, adresse_1, adresse_2, ville, province, code_postal," \
+              "courriel, telephone_1, poste_telephone_1, telephone_2, poste_telephone_2, date_naissance, " \
+              "personne_nourrie, consentement_photo) " \
+              "VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')"\
+            .format(prepared_data['Appelation'], prepared_data['Prenom'], prepared_data['Nom'],
+                    prepared_data['Address1'], prepared_data['Address2'], prepared_data['Ville'],
+                    prepared_data['Province'], prepared_data['Code Postal'], prepared_data['Courriel'],
+                    prepared_data['Phone Number 1'], prepared_data['Poste 1'], prepared_data['Phone Number 2'],
+                    prepared_data['Poste 2'], prepared_data['Annee Naissance'], prepared_data['Personne nourries'],
+                    prepared_data['Consentement photo'])
+        c.execute(sql)
+        conn.commit()
+        conn.close()
+        self.close()
