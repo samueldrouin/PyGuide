@@ -21,7 +21,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-    <widget class="QLabel" name="label_12">
+    <widget class="QLabel" name="lbl_title">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -385,7 +385,7 @@
            </item>
           </layout>
          </item>
-         <item row="7" column="0">
+         <item row="8" column="0">
           <widget class="QLabel" name="label_7">
            <property name="font">
             <font>
@@ -398,7 +398,7 @@
            </property>
           </widget>
          </item>
-         <item row="7" column="1">
+         <item row="8" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
             <widget class="QLineEdit" name="txt_telephone1">
@@ -435,14 +435,14 @@
            </item>
           </layout>
          </item>
-         <item row="8" column="0">
+         <item row="9" column="0">
           <widget class="QLabel" name="label_8">
            <property name="text">
             <string>Téléphone 2 : </string>
            </property>
           </widget>
          </item>
-         <item row="8" column="1">
+         <item row="9" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
             <widget class="QLineEdit" name="txt_telephone2">
@@ -482,7 +482,7 @@
            </item>
           </layout>
          </item>
-         <item row="9" column="0">
+         <item row="10" column="0">
           <widget class="QLabel" name="label_9">
            <property name="font">
             <font>
@@ -495,7 +495,7 @@
            </property>
           </widget>
          </item>
-         <item row="9" column="1">
+         <item row="10" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_10">
            <item>
             <widget class="QDateEdit" name="ded_date_naissance">
@@ -522,14 +522,14 @@
            </item>
           </layout>
          </item>
-         <item row="10" column="0">
+         <item row="11" column="0">
           <widget class="QLabel" name="label_10">
            <property name="text">
             <string>Personnes nourries : </string>
            </property>
           </widget>
          </item>
-         <item row="10" column="1">
+         <item row="11" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_11">
            <item>
             <widget class="QSpinBox" name="sbx_personnes_nourries">
@@ -556,17 +556,10 @@
            </item>
           </layout>
          </item>
-         <item row="11" column="0">
+         <item row="12" column="0">
           <widget class="QLabel" name="label_11">
            <property name="text">
             <string>Consentement photo : </string>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="1">
-          <widget class="QCheckBox" name="cbx_photo">
-           <property name="text">
-            <string>La participante consent à être prise en photo</string>
            </property>
           </widget>
          </item>
@@ -576,6 +569,44 @@
             <string>Appelation : </string>
            </property>
           </widget>
+         </item>
+         <item row="12" column="1">
+          <widget class="QCheckBox" name="cbx_photo">
+           <property name="text">
+            <string>La participante consent à être prise en photo</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
+          <widget class="QLabel" name="label_12">
+           <property name="text">
+            <string>Courriel : </string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_14">
+           <item>
+            <widget class="QLineEdit" name="txt_email">
+             <property name="placeholderText">
+              <string>Courriel</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_12">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </item>
         </layout>
        </item>
@@ -765,6 +796,31 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>cbx_appelation</tabstop>
+  <tabstop>txt_prenom</tabstop>
+  <tabstop>txt_nom</tabstop>
+  <tabstop>txt_adresse1</tabstop>
+  <tabstop>txt_adresse2</tabstop>
+  <tabstop>txt_ville</tabstop>
+  <tabstop>cbx_province</tabstop>
+  <tabstop>txt_code_postal</tabstop>
+  <tabstop>txt_email</tabstop>
+  <tabstop>txt_telephone1</tabstop>
+  <tabstop>txt_poste1</tabstop>
+  <tabstop>txt_telephone2</tabstop>
+  <tabstop>txt_poste2</tabstop>
+  <tabstop>ded_date_naissance</tabstop>
+  <tabstop>sbx_personnes_nourries</tabstop>
+  <tabstop>cbx_photo</tabstop>
+  <tabstop>chk_membre</tabstop>
+  <tabstop>btn_cancel</tabstop>
+  <tabstop>btn_add</tabstop>
+  <tabstop>chk_honoraire</tabstop>
+  <tabstop>ded_renouvellement</tabstop>
+  <tabstop>chk_actif</tabstop>
+  <tabstop>txt_numero_membre</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
