@@ -16,7 +16,7 @@ class Form(QDialog):
         RegExp validator for address
         :return: Address RexExpValidator
         """
-        v = QRegExpValidator(QRegExp("^[0-9a-zA-ZÀ-ÿ -.]{0,45}$"))
+        v = QRegExpValidator(QRegExp("^[0-9a-zA-ZÀ-ÿ -.]+$"))
         return v
 
     @staticmethod
@@ -25,7 +25,7 @@ class Form(QDialog):
         RegExp validator for name
         :return: Name RegExpValidator
         """
-        v = QRegExpValidator(QRegExp("^[a-zA-ZÀ-ÿ -]{0,45}$"))
+        v = QRegExpValidator(QRegExp("^[a-zA-ZÀ-ÿ -]+$"))
         return v
 
     @staticmethod
@@ -62,6 +62,15 @@ class Form(QDialog):
         :return: Member number RegExpValidator
         """
         v = QRegExpValidator(QRegExp("^[0-9]{0,10}$"))
+        return v
+
+    @staticmethod
+    def email_validator():
+        """
+        RegExp validator for email
+        :return: Email RegExpValidator
+        """
+        v = QRegExpValidator(QRegExp("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,4}$"))
         return v
 
     @staticmethod

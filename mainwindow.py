@@ -199,7 +199,7 @@ class CentralWidgetParticipantes(CentralWidget):
         Ouvrir le dialog pour creer une nouvelle participante
         :return:
         """
-        nouvelle_participante = NouvelleParticipante(self.connection)
+        nouvelle_participante = NouvelleParticipante(self.database)
         nouvelle_participante.exec()
 
 

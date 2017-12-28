@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QCompleter, QMessageBox
 from PyQt5.QtCore import Qt, QDate
 from PyQt5 import uic
 import os
+import sqlite3
 
 # Project import
 from inscription_membre import InscriptionMembre
@@ -27,6 +28,7 @@ class Participante(Form):
         self.txt_telephone2.setValidator(self.phone_validator())
         self.txt_poste2.setValidator(self.poste_validator())
         self.txt_numero_membre.setValidator(self.numero_membre_validator())
+        self.txt_email.setValidator(self.email_validator())
 
         # Completer
         self.txt_ville.setCompleter(self.ville_completer())
@@ -93,12 +95,18 @@ class Participante(Form):
         if ville is "":
             ville = None
         fields.append(ville)
+
         fields.append(self.cbx_province.currentText())
 
         code_postal = self.txt_code_postal.text()
         if code_postal is "":
             code_postal = None
         fields.append(code_postal)
+
+        courriel = self.txt_email.text()
+        if courriel is "":
+            courriel = None
+        fields.append(courriel)
 
         phone_number1 = self.txt_telephone1.text()
         if phone_number1 is not "":
@@ -142,6 +150,11 @@ class Participante(Form):
         self.process_data(fields)
 
     def process_data(self, prepared_data):
+        """
+        Requete SQLite
+        Implante dans les subclass
+        :param prepared_data: Donnees pour la requete SQLite
+        """
         pass
 
     def set_honoraire(self):
@@ -252,5 +265,11 @@ class NouvelleParticipante(Participante):
         self.ded_renouvellement.setHidden(True)
 
     def process_data(self, prepared_data):
-        c = self.connection.cursor()
+        conn = sqlite3.connect(self.database)
+        c = conn.cursor()
+
+        sql = "INSERT INTO participante VALUES ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})"\
+            .format(prepared_data[0], prepared_data[1], prepared_data[2], prepared_data[3], prepared_data[4],
+                    prepared_data[5], prepared_data[6], prepared_data[7], prepared_data[8], prepared_data[9],
+                    prepared_data[10], prepared_data[11], prepared_data[12], prepared_data[13], prepared_data[14])
 
