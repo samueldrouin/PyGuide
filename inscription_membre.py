@@ -1,5 +1,5 @@
 # Python import
-from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWidgets import QTableWidgetItem, QMessageBox
 from PyQt5.QtCore import QDate, Qt
 from PyQt5 import uic
 from PyQt5.QtSql import QSqlQuery, QSqlDatabase
@@ -23,19 +23,67 @@ class InscriptionMembre(Form):
         self.txt_nom.setText(nom)
         self.txt_telephone.setText(phone)
         self.get_numero_membre()
+        self.ajouter_article_regulier()
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
         self.btn_inscription.clicked.connect(self.inscription)
+        self.chk_honoraire.toggled.connect(self.membre_honoraire)
 
-        # Ajouter le status à la liste d'article
+    def membre_honoraire(self, checked):
+        """
+        Ajoute les articles d'un membre honoraire
+        :param checked: CheckBox Honoraire
+        """
+        self.tbl_commande.removeRow(0)
+        self.tbl_commande.setRowCount(1)
+        if checked:
+            # Confirme l'inscription d'un membre honoraire
+            msgbox = QMessageBox()
+            msgbox.setWindowTitle("Inscription d'un membre honoraire")
+            msgbox.setText("Inscription d'un membre honoraire")
+            msgbox.setInformativeText("Êtes-vous certain de vouloir inscrire ce membre comme honoraire")
+            msgbox.setIcon(QMessageBox.Information)
+            msgbox.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
+            msgbox.setDefaultButton(QMessageBox.Yes)
+            ret = msgbox.exec()
 
+            # Annulation du nouveau status
+            if ret == QMessageBox.No:
+                self.chk_honoraire.setChecked(False)
+            # Ajout du status honoraire
+            else:
+                self.ajouter_article_honoraire()
+        else:
+            self.ajouter_article_regulier()
+
+    def ajouter_article_honoraire(self):
+        """
+        Ajouter le status de membre honoraire à la liste d'articles
+        """
+        # Article
+        article = "Membre honoraire"
+        self.tbl_commande.setItem(0, 0, QTableWidgetItem(article))
+
+        # Prix
+        prix = 0.00
+        item = QTableWidgetItem('%.2f' % prix)
+        item.setTextAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.tbl_commande.setItem(0, 1, item)
+
+        # Afficher le prix total
+        self.txt_total.setText('%.2f' % prix)
+
+    def ajouter_article_regulier(self):
+        """
+        Ajouter le status à la liste d'article
+        """
         # Article
         self.tbl_commande.setItem(0, 0, QTableWidgetItem())
         month = QDate.currentDate().month()
         year = QDate().currentDate().year()
         if month > 9:
-            year = year+1
+            year = year + 1
         article = "Membre " + str(year)
         self.tbl_commande.setItem(0, 0, QTableWidgetItem(article))
 
@@ -67,15 +115,23 @@ class InscriptionMembre(Form):
                       ":honoraire, :renouvellement)")
         query.bindValue(':actif', True)
         query.bindValue(':id_participante', int(self.id_participante))
-        query.bindValue(':honoraire', False)
 
-        # Determiner la date de renouvellement
-        month = QDate.currentDate().month()
-        year = QDate().currentDate().year()
-        if month > 9:
-            year = year + 1
-        date = QDate(year, 9, 1).toJulianDay()
-        query.bindValue(':renouvellement', date)
+        # Determiner si le membre est honoraire
+        if self.chk_honoraire.isChecked():
+            query.bindValue(':honoraire', True)
+
+            # Aucune date de renouvellement
+            query.bindValue(':renouvellement', 0)
+        else:
+            query.bindValue(':honoraire', False)
+
+            # Determiner la date de renouvellement
+            month = QDate.currentDate().month()
+            year = QDate().currentDate().year()
+            if month > 9:
+                year = year + 1
+            date = QDate(year, 9, 1).toJulianDay()
+            query.bindValue(':renouvellement', date)
         query.exec_()
 
         # Enregistre la commande
@@ -83,7 +139,6 @@ class InscriptionMembre(Form):
         query.prepare("INSERT INTO inscription_membre (id_membre, date, article, prix) "
                       "VALUES ((SELECT numero_membre FROM membre WHERE id_membre = last_insert_rowid()), "
                       "(SELECT date('now')), :article, :prix)")
-        print(self.tbl_commande.item(0, 0).text())
         query.bindValue(':article', self.tbl_commande.item(0, 0).text())
         query.bindValue(':prix', self.tbl_commande.item(0, 1).text())
         query.exec_()

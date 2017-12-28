@@ -80,6 +80,13 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QCheckBox" name="chk_honoraire">
+       <property name="text">
+        <string>Honoraire</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>

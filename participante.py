@@ -46,7 +46,6 @@ class Participante(Form):
         self.txt_telephone1.cursorPositionChanged.connect(self.phone_number_parsing)
         self.txt_telephone2.cursorPositionChanged.connect(self.phone_number_parsing)
         self.chk_membre.clicked.connect(self.nouveau_membre)
-        self.chk_honoraire.clicked.connect(self.set_honoraire)
         self.btn_add.clicked.connect(self.check_fields)
 
     def check_fields(self):
@@ -145,22 +144,6 @@ class Participante(Form):
         :param prepared_data: Donnees pour la requete SQLite
         """
         pass
-
-    def set_honoraire(self):
-        """
-        Confirme que le status du membre doit etre change pour honoraire
-        """
-        msgbox = QMessageBox()
-        msgbox.setWindowTitle("Inscription d'un membre honoraire")
-        msgbox.setText("Inscription d'un membre honoraire")
-        msgbox.setInformativeText("Êtes-vous certain de vouloir inscrire ce membre comme honoraire")
-        msgbox.setIcon(QMessageBox.Information)
-        msgbox.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
-        msgbox.setDefaultButton(QMessageBox.Yes)
-        ret = msgbox.exec()
-
-        if ret == QMessageBox.No:
-            self.chk_honoraire.setChecked(False)
 
     def nouveau_membre(self):
         """
