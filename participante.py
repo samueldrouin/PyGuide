@@ -51,18 +51,27 @@ class Participante(Form):
         """
         Check if every required fields are filled
         """
-        if self.txt_prenom.text() is not None:
-            if self.txt_telephone1 is not None:
+        if self.txt_prenom.text() != "":
+            if len(self.txt_telephone1.text()) == 12:
                 self.prepare_data()
+            else:
+                msgbox = QMessageBox()
+                msgbox.setWindowTitle("Information manquante")
+                msgbox.setText("Information manquante")
+                msgbox.setInformativeText("Le premier numéro de téléphone doit être valide")
+                msgbox.setIcon(QMessageBox.Warning)
+                msgbox.setStandardButtons(QMessageBox.Ok)
+                msgbox.setDefaultButton(QMessageBox.Ok)
+                msgbox.exec()
         else:
             msgbox = QMessageBox()
             msgbox.setWindowTitle("Information manquante")
-            if self.txt_prenom.text() is None and self.txt_telephone1 is None:
-                msgbox.setInformativeText("Le prénom et le premier numéro de téléphone doivent être valide")
-            elif self.txt_prenom.text() is not None and self.txt_telephone1 is None:
-                msgbox.setInformativeText("Le premier numéro de téléphone doit être valide")
-            elif self.txt_prenom.text() is None and self.txt_telephone1 is not None:
-                msgbox.setInformativeText("Le prénom doit être valide")
+            msgbox.setText("Information manquante")
+            if self.txt_prenom.text() == "" and len(self.txt_telephone1.text()) != 12:
+                informative_text = "Le prénom et le premier numéro de téléphone doivent être valide"
+            else:
+                informative_text = "Le prénom doit être valide"
+            msgbox.setInformativeText(informative_text)
             msgbox.setIcon(QMessageBox.Warning)
             msgbox.setStandardButtons(QMessageBox.Ok)
             msgbox.setDefaultButton(QMessageBox.Ok)
@@ -152,7 +161,15 @@ class Participante(Form):
         """
         Ouvre la fenetre pour inscrire un nouveau membre
         """
-        inscription_membre = InscriptionMembre()
+        # Inscription du participant
+        self.check_fields()
+
+        # Préparation des parametres
+        nom = self.txt_nom.text()
+        phone = self.txt_telephone1.text()
+
+        # Ouverture de la fenetre d'inscription
+        inscription_membre = InscriptionMembre(nom, phone)
         inscription_membre.accepted.connect(self.membre_inscrit)
         inscription_membre.rejected.connect(self.inscription_annulee)
         inscription_membre.exec()
@@ -328,7 +345,7 @@ class ModifierParticipante(Participante):
         self.txt_poste2.setText(str(query.value(12)))
         self.ded_date_naissance.setDate(QDate.fromJulianDay(int(query.value(13))))
         self.sbx_personnes_nourries.setValue(int(query.value(14)))
-        print(int(query.value(15)))
+
         if int(query.value(15)):
             self.cbx_photo.setChecked(True)
         else:
@@ -363,4 +380,5 @@ class ModifierParticipante(Participante):
         query.bindValue(':id_participante', int(self.participante_id))
         query.exec_()
 
-        self.accept()
+        if self.sender() == self.btn_add:
+            self.accept()
