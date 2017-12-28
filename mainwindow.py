@@ -4,12 +4,13 @@ from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTableWidget, QMe
     QAbstractItemView, QHeaderView
 from PyQt5.QtCore import QSettings
 from PyQt5.Qt import QApplication
+from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 import os
 import sqlite3
 import pathlib
 
 # Projet import
-from participante import NouvelleParticipante
+from participante import NouvelleParticipante, ModifierParticipante
 from lieu import Lieu
 from activite import Activite
 from categorie_activite import CategorieActivite
@@ -85,7 +86,27 @@ class MainWindow(QMainWindow):
                 settings = QSettings("Samuel Drouin", "GUIDE-CFR")
                 database = settings.value("Database")
 
-        return database
+        db = QSqlDatabase.addDatabase("QSQLITE")
+        db.setDatabaseName(database)
+
+        dbopen = False
+        while not dbopen:
+            dbopen = db.open()
+
+            if not dbopen:
+                msgbox = QMessageBox()
+                msgbox.setText("Erreur de connection")
+                msgbox.setInformativeText(
+                    "Une erreur lors de la connection à la base de données empêche l'ouverture du programme. Appuyez "
+                    "sur annuler pour fermer le programme")
+                msgbox.setDetailedText(db.lastError().text())
+                msgbox.setIcon(QMessageBox.Critical)
+                msgbox.setStandardButtons(QMessageBox.Cancel)
+                msgbox.setDefaultButton(QMessageBox.Cancel)
+                msgbox.exec()
+                self.close()
+
+        return db
 
     def inscription(self):
         """
@@ -191,7 +212,7 @@ class CentralWidgetParticipantes(CentralWidget):
 
         # Table widget
         self.table_widget.setColumnCount(5)
-        self.table_widget.setColumnHidden(0, True)
+        #self.table_widget.setColumnHidden(0, True)
         headers = ["Index", "Nom", "Ville", "Courriel", "Telephone"]
         self.table_widget.setHorizontalHeaderLabels(headers)
         self.table_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -201,12 +222,18 @@ class CentralWidgetParticipantes(CentralWidget):
 
         # Slots
         self.top_widget.btn_add.clicked.connect(self.nouvelle_participante)
+        self.table_widget.clicked.connect(self.edit_participante)
 
         # Instance variable definition
         self.database = database
 
         # Update Table Widget
         self.update_list()
+
+    def edit_participante(self, index):
+        participante_id = self.table_widget.item(index.row(), 0).text()
+        modifier_participante = ModifierParticipante(participante_id, self.database)
+        modifier_participante.exec()
 
     def nouvelle_participante(self):
         """
@@ -218,32 +245,30 @@ class CentralWidgetParticipantes(CentralWidget):
 
     def update_list(self):
         # Fetch data from database
-        conn = sqlite3.connect(self.database)
-        c = conn.cursor()
-        sql = "SELECT id_participante, prenom, nom, ville, courriel, telephone_1, poste_telephone_1 FROM participante"
-        c.execute(sql)
-        results = c.fetchall()
-        conn.commit()
-        conn.close()
-
+        QSqlDatabase.database()
+        query = QSqlQuery()
+        query.exec("SELECT id_participante, prenom, nom, ville, courriel, telephone_1, poste_telephone_1 "
+                   "FROM participante")
         # Show data in table widget
-        self.table_widget.setRowCount(len(results))
-        r = 0
-        for result in results:
-            self.table_widget.setItem(r, 0, QTableWidgetItem(result[0]))
-            if result[2] is None:
-                nom = "{} {}".format(result[1], result[2])
+        while query.next():
+            self.table_widget.insertRow(self.table_widget.rowCount())
+            r = self.table_widget.rowCount()-1
+
+            self.table_widget.setItem(r, 0, QTableWidgetItem(str(query.value(0))))
+
+            if not query.value(2) is None:
+                nom = "{} {}".format(str(query.value(1)), str(query.value(2)))
             else:
-                nom = result[1]
+                nom = str(query.value(1))
             self.table_widget.setItem(r, 1, QTableWidgetItem(nom))
-            self.table_widget.setItem(r, 2, QTableWidgetItem(result[3]))
-            self.table_widget.setItem(r, 2, QTableWidgetItem(result[4]))
-            phone_number_string = str(result[5])
+
+            self.table_widget.setItem(r, 2, QTableWidgetItem(str(query.value(3))))
+            self.table_widget.setItem(r, 3, QTableWidgetItem(str(query.value(4))))
+            phone_number_string = str(query.value(5))
             phone_number = phone_number_string[:3] + " " + phone_number_string[3:6] + "-" + phone_number_string[6:]
-            if result[6] is None:
-                phone_number = phone_number + " p. " + str(result[6])
-            self.table_widget.setItem(r, 2, QTableWidgetItem(phone_number))
-            r = r + 1
+            if query.value(6) is None:
+                phone_number = phone_number + " p. " + str(query.value(6))
+            self.table_widget.setItem(r, 4, QTableWidgetItem(phone_number))
         self.table_widget.resizeColumnsToContents()
 
 class CentralWidgetActivite(CentralWidget):

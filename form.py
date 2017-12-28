@@ -94,7 +94,7 @@ class Form(QDialog):
         :param s: String
         :return: String or None
         """
-        if s is "":
+        if not s:
             s = None
         return s
 
@@ -124,4 +124,15 @@ class Form(QDialog):
             s = int(s)
         else:
             s = None
+        return s
+
+    @staticmethod
+    def xstr(s):
+        """
+        Return and empty string instead of None
+        :param s: String or None
+        :return: String or empty string
+        """
+        if not s:
+            s = ''
         return s

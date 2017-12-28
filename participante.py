@@ -240,22 +240,31 @@ class NouvelleParticipante(Participante):
         self.ded_renouvellement.setHidden(True)
 
     def process_data(self, prepared_data):
-        conn = sqlite3.connect(self.database)
-        c = conn.cursor()
-
-        sql = "INSERT INTO participante (appellation, prenom, nom, adresse_1, adresse_2, ville, province, code_postal," \
+        query = QSqlQuery(self.database)
+        query.prepare("INSERT INTO participante (appellation, prenom, nom, adresse_1, adresse_2, ville, province, code_postal," \
               "courriel, telephone_1, poste_telephone_1, telephone_2, poste_telephone_2, date_naissance, " \
               "personne_nourrie, consentement_photo) " \
-              "VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')"\
-            .format(prepared_data['Appelation'], prepared_data['Prenom'], prepared_data['Nom'],
-                    prepared_data['Address1'], prepared_data['Address2'], prepared_data['Ville'],
-                    prepared_data['Province'], prepared_data['Code Postal'], prepared_data['Courriel'],
-                    prepared_data['Phone Number 1'], prepared_data['Poste 1'], prepared_data['Phone Number 2'],
-                    prepared_data['Poste 2'], prepared_data['Annee Naissance'], prepared_data['Personne nourries'],
-                    prepared_data['Consentement photo'])
-        c.execute(sql)
-        conn.commit()
-        conn.close()
+              "VALUES (:appelation, :prenom, :nom, :adresse1, :adresse2, :ville, :province, :codepostal, "
+                      ":courriel, :phone1, :poste1, :phone2, :poste2, :anneenaissance, :personnenourries, "
+                      ":consentementphoto)")
+        query.bindValue(':appelation', prepared_data['Appelation'])
+        query.bindValue(':prenom', prepared_data['Prenom'])
+        query.bindValue(':nom', prepared_data['Nom'])
+        query.bindValue(':adresse1', prepared_data['Address1'])
+        query.bindValue(':adresse2', prepared_data['Address2'])
+        query.bindValue(':ville', prepared_data['Ville'])
+        query.bindValue(':province', prepared_data['Province'])
+        query.bindValue(':codepostal', prepared_data['Code Postal'])
+        query.bindValue(':courriel', prepared_data['Courriel'])
+        query.bindValue(':phone1', prepared_data['Phone Number 1'])
+        query.bindValue(':poste1', prepared_data['Poste 1'])
+        query.bindValue(':phone2', prepared_data['Phone Number 2'])
+        query.bindValue(':poste2', prepared_data['Poste 2'])
+        query.bindValue(':anneenaissance', prepared_data['Annee Naissance'])
+        query.bindValue(':personnenourries', prepared_data['Personne nourries'])
+        query.bindValue(':consentementphoto', prepared_data['Consentement photo'])
+        query.exec_()
+
         self.close()
 
 
@@ -280,53 +289,46 @@ class ModifierParticipante(Participante):
         """
         Affiche les informations de la participante
         """
-        
-        conn = sqlite3.connect(self.database)
-        c = conn.cursor()
 
-        sql = "SELECT appellation, prenom, nom, adresse_1, adresse_2, ville, province, code_postal," \
+        # Get informations from database
+        query = QSqlQuery(self.database)
+        query.prepare("SELECT appellation, prenom, nom, adresse_1, adresse_2, ville, province, code_postal," \
               "courriel, telephone_1, poste_telephone_1, telephone_2, poste_telephone_2, date_naissance, " \
-              "personne_nourrie, consentement_photo FROM participante WHERE id_participante = {}".format(participante_id)
+              "personne_nourrie, consentement_photo FROM participante WHERE id_participante = :idparticipante")
+        query.bindValue(':idparticipante', participante_id)
+        query.exec_()
 
-        c.execute(sql)
-        participante = c.fetchone()
+        query.first()
 
-        conn.commit()
-        conn.close()
+        # Add informations to form
+        self.cbx_appelation.setCurrentText(query.value(0))
+        self.txt_prenom.setText(query.value(1))
+        self.txt_nom.setText(query.value(2))
+        self.txt_adresse1.setText(query.value(3))
+        self.txt_adresse2.setText(query.value(4))
+        self.txt_ville.setText(query.value(5))
+        self.cbx_province.setCurrentText(query.value(6))
+        self.txt_code_postal.setText(query.value(7))
+        self.txt_email.setText(query.value(8))
 
-        appelation = self.xstr(participante[0])
-        self.cbx_appelation.setCurrentText(appelation)
-
-        prenom = self.xstr(participante[1])
-        self.txt_prenom.setText(prenom)
-
-        nom = self.xstr(participante[2])
-        self.txt_nom.setText(nom)
-
-        adresse1 = self.xstr(participante[3])
-        self.txt_adresse1.setText(adresse1)
-
-        self.txt_adresse2.setText(participante[4])
-        self.txt_ville.setText(participante[5])
-        self.cbx_province.setCurrentText(participante[6])
-        self.txt_code_postal.setText(participante[7])
-        self.txt_email.setText(participante[8])
-
-        telephone1_str = str(participante[9])
+        # Set phone number format
+        telephone1_str = str(query.value(9))
         telephone1 = telephone1_str[:3] + " " + telephone1_str[3:6] + "-" + telephone1_str[6:]
 
         self.txt_telephone1.setText(telephone1)
-        self.txt_poste1.setText(str(participante[10]))
+        self.txt_poste1.setText(str(query.value(10)))
 
-        telephone2_str = str(participante[11])
-        telephone2 = telephone2_str[:3] + " " + telephone2_str[3:6] + "-" + telephone2_str[6:]
+        # Set phone number 2 format if the phone number exist only
+        if query.value(11):
+            telephone2_str = str(query.value(11))
+            telephone2 = telephone2_str[:3] + " " + telephone2_str[3:6] + "-" + telephone2_str[6:]
+            self.txt_telephone2.setText(telephone2)
 
-        self.txt_telephone2.setText(telephone2)
-        self.txt_poste2.setText(str(participante[12]))
-        self.ded_date_naissance.setDate(QDate.fromJulianDay(int(participante[13])))
-        self.sbx_personnes_nourries.setValue(int(participante[14]))
+        self.txt_poste2.setText(str(query.value(12)))
+        self.ded_date_naissance.setDate(QDate.fromJulianDay(int(query.value(13))))
+        self.sbx_personnes_nourries.setValue(int(query.value(14)))
 
-        if  participante[15] is True:
+        if  query.value(15) is True:
             self.cbx_photo.setChecked(True)
         else:
             self.cbx_photo.setChecked(False)
