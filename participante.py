@@ -15,6 +15,8 @@ class Participante(Form):
         super(Participante, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'participante.ui')
         uic.loadUi(ui, self)
+        self.participante_id = None
+        self.database = None
 
         # Validator
         self.txt_prenom.setValidator(self.name_validator())
@@ -50,10 +52,12 @@ class Participante(Form):
     def check_fields(self):
         """
         Check if every required fields are filled
+        :return: True is data is valid
         """
         if self.txt_prenom.text() != "":
             if len(self.txt_telephone1.text()) == 12:
                 self.prepare_data()
+                return True
             else:
                 msgbox = QMessageBox()
                 msgbox.setWindowTitle("Information manquante")
@@ -76,6 +80,7 @@ class Participante(Form):
             msgbox.setStandardButtons(QMessageBox.Ok)
             msgbox.setDefaultButton(QMessageBox.Ok)
             msgbox.exec()
+        return False
 
     def prepare_data(self):
         """
@@ -162,17 +167,18 @@ class Participante(Form):
         Ouvre la fenetre pour inscrire un nouveau membre
         """
         # Inscription du participant
-        self.check_fields()
+        if self.check_fields():
+            # Préparation des parametres
+            nom = self.txt_prenom.text() + " " + self.txt_nom.text()
+            phone = self.txt_telephone1.text()
 
-        # Préparation des parametres
-        nom = self.txt_nom.text()
-        phone = self.txt_telephone1.text()
-
-        # Ouverture de la fenetre d'inscription
-        inscription_membre = InscriptionMembre(nom, phone)
-        inscription_membre.accepted.connect(self.membre_inscrit)
-        inscription_membre.rejected.connect(self.inscription_annulee)
-        inscription_membre.exec()
+            # Ouverture de la fenetre d'inscription
+            inscription_membre = InscriptionMembre(nom, phone, self.participante_id, self.database)
+            inscription_membre.accepted.connect(self.membre_inscrit)
+            inscription_membre.rejected.connect(self.inscription_annulee)
+            inscription_membre.exec()
+        else:
+            self.inscription_annulee()
 
     def membre_inscrit(self):
         """
@@ -257,6 +263,7 @@ class NouvelleParticipante(Participante):
         self.ded_renouvellement.setHidden(True)
 
     def process_data(self, prepared_data):
+        # Insert data
         query = QSqlQuery(self.database)
         query.prepare("INSERT INTO participante (appellation, prenom, nom, adresse_1, adresse_2, ville, province, code_postal," \
               "courriel, telephone_1, poste_telephone_1, telephone_2, poste_telephone_2, date_naissance, " \
@@ -282,7 +289,14 @@ class NouvelleParticipante(Participante):
         query.bindValue(':consentementphoto', prepared_data['Consentement photo'])
         query.exec_()
 
-        self.accept()
+        if self.sender() == self.btn_add:
+            self.accept()
+        else:
+            # Fetch inserted participante_id
+            query = QSqlQuery()
+            query.exec_("SELECT last_insert_rowid()")
+            query.first()
+            self.participante_id = query.value(0)
 
 
 class ModifierParticipante(Participante):
