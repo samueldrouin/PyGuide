@@ -216,9 +216,9 @@ class CentralWidgetParticipantes(CentralWidget):
         self.database = database
 
         # Table widget parameters
-        self.table_widget.setColumnCount(5)
+        self.table_widget.setColumnCount(6)
         self.table_widget.setColumnHidden(0, True)
-        headers = ["Index", "Nom", "Ville", "Courriel", "Telephone"]
+        headers = ["Index", "Nom", "Ville", "Courriel", "Telephone", "Numéro de membre"]
         self.table_widget.setHorizontalHeaderLabels(headers)
         self.table_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table_widget.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -267,9 +267,12 @@ class CentralWidgetParticipantes(CentralWidget):
         # Fetch data from database
         QSqlDatabase.database()
         query = QSqlQuery()
-        query.exec("SELECT id_participante, prenom, nom, ville, courriel, telephone_1, poste_telephone_1 "
-                   "FROM participante")
-
+        query.exec("SELECT participante.id_participante, participante.prenom, participante.nom, "
+                   "participante.ville, participante.courriel, participante.telephone_1, "
+                   "participante.poste_telephone_1, membre.numero_membre "
+                   "FROM participante INNER JOIN membre "
+                   "ON membre.id_participante = participante.id_participante")
+        
         # Show data in table widget
         self.table_widget.setRowCount(0)
 
@@ -292,6 +295,7 @@ class CentralWidgetParticipantes(CentralWidget):
             if query.value(6) is None:
                 phone_number = phone_number + " p. " + str(query.value(6))
             self.table_widget.setItem(r, 4, QTableWidgetItem(phone_number))
+            self.table_widget.setItem(r, 5, QTableWidgetItem(str(query.value(7))))
 
         self.table_widget.resizeColumnsToContents()
 
