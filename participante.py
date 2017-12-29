@@ -6,7 +6,7 @@ from PyQt5 import uic
 import os
 
 # Project import
-from inscription_membre import InscriptionMembre
+from inscription_membre import NouvelleInscription, RenouvelerInscription
 from form import Form
 
 
@@ -48,6 +48,7 @@ class Participante(Form):
         self.chk_honoraire.setHidden(True)
         self.lbl_renouvellement.setHidden(True)
         self.ded_renouvellement.setHidden(True)
+        self.btn_renew.setHidden(True)
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
@@ -57,6 +58,7 @@ class Participante(Form):
         self.chk_membre.clicked.connect(self.nouveau_membre)
         self.btn_add.clicked.connect(self.check_fields)
         self.cbx_appelation.currentTextChanged.connect(self.appellation_changed)
+        self.btn_renew.clicked.connect(self.renouveler_status_membre)
 
     def appellation_changed(self, text):
         """
@@ -166,6 +168,20 @@ class Participante(Form):
         """
         pass
 
+    def renouveler_status_membre(self):
+        """
+        Ouvrir la fenetre pour renouveler le status de membre
+        """
+        if self.check_fields():
+            # Préparation des parametres
+            nom = self.txt_prenom.text() + " " + self.txt_nom.text()
+            phone = self.txt_telephone1.text()
+
+            # Ouverture de la fenetre d'inscription
+            inscription_membre = RenouvelerInscription(nom, phone, self.participante_id, self.database)
+            inscription_membre.accepted.connect(self.show_member_informations)
+            inscription_membre.exec()
+
     def nouveau_membre(self):
         """
         Ouvre la fenetre pour inscrire un nouveau membre
@@ -177,7 +193,7 @@ class Participante(Form):
             phone = self.txt_telephone1.text()
 
             # Ouverture de la fenetre d'inscription
-            inscription_membre = InscriptionMembre(nom, phone, self.participante_id, self.database)
+            inscription_membre = NouvelleInscription(nom, phone, self.participante_id, self.database)
             inscription_membre.accepted.connect(self.show_member_informations)
             inscription_membre.rejected.connect(self.inscription_annulee)
             inscription_membre.exec()
@@ -236,6 +252,7 @@ class Participante(Form):
             self.chk_honoraire.setHidden(False)
             self.ded_renouvellement.setHidden(False)
             self.lbl_renouvellement.setHidden(False)
+            self.btn_renew.setHidden(False)
 
             # Ajouter les informations dans les champs
             self.chk_membre.setChecked(True)

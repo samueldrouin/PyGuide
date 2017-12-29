@@ -10,20 +10,14 @@ from form import Form
 
 
 class InscriptionMembre(Form):
-    def __init__(self, nom, phone, id_participante, database):
+    def __init__(self):
         super(InscriptionMembre, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'inscription_membre.ui')
         uic.loadUi(ui, self)
 
         # Instance variable definition
-        self.id_participante = id_participante
-        self.database = database
-
-        # Affichage de l'interface
-        self.txt_nom.setText(nom)
-        self.txt_telephone.setText(phone)
-        self.get_numero_membre()
-        self.ajouter_article_regulier()
+        self.id_participante = None
+        self.database = None
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
@@ -96,6 +90,53 @@ class InscriptionMembre(Form):
         # Afficher le prix total
         self.txt_total.setText('%.2f' % prix)
 
+    def ajouter_article_renouvellement(self):
+        """
+        Ajouter le renouvellement du status à la liste d'article
+        """
+        # Article
+        self.tbl_commande.setItem(0, 0, QTableWidgetItem())
+        month = QDate.currentDate().month()
+        year = QDate().currentDate().year()
+        year = year
+        if month > 9:
+            year = year + 2
+        else:
+            year = year + 1
+        article = "Renouvellement membre " + str(year)
+        self.tbl_commande.setItem(0, 0, QTableWidgetItem(article))
+
+        # Prix
+        prix = 5.00
+        item = QTableWidgetItem('%.2f' % prix)
+        item.setTextAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.tbl_commande.setItem(0, 1, item)
+
+        # Afficher le prix total
+        self.txt_total.setText('%.2f' % prix)
+
+    def inscription(self):
+        """
+        Enregistre le status de membre lorsque l'inscritpion est completee
+        Definie dans les sous classes
+        """
+        pass
+
+
+class NouvelleInscription(InscriptionMembre):
+    def __init__(self, nom, phone, id_participante, database):
+        super(NouvelleInscription, self).__init__()
+
+        # Instance variable definition
+        self.id_participante = id_participante
+        self.database = database
+
+        # Affichage de l'interface
+        self.txt_nom.setText(nom)
+        self.txt_telephone.setText(phone)
+        self.get_numero_membre()
+        self.ajouter_article_regulier()
+
     def get_numero_membre(self):
         """
         Recuperer le numero du nouveau membre
@@ -118,10 +159,12 @@ class InscriptionMembre(Form):
         """
         # Ouvre une transation
         QSqlDatabase.transaction(self.database)
+
         # Active le membre
-        query = QSqlQuery()
-        query.prepare("INSERT INTO membre (actif, id_participante, numero_membre, membre_honoraire, date_renouvellement) "
-                      "VALUES (:actif, :id_participante, :numero_membre, :honoraire, :renouvellement)")
+        query = QSqlQuery(self.database)
+        query.prepare(
+            "INSERT INTO membre (actif, id_participante, numero_membre, membre_honoraire, date_renouvellement) "
+            "VALUES (:actif, :id_participante, :numero_membre, :honoraire, :renouvellement)")
         query.bindValue(':actif', True)
         query.bindValue(':id_participante', int(self.id_participante))
         query.bindValue(':numero_membre', self.txt_numero_membre.text())
@@ -138,6 +181,7 @@ class InscriptionMembre(Form):
             # Determiner la date de renouvellement
             month = QDate.currentDate().month()
             year = QDate().currentDate().year()
+            year = year
             if month > 9:
                 year = year + 1
             date = QDate(year, 9, 1).toJulianDay()
@@ -145,7 +189,7 @@ class InscriptionMembre(Form):
         query.exec_()
 
         # Enregistre la commande
-        query = QSqlQuery()
+        query = QSqlQuery(self.database)
         query.prepare("INSERT INTO inscription_membre (id_membre, date, article, prix, numero_recu) "
                       "VALUES ((SELECT last_insert_rowid()), (SELECT date('now')), :article, :prix, "
                       ":numero_recu)")
@@ -153,6 +197,92 @@ class InscriptionMembre(Form):
         query.bindValue(':prix', self.tbl_commande.item(0, 1).text())
         query.bindValue(':numero_recu', self.check_string(self.txt_recu.text()))
         query.exec_()
+        #Termine la transation
+        QSqlDatabase.commit(self.database)
+
+        self.accept()
+
+
+class RenouvelerInscription(InscriptionMembre):
+    def __init__(self, nom, phone, id_participante, database):
+        super(RenouvelerInscription, self).__init__()
+
+        # Instance variable definition
+        self.id_participante = id_participante
+        self.database = database
+
+        # Modifier les labels
+        self.lbl_titre.setText("Renouveler une inscription")
+        self.btn_inscription.setText("Renouveler")
+
+        # Affichage de l'interface
+        self.txt_nom.setText(nom)
+        self.txt_telephone.setText(phone)
+        self.ajouter_article_renouvellement()
+
+        # Determiner le numero de membre
+        self.get_numero_membre()
+
+    def get_numero_membre(self):
+        """
+        Determiner le numero de membre
+        """
+        query = QSqlQuery(self.database)
+        query.prepare("SELECT numero_membre FROM membre WHERE id_participante = :id_participante")
+        query.bindValue(':id_participante', self.id_participante)
+        query.exec_()
+
+        query.first()
+        self.txt_numero_membre.setText(str(query.value(0)))
+
+    def inscription(self):
+        """
+        Enregistre le status de membre lorsque l'inscription est completee
+        """
+        # Ouvre une transation
+        QSqlDatabase.transaction(self.database)
+        # Active le membre
+        query = QSqlQuery(self.database)
+        query.prepare("UPDATE membre "
+                      "SET membre_honoraire = :honoraire, date_renouvellement = :renouvellement "
+                      "WHERE id_participante = :id_participante")
+
+        # Determiner si le membre est honoraire
+        if self.chk_honoraire.isChecked():
+            query.bindValue(':honoraire', True)
+
+            # Aucune date de renouvellement
+            query.bindValue(':renouvellement', 0)
+        # Si le membre n'est pas honoraire
+        else:
+            query.bindValue(':honoraire', False)
+
+            # Determiner la date de renouvellement
+            month = QDate.currentDate().month()
+            year = QDate().currentDate().year()
+            if month > 9:
+                year = year + 2
+            else:
+                year = year + 1
+            date = QDate(year, 9, 1).toJulianDay()
+            query.bindValue(':renouvellement', date)
+
+        query.bindValue(':id_participante', int(self.id_participante))
+
+        query.exec_()
+
+        # Enregistre la commande
+        query = QSqlQuery(self.database)
+        query.prepare("INSERT INTO inscription_membre (id_membre, date, article, prix, numero_recu) "
+                      "VALUES ((SELECT id_membre FROM membre WHERE id_participante = :id_participante), "
+                      "(SELECT date('now')), :article, :prix, :numero_recu)")
+        query.bindValue(':id_participante', self.id_participante)
+        query.bindValue(':article', self.tbl_commande.item(0, 0).text())
+        query.bindValue(':prix', self.tbl_commande.item(0, 1).text())
+        query.bindValue(':numero_recu', self.check_string(self.txt_recu.text()))
+        query.exec_()
+        print(query.lastError().text())
+        print(query.executedQuery())
         #Termine la transation
         QSqlDatabase.commit(self.database)
 
