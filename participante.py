@@ -1,7 +1,7 @@
 # Python import
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QDate
-from PyQt5.QtSql import QSqlDatabase, QSqlQuery
+from PyQt5.QtSql import QSqlQuery
 from PyQt5 import uic
 import os
 
@@ -15,6 +15,8 @@ class Participante(Form):
         super(Participante, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'participante.ui')
         uic.loadUi(ui, self)
+
+        # Instance variable definition
         self.participante_id = None
         self.database = None
 
@@ -35,10 +37,17 @@ class Participante(Form):
         # Completer
         self.txt_ville.setCompleter(self.ville_completer())
 
-        # Default date values
-        # Annee de naissance
+        # Valeur par default de l'annee de naissance
         current_date = QDate.currentDate()
         self.ded_date_naissance.setDate(current_date)
+
+        # Cacher les informations du membre
+        self.chk_actif.setHidden(True)
+        self.lbl_numero_membre.setHidden(True)
+        self.txt_numero_membre.setHidden(True)
+        self.chk_honoraire.setHidden(True)
+        self.lbl_renouvellement.setHidden(True)
+        self.ded_renouvellement.setHidden(True)
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
@@ -47,16 +56,28 @@ class Participante(Form):
         self.txt_telephone2.cursorPositionChanged.connect(self.phone_number_parsing)
         self.chk_membre.clicked.connect(self.nouveau_membre)
         self.btn_add.clicked.connect(self.check_fields)
+        self.cbx_appelation.currentTextChanged.connect(self.appellation_changed)
+
+    def appellation_changed(self, text):
+        """
+        Change le nom selon l'appellation choisie
+        """
+        if text == "Mme." or text == "M." or text == "Autre" or text == "Employée":
+            self.txt_nom.show()
+            self.txt_prenom.setPlaceholderText("Prénom")
+        else:
+            self.txt_nom.hide()
+            self.txt_prenom.setPlaceholderText(text)
 
     def check_fields(self):
         """
-        Check if every required fields are filled
-        :return: True is data is valid
+        Verifier si tout les champs requis sont completes
+        :return: True si les donnees sont valides
         """
         if self.txt_prenom.text() != "":
             if len(self.txt_telephone1.text()) == 12:
-                self.prepare_data()
-                return True
+                    self.prepare_data()
+                    return True
             else:
                 msgbox = QMessageBox()
                 msgbox.setWindowTitle("Information manquante")
@@ -167,21 +188,6 @@ class Participante(Form):
         """
         Indique que le membre est inscrit
         """
-        self.chk_membre.setChecked(True)
-        self.chk_membre.setEnabled(False)
-
-        # Activation du membre
-        self.chk_actif.setChecked(True)
-
-        # Indiquer la date de renouvellement par defaut
-        if QDate.currentDate().month() > 9:
-            annee_renouvellement = QDate.currentDate().year()+1
-        else:
-            annee_renouvellement = QDate.currentDate().year()
-
-        date_renouvellement = QDate(annee_renouvellement,9,1)
-        self.ded_renouvellement.setDate(date_renouvellement)
-
         # Afficher les informations du membre
         self.chk_actif.setHidden(False)
         self.lbl_numero_membre.setHidden(False)
@@ -236,14 +242,6 @@ class NouvelleParticipante(Participante):
         # Titre de la fenetre
         self.setWindowTitle("Nouvelle participante")
         self.lbl_title.setText("Nouvelle participante")
-
-        # Cacher les informations du membre
-        self.chk_actif.setHidden(True)
-        self.lbl_numero_membre.setHidden(True)
-        self.txt_numero_membre.setHidden(True)
-        self.chk_honoraire.setHidden(True)
-        self.lbl_renouvellement.setHidden(True)
-        self.ded_renouvellement.setHidden(True)
 
     def process_data(self, prepared_data):
         # Insert data
@@ -307,7 +305,7 @@ class ModifierParticipante(Participante):
 
         # Get informations from database
         query = QSqlQuery(self.database)
-        query.prepare("SELECT appellation, prenom, nom, adresse_1, adresse_2, ville, province, code_postal," \
+        query.prepare   ("SELECT appellation, prenom, nom, adresse_1, adresse_2, ville, province, code_postal," \
               "courriel, telephone_1, poste_telephone_1, telephone_2, poste_telephone_2, date_naissance, " \
               "personne_nourrie, consentement_photo FROM participante WHERE id_participante = :idparticipante")
         query.bindValue(':idparticipante', int(self.participante_id))
