@@ -97,10 +97,20 @@ class InscriptionMembre(Form):
         self.txt_total.setText('%.2f' % prix)
 
     def get_numero_membre(self):
+        """
+        Recuperer le numero du nouveau membre
+        """
         query = QSqlQuery()
         query.exec_("SELECT MAX(numero_membre) FROM membre")
+
         query.first()
-        self.txt_numero_membre.setText(str(query.value(0)+1))
+
+        # S'il existe deja des membres dans la base de donnees
+        if query.value(0) != "":
+            self.txt_numero_membre.setText(str(query.value(0)+1))
+        # Si le membre est le premier
+        else:
+            self.txt_numero_membre.setText("1")
 
     def inscription(self):
         """

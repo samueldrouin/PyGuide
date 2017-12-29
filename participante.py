@@ -196,7 +196,6 @@ class Participante(Form):
         self.lbl_renouvellement.setHidden(False)
         self.ded_renouvellement.setHidden(False)
 
-
     def inscription_annulee(self):
         """
         Active le status de membre
@@ -231,6 +230,27 @@ class Participante(Form):
                 phone_number = phone_number[:7] + "-" + phone_number[7:]
                 self.sender().setText(phone_number)
 
+    def show_member_informations(self):
+        """
+        Afficher les informations sur le membre
+        """
+        query = QSqlQuery(self.database)
+        query.prepare("SELECT actif, numero_membre, membre_honoraire, date_renouvellement "
+                      "FROM membre WHERE id_participante = :id_participante")
+        query.bindValue(':idparticipante', int(self.participante_id))
+        query.exec_()
+
+        if query.first() and int(query.value(0)):
+            self.chk_actif.setHidden(False)
+            self.txt_numero_membre.setHidden(False)
+            self.chk_honoraire.setHidden(False)
+            self.ded_renouvellement.setHidden(False)
+
+            self.chk_actif.setChecked(True)
+            self.txt_numero_membre.setText(int(query.value(1)))
+            self.chk_membre_honoraire.setChecked(int(query.value(2)))
+            date = QDate.fromJulianDay(int(query.value(3)))
+            self.ded_renouvellement.setDate(date)
 
 class NouvelleParticipante(Participante):
     def __init__(self, database):
@@ -345,6 +365,8 @@ class ModifierParticipante(Participante):
             self.cbx_photo.setChecked(True)
         else:
             self.cbx_photo.setChecked(False)
+
+        self.show_member_informations()
 
     def process_data(self, prepared_data):
         query = QSqlQuery(self.database)
