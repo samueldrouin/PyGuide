@@ -27,8 +27,18 @@ class InscriptionMembre(Form):
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
-        self.btn_inscription.clicked.connect(self.inscription)
+        self.btn_inscription.clicked.connect(self.check_fields)
         self.chk_honoraire.toggled.connect(self.membre_honoraire)
+
+    def check_fields(self):
+        """
+        Verifie que les champs requis sont remplis avant d'enregistrer l'inscription
+        """
+        if self.txt_recu.text() != "":
+            self.inscription()
+        # Avertissement si un champ est manquant
+        else:
+            self.message_box_missing_information("Le numéro de reçu doit être indiqué.")
 
     def membre_honoraire(self, checked):
         """
@@ -121,10 +131,10 @@ class InscriptionMembre(Form):
         # Active le membre
         query = QSqlQuery()
         query.prepare("INSERT INTO membre (actif, id_participante, numero_membre, membre_honoraire, date_renouvellement) "
-                      "VALUES (:actif, :id_participante, (SELECT MAX(numero_membre) FROM membre)+1, "
-                      ":honoraire, :renouvellement)")
+                      "VALUES (:actif, :id_participante, :numero_membre, :honoraire, :renouvellement)")
         query.bindValue(':actif', True)
         query.bindValue(':id_participante', int(self.id_participante))
+        query.bindValue(':numero_membre', self.txt_numero_membre.text())
 
         # Determiner si le membre est honoraire
         if self.chk_honoraire.isChecked():
@@ -147,8 +157,7 @@ class InscriptionMembre(Form):
         # Enregistre la commande
         query = QSqlQuery()
         query.prepare("INSERT INTO inscription_membre (id_membre, date, article, prix) "
-                      "VALUES ((SELECT numero_membre FROM membre WHERE id_membre = last_insert_rowid()), "
-                      "(SELECT date('now')), :article, :prix)")
+                      "VALUES ((SELECT last_insert_rowid()), (SELECT date('now')), :article, :prix)")
         query.bindValue(':article', self.tbl_commande.item(0, 0).text())
         query.bindValue(':prix', self.tbl_commande.item(0, 1).text())
         query.exec_()
