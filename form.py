@@ -1,5 +1,5 @@
 # Python import
-from PyQt5.QtWidgets import QDialog, QCompleter
+from PyQt5.QtWidgets import QDialog, QCompleter, QMessageBox
 from PyQt5.QtCore import QRegExp, Qt
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5 import uic
@@ -136,3 +136,19 @@ class Form(QDialog):
         if not s:
             s = ''
         return s
+
+    @staticmethod
+    def message_box_missing_information(text):
+        """
+        MessageBox lorsqu'une information est manquante dans un formulaire
+        :param text: Informative text
+        :return:
+        """
+        msgbox = QMessageBox()
+        msgbox.setWindowTitle("Information manquante")
+        msgbox.setText("Information manquante")
+        msgbox.setInformativeText(text)
+        msgbox.setIcon(QMessageBox.Warning)
+        msgbox.setStandardButtons(QMessageBox.Ok)
+        msgbox.setDefaultButton(QMessageBox.Ok)
+        msgbox.exec()

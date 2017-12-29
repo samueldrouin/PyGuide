@@ -27,18 +27,8 @@ class InscriptionMembre(Form):
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
-        self.btn_inscription.clicked.connect(self.check_fields)
+        self.btn_inscription.clicked.connect(self.inscription)
         self.chk_honoraire.toggled.connect(self.membre_honoraire)
-
-    def check_fields(self):
-        """
-        Verifie que les champs requis sont remplis avant d'enregistrer l'inscription
-        """
-        if self.txt_recu.text() != "":
-            self.inscription()
-        # Avertissement si un champ est manquant
-        else:
-            self.message_box_missing_information("Le numéro de reçu doit être indiqué.")
 
     def membre_honoraire(self, checked):
         """
@@ -156,10 +146,12 @@ class InscriptionMembre(Form):
 
         # Enregistre la commande
         query = QSqlQuery()
-        query.prepare("INSERT INTO inscription_membre (id_membre, date, article, prix) "
-                      "VALUES ((SELECT last_insert_rowid()), (SELECT date('now')), :article, :prix)")
+        query.prepare("INSERT INTO inscription_membre (id_membre, date, article, prix, numero_recu) "
+                      "VALUES ((SELECT last_insert_rowid()), (SELECT date('now')), :article, :prix, "
+                      ":numero_recu)")
         query.bindValue(':article', self.tbl_commande.item(0, 0).text())
         query.bindValue(':prix', self.tbl_commande.item(0, 1).text())
+        query.bindValue(':numero_recu', self.check_string(self.txt_recu.text()))
         query.exec_()
         #Termine la transation
         QSqlDatabase.commit(self.database)

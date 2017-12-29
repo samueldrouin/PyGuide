@@ -41,7 +41,7 @@ class Participante(Form):
         current_date = QDate.currentDate()
         self.ded_date_naissance.setDate(current_date)
 
-        # Cacher les informations du membre
+        # Cacher les informations du membre par default
         self.chk_actif.setHidden(True)
         self.lbl_numero_membre.setHidden(True)
         self.txt_numero_membre.setHidden(True)
@@ -178,23 +178,11 @@ class Participante(Form):
 
             # Ouverture de la fenetre d'inscription
             inscription_membre = InscriptionMembre(nom, phone, self.participante_id, self.database)
-            inscription_membre.accepted.connect(self.membre_inscrit)
+            inscription_membre.accepted.connect(self.show_member_informations)
             inscription_membre.rejected.connect(self.inscription_annulee)
             inscription_membre.exec()
         else:
             self.inscription_annulee()
-
-    def membre_inscrit(self):
-        """
-        Indique que le membre est inscrit
-        """
-        # Afficher les informations du membre
-        self.chk_actif.setHidden(False)
-        self.lbl_numero_membre.setHidden(False)
-        self.txt_numero_membre.setHidden(False)
-        self.chk_honoraire.setHidden(False)
-        self.lbl_renouvellement.setHidden(False)
-        self.ded_renouvellement.setHidden(False)
 
     def inscription_annulee(self):
         """
@@ -237,20 +225,32 @@ class Participante(Form):
         query = QSqlQuery(self.database)
         query.prepare("SELECT actif, numero_membre, membre_honoraire, date_renouvellement "
                       "FROM membre WHERE id_participante = :id_participante")
-        query.bindValue(':idparticipante', int(self.participante_id))
+        query.bindValue(':id_participante', int(self.participante_id))
         query.exec_()
 
         if query.first() and int(query.value(0)):
+            # Afficher les champs du formulaire
             self.chk_actif.setHidden(False)
             self.txt_numero_membre.setHidden(False)
+            self.lbl_numero_membre.setHidden(False)
             self.chk_honoraire.setHidden(False)
             self.ded_renouvellement.setHidden(False)
+            self.lbl_renouvellement.setHidden(False)
 
+            # Ajouter les informations dans les champs
+            self.chk_membre.setChecked(True)
+            self.chk_membre.setEnabled(False)
             self.chk_actif.setChecked(True)
-            self.txt_numero_membre.setText(int(query.value(1)))
-            self.chk_membre_honoraire.setChecked(int(query.value(2)))
+            self.txt_numero_membre.setText(str(query.value(1)))
+            self.chk_honoraire.setChecked(int(query.value(2)))
             date = QDate.fromJulianDay(int(query.value(3)))
             self.ded_renouvellement.setDate(date)
+
+            # Ne pas afficher la date de renouvellement pour un membre honoraire
+            if self.chk_honoraire.isChecked():
+                self.ded_renouvellement.setHidden(True)
+                self.lbl_renouvellement.setHidden(True)
+
 
 class NouvelleParticipante(Participante):
     def __init__(self, database):
@@ -317,6 +317,9 @@ class ModifierParticipante(Participante):
 
         # Afficher les informations de la participante
         self.show_participante_informations()
+
+        # Affiche les informations du membre s'il y en a
+        self.show_member_informations()
 
     def show_participante_informations(self):
         """
