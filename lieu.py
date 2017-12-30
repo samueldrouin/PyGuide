@@ -1,5 +1,5 @@
 # Python import
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtSql import QSqlQuery
 from PyQt5 import uic
 import os
 
@@ -27,6 +27,37 @@ class Lieu(Form):
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
+        self.btn_add.clicked.connect(self.check_fields)
+        self.txt_code_postal.cursorPositionChanged.connect(self.zip_code_parsing)
+        
+    def zip_code_parsing(self, old, new):
+        """
+        Parsing zip code
+        :param old: Old cursor position
+        :param new: New cursor position
+        """
+        if new == 4 and old == 3:
+            zip_code = self.txt_code_postal.text()
+            if zip_code[3] != " ":
+                zip_code = zip_code[:3] + " " + zip_code[3:]
+                self.txt_code_postal.setText(zip_code)
+
+    def check_fields(self):
+        """
+        Vérifie que tout les champs sont remplis
+        :return: True s'ils sont bien remplis
+        """
+        if self.txt_nom.text() != "":
+            self.process()
+        else:
+            self.message_box_missing_information("Le nom du lieu doit être remplis")
+
+    def process(self):
+        """
+        Traitement des donnees dans la base de donnee
+        Implanter dans les sous classes
+        """
+        pass
 
 
 class NouveauLieu(Lieu):
@@ -40,6 +71,22 @@ class NouveauLieu(Lieu):
         self.setWindowTitle("Nouveau lieu")
         self.lbl_titre.setText("Nouveau lieu")
 
+    def process(self):
+        """
+        Traitement des donnees dans la base de donnee
+        """
+        query = QSqlQuery(self.database)
+        query.prepare("INSERT INTO lieu (nom, adresse_1, adresse_2, ville, province, code_postal) "
+                      "VALUES (:nom, :adresse_1, :adresse_2, :ville, :province, :code_postal)")
+        query.bindValue(':nom', self.check_string(self.txt_nom.text()))
+        query.bindValue(':adresse_1', self.check_string(self.txt_adresse1.text()))
+        query.bindValue(':adresse_2', self.check_string(self.txt_adresse2.text()))
+        query.bindValue(':ville', self.check_string(self.txt_ville.text()))
+        query.bindValue(':province', self.check_string(self.cbx_province.currentText()))
+        query.bindValue(':code_postal', self.check_string(self.txt_code_postal.text()))
+        query.exec_()
+        self.accept()
+
 
 class ModifierLieu(Lieu):
     def __init__(self, database, id_lieu):
@@ -51,3 +98,9 @@ class ModifierLieu(Lieu):
         # Interface graphique
         self.setWindowTitle("Modifier un lieu")
         self.lbl_titre.setText("Modifier un lieu")
+
+    def process(self):
+        """
+        Traitement des donnees dans la base de donnee
+        """
+        pass
