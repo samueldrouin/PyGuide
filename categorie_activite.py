@@ -26,6 +26,7 @@ class CategorieActivite(Form):
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
+        self.btn_add.clicked.connect(self.check_fields)
 
     def afficher_responsable(self):
         """
@@ -66,6 +67,25 @@ class CategorieActivite(Form):
         while query.next():
             self.cbx_lieu.addItem(str(query.value(0)))
 
+    def check_fields(self):
+        """
+        Vérifie que tout les champs sont remplis
+        :return: True s'ils sont bien remplis
+        """
+        if self.txt_nom.text() != "":
+            self.process()
+            return True
+        else:
+            self.message_box_missing_information("Le nom de la catégorie d'activité doit être remplis")
+        return False
+
+    def process(self):
+        """
+        Traitement des donnees dans la base de donnee
+        Implanter dans les sous classes
+        """
+        pass
+
 
 class NouvelleCategorieActivite(CategorieActivite):
     def __init__(self, database):
@@ -74,6 +94,27 @@ class NouvelleCategorieActivite(CategorieActivite):
         # Interface graphique
         self.setWindowTitle("Nouvelle catégorie d'activité")
         self.lbl_titre.setText("Nouvelle catégorie d'activité")
+
+    def process(self):
+        """
+        Traitement des donnees dans la base de donnee
+        """
+        query = QSqlQuery(self.database)
+        query.prepare("INSERT INTO categorie_activite (nom, prix_membre, prix_non_membre, participante_minimum, "
+                      "participante_maximum, id_responsable, id_type_activite, id_lieu) "
+                      "VALUES (:nom, :prix_membre, :prix_non_membre, :participante_minimum, :participante_maximum, "
+                      ":id_responsable, :id_type_activite, :id_lieu)")
+        query.bindValue(':nom', self.check_string(self.txt_nom.text()))
+        query.bindValue(':prix_membre', self.sbx_prix_membre.value())
+        query.bindValue(':prix_non_membre', self.sbx_prix_non_membre.value())
+        query.bindValue(':participante_minimum', self.sbx_participante_minimum.value())
+        query.bindValue(':participante_maximum', self.sbx_participantes_maximum.value())
+        query.bindValue(':id_responsable', self.cbx_responsable.currentIndex()+1)
+        query.bindValue(':id_type_activite', self.cbx_type_activite.currentIndex()+1)
+        query.bindValue(':id_lieu', self.cbx_lieu.currentIndex()+1)
+        query.exec_()
+
+        self.accept()
 
 
 class ModifierCategorieActivite(CategorieActivite):

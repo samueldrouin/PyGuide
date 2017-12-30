@@ -338,7 +338,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="btn_add">
        <property name="text">
         <string>Ajouter</string>
        </property>
@@ -373,7 +373,7 @@
   <tabstop>sbx_prix_non_membre</tabstop>
   <tabstop>sbx_participante_minimum</tabstop>
   <tabstop>sbx_participantes_maximum</tabstop>
-  <tabstop>pushButton</tabstop>
+  <tabstop>btn_add</tabstop>
   <tabstop>btn_cancel</tabstop>
  </tabstops>
  <resources/>
