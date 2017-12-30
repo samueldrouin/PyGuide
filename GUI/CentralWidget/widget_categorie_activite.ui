@@ -27,7 +27,7 @@
       <widget class="QComboBox" name="cbx_search">
        <item>
         <property name="text">
-         <string>Nom de la catégorie d'activité</string>
+         <string>Nom de la catégorie</string>
         </property>
        </item>
        <item>
@@ -65,7 +65,7 @@
      <item>
       <widget class="QPushButton" name="btn_add">
        <property name="text">
-        <string>Nouvelle catégorie d'activité</string>
+        <string>Nouvelle catégorie</string>
        </property>
       </widget>
      </item>
@@ -84,7 +84,7 @@
       <widget class="QComboBox" name="cbx_sort">
        <item>
         <property name="text">
-         <string>Nom de la catégorie d'activité</string>
+         <string>Nom de la catégorie</string>
         </property>
        </item>
        <item>
