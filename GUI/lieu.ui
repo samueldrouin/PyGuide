@@ -261,6 +261,12 @@
        <property name="text">
         <string>Ajouter</string>
        </property>
+       <property name="autoDefault">
+        <bool>true</bool>
+       </property>
+       <property name="default">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
     </layout>
@@ -280,6 +286,16 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_nom</tabstop>
+  <tabstop>txt_adresse1</tabstop>
+  <tabstop>txt_adresse2</tabstop>
+  <tabstop>txt_ville</tabstop>
+  <tabstop>cbx_province</tabstop>
+  <tabstop>txt_code_postal</tabstop>
+  <tabstop>btn_add</tabstop>
+  <tabstop>btn_cancel</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
