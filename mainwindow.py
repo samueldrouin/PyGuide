@@ -286,11 +286,11 @@ class CentralWidgetParticipantes(CentralWidget):
             if self.top_widget.cbx_search.currentText() == "Prénom":
                 sql = sql + "WHERE participante.prenom LIKE '%{}%' ".format(search)
             elif self.top_widget.cbx_search.currentText() == "Nom":
-                sql = sql + "WHERE participante.nom LIKE %{}% ".format(search)
+                sql = sql + "WHERE participante.nom LIKE '%{}%' ".format(search)
             elif self.top_widget.cbx_search.currentText() == "Ville":
-                sql = sql + "WHERE participante.ville LIKE %{}% ".format(search)
+                sql = sql + "WHERE participante.ville LIKE '%{}%' ".format(search)
             else:
-                sql = sql + "WHERE participante.telephone_1 LIKE %{}% ".format(search)
+                sql = sql + "WHERE participante.telephone_1 LIKE '%{}%' ".format(search)
 
         # Ajouter les options de tri
         if self.top_widget.cbx_sort.currentText() == "Prénom":
@@ -443,7 +443,7 @@ class CentralWidgetLieux(CentralWidget):
             if self.top_widget.cbx_search.currentText() == "Nom du lieu":
                 sql = sql + "WHERE nom LIKE '%{}%' ".format(search)
             else:
-                sql = sql + "WHERE ville LIKE %{}% ".format(search)
+                sql = sql + "WHERE ville LIKE '%{}%' ".format(search)
 
         # Ajouter les options de tri
         if self.top_widget.cbx_sort.currentText() == "Nom du lieu":
