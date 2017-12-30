@@ -332,12 +332,18 @@
        <property name="text">
         <string>Annuler</string>
        </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton">
        <property name="text">
         <string>Ajouter</string>
+       </property>
+       <property name="default">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -358,6 +364,18 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_nom</tabstop>
+  <tabstop>cbx_responsable</tabstop>
+  <tabstop>cbx_type_activite</tabstop>
+  <tabstop>cbx_lieu</tabstop>
+  <tabstop>sbx_prix_membre</tabstop>
+  <tabstop>sbx_prix_non_membre</tabstop>
+  <tabstop>sbx_participante_minimum</tabstop>
+  <tabstop>sbx_participantes_maximum</tabstop>
+  <tabstop>pushButton</tabstop>
+  <tabstop>btn_cancel</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
