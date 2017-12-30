@@ -243,6 +243,7 @@ class CentralWidgetParticipantes(CentralWidget):
         Update search placeholder text when combo box item is changed
         :param text:
         """
+        self.top_widget.txt_search.clear()
         self.top_widget.txt_search.setPlaceholderText(text)
 
     def edit_participante(self, index):
@@ -409,6 +410,7 @@ class CentralWidgetLieux(CentralWidget):
         Update search placeholder text when combo box item is changed
         :param text:
         """
+        self.top_widget.txt_search.clear()
         self.top_widget.txt_search.setPlaceholderText(text)
 
     def nouveau_lieu(self):
