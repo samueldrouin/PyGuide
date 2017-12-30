@@ -72,10 +72,15 @@ class NouvelleCategorieActivite(CategorieActivite):
         super(NouvelleCategorieActivite, self).__init__(database)
 
         # Interface graphique
-        self.setWindowTitle("Nouveau lieu")
-        self.lbl_titre.setText("Nouveau lieu")
+        self.setWindowTitle("Nouvelle catégorie d'activité")
+        self.lbl_titre.setText("Nouvelle catégorie d'activité")
 
 
 class ModifierCategorieActivite(CategorieActivite):
     def __init__(self, database):
         super(ModifierCategorieActivite, self).__init__(database)
+
+        # Interface graphique
+        self.setWindowTitle("Modifier une catégorie d'activité")
+        self.lbl_titre.setText("Modifier une catégorie d'activité")
+        self.btn_add.setText("Modifier")
