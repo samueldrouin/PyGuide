@@ -11,7 +11,7 @@ import pathlib
 
 # Projet import
 from participante import NouvelleParticipante, ModifierParticipante
-from lieu import Lieu
+from lieu import NouveauLieu, ModifierLieu
 from activite import Activite
 from categorie_activite import NouvelleCategorieActivite, ModifierCategorieActivite
 from a_propos import APropos
@@ -242,7 +242,6 @@ class CentralWidgetParticipantes(CentralWidget):
         """
         Update search placeholder text when combo box item is changed
         :param text:
-        :return:
         """
         self.top_widget.txt_search.setPlaceholderText(text)
 
@@ -368,6 +367,7 @@ class CentralWidgetActivite(CentralWidget):
 class CentralWidgetLieux(CentralWidget):
     def __init__(self, database):
         super(CentralWidgetLieux, self).__init__()
+        # GUI setup
         self.top_widget = QWidget()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_lieux.ui')
         uic.loadUi(ui, self.top_widget)
@@ -376,20 +376,61 @@ class CentralWidgetLieux(CentralWidget):
         self.table_widget = QTableWidget()
         self.layout.addWidget(self.table_widget)
 
+        # Instance variable definition
+        self.database = database
+
         # Slots
         self.top_widget.btn_add.clicked.connect(self.nouveau_lieu)
 
-        # Instance variable definition
-        self.database = database
+        # Table widget parameters
+        self.table_widget.setColumnCount(5)
+        self.table_widget.setColumnHidden(0, True)
+        headers = ["Index", "Nom", "Adresse", "Ville", "Code Postal"]
+        self.table_widget.setHorizontalHeaderLabels(headers)
+        self.table_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.table_widget.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.table_widget.setAlternatingRowColors(True)
+        self.table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
+        # Slots
+        self.top_widget.btn_add.clicked.connect(self.nouveau_lieu)
+        self.table_widget.clicked.connect(self.modifier_lieu)
+        self.top_widget.cbx_search.currentTextChanged.connect(self.update_search_placeholder)
+        self.top_widget.txt_search.textEdited.connect(self.update_list)
+        self.top_widget.cbx_sort.currentIndexChanged.connect(self.update_list)
+        self.top_widget.chk_desc.toggled.connect(self.update_list)
+
+        # Update GUI elements
+        self.update_list()
+        self.update_search_placeholder(self.top_widget.cbx_search.currentText())
+
+    def update_search_placeholder(self, text):
+        """
+        Update search placeholder text when combo box item is changed
+        :param text:
+        """
+        self.top_widget.txt_search.setPlaceholderText(text)
 
     def nouveau_lieu(self):
         """
         Ouvrir le dialog pour créer un nouveau lieu
-        :return:
         """
-        lieu = Lieu()
-        lieu.setWindowTitle("Nouveau lieu")
+        lieu = NouveauLieu(self.database)
+        lieu.accepted.connect(self.update_list)
         lieu.exec()
+
+    def modifier_lieu(self, index):
+        """
+        Ouvre le dialog pour modifier un lieu
+        :param index: Index de la colonne
+        """
+        id_lieu = self.table_widget.item(index.row(), 0).text()
+        modifier_lieu = ModifierLieu(id_lieu, self.database)
+        modifier_lieu.accepted.connect(self.update_list)
+        modifier_lieu.exec()
+
+    def update_list(self):
+        pass
 
 
 class CentralWidgetCategorieActivite(CentralWidget):
