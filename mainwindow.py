@@ -430,7 +430,48 @@ class CentralWidgetLieux(CentralWidget):
         modifier_lieu.exec()
 
     def update_list(self):
-        pass
+        """
+        Affichage de la liste des lieux
+        """
+        # Fetch data from database
+        query = QSqlQuery(self.database)
+        sql = "SELECT id_lieu, nom, adresse_1, ville, code_postal from lieu "
+
+        # Ajout des options de recherche
+        search = self.top_widget.txt_search.text()
+        if search != "":
+            if self.top_widget.cbx_search.currentText() == "Nom du lieu":
+                sql = sql + "WHERE nom LIKE '%{}%' ".format(search)
+            else:
+                sql = sql + "WHERE ville LIKE %{}% ".format(search)
+
+        # Ajouter les options de tri
+        if self.top_widget.cbx_sort.currentText() == "Nom du lieu":
+            sql = sql + "ORDER BY nom "
+        else:
+            sql = sql + "ORDER BY ville "
+
+        # Order du tri
+        if self.top_widget.chk_desc.isChecked():
+            sql = sql + "DESC "
+        else:
+            sql = sql + "ASC "
+        query.exec_(sql)
+
+        # Show data in table widget
+        self.table_widget.setRowCount(0)
+
+        while query.next():
+            self.table_widget.insertRow(self.table_widget.rowCount())
+            r = self.table_widget.rowCount() - 1
+
+            self.table_widget.setItem(r, 0, QTableWidgetItem(str(query.value(0))))
+            self.table_widget.setItem(r, 1, QTableWidgetItem(str(query.value(1))))
+            self.table_widget.setItem(r, 2, QTableWidgetItem(str(query.value(2))))
+            self.table_widget.setItem(r, 3, QTableWidgetItem(str(query.value(3))))
+            self.table_widget.setItem(r, 4, QTableWidgetItem(str(query.value(4))))
+
+        self.table_widget.resizeColumnsToContents()
 
 
 class CentralWidgetCategorieActivite(CentralWidget):

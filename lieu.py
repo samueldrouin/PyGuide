@@ -29,7 +29,7 @@ class Lieu(Form):
         self.btn_cancel.clicked.connect(self.reject)
         self.btn_add.clicked.connect(self.check_fields)
         self.txt_code_postal.cursorPositionChanged.connect(self.zip_code_parsing)
-        
+
     def zip_code_parsing(self, old, new):
         """
         Parsing zip code
@@ -85,22 +85,61 @@ class NouveauLieu(Lieu):
         query.bindValue(':province', self.check_string(self.cbx_province.currentText()))
         query.bindValue(':code_postal', self.check_string(self.txt_code_postal.text()))
         query.exec_()
+
         self.accept()
 
 
 class ModifierLieu(Lieu):
-    def __init__(self, database, id_lieu):
+    def __init__(self, id_lieu, database):
         super(ModifierLieu, self).__init__()
 
         # Instance variable definition
         self.database = database
+        self.id_lieu = id_lieu
 
         # Interface graphique
         self.setWindowTitle("Modifier un lieu")
         self.lbl_titre.setText("Modifier un lieu")
+        self.btn_add.setText("Modifier")
+        self.show_informations()
+
+    def show_informations(self):
+        """
+        Afficher les informations sur le lieu
+        """
+        # Obtenir les informations de la base de donnees
+        query = QSqlQuery(self.database)
+        query.prepare("SELECT nom, adresse_1, adresse_2, ville, province, code_postal "
+                      "FROM lieu WHERE id_lieu = :id_lieu")
+        query.bindValue(':id_lieu', self.id_lieu)
+        query.exec_()
+
+        # Afficher les informations
+        query.first()
+        self.txt_nom.setText(query.value(0))
+        self.txt_adresse1.setText(query.value(1))
+        self.txt_adresse2.setText(query.value(2))
+        self.txt_ville.setText(query.value(3))
+        self.cbx_province.setCurrentText(query.value(4))
+        self.txt_code_postal.setText(query.value(5))
 
     def process(self):
         """
         Traitement des donnees dans la base de donnee
         """
-        pass
+        query = QSqlQuery(self.database)
+        query.prepare("UPDATE lieu "
+                      "SET nom = :nom, adresse_1 = :adresse_1, adresse_2 = :adresse_2, ville = :ville, "
+                      "province = :province, code_postal = :code_postal "
+                      "WHERE id_lieu = :id_lieu")
+        query.bindValue(':nom', self.check_string(self.txt_nom.text()))
+        query.bindValue(':adresse_1', self.check_string(self.txt_adresse1.text()))
+        query.bindValue(':adresse_2', self.check_string(self.txt_adresse2.text()))
+        query.bindValue(':ville', self.check_string(self.txt_ville.text()))
+        query.bindValue(':province', self.check_string(self.cbx_province.currentText()))
+        query.bindValue(':code_postal', self.check_string(self.txt_code_postal.text()))
+        query.bindValue(':id_lieu', self.id_lieu)
+        query.exec_()
+        print(query.lastError().text())
+
+        self.accept()
