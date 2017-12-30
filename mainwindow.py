@@ -492,8 +492,106 @@ class CentralWidgetCategorieActivite(CentralWidget):
         self.table_widget = QTableWidget()
         self.layout.addWidget(self.table_widget)
 
+        # Table widget parameters
+        self.table_widget.setColumnCount(7)
+        self.table_widget.setColumnHidden(0, True)
+        headers = ["Index", "Nom", "Prix", "Participante", "Responsable", "Type d'activité", "Lieu"]
+        self.table_widget.setHorizontalHeaderLabels(headers)
+        self.table_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.table_widget.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.table_widget.setAlternatingRowColors(True)
+        self.table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
         # Slots
         self.top_widget.btn_add.clicked.connect(self.nouvelle_categorie_activite)
+        self.table_widget.clicked.connect(self.modifier_categorie_activite)
+        self.top_widget.cbx_search.currentTextChanged.connect(self.update_search_placeholder)
+        self.top_widget.txt_search.textEdited.connect(self.update_list)
+        self.top_widget.cbx_sort.currentIndexChanged.connect(self.update_list)
+        self.top_widget.chk_desc.toggled.connect(self.update_list)
+
+        # Update GUI elements
+        self.update_list()
+        self.update_search_placeholder(self.top_widget.cbx_search.currentText())
+
+    def update_list(self):
+        """
+        Affichage de la liste des categories d'activite
+        """
+        query = QSqlQuery(self.database)
+
+        sql = "SELECT categorie_activite.id_categorie_activite, categorie_activite.nom, categorie_activite.prix_membre, " \
+              "categorie_activite.prix_non_membre, " \
+              "categorie_activite.participante_minimum, categorie_activite.participante_maximum, " \
+              "responsable.prenom, responsable.nom, lieu.nom, type_activite.nom " \
+              "FROM categorie_activite " \
+              "LEFT JOIN responsable ON categorie_activite.id_responsable = responsable.id_responsable " \
+              "LEFT JOIN lieu ON categorie_activite.id_lieu = lieu.id_lieu " \
+              "LEFT JOIN type_activite  ON categorie_activite.id_type_activite = type_activite.id_type_activite "
+        query.exec_(sql)
+
+        # Ajout des options de recherche
+        search = self.top_widget.txt_search.text()
+        if search != "":
+            if self.top_widget.cbx_search.currentText() == "Nom de la catégorie":
+                sql = sql + "WHERE categorie_activite.nom LIKE '%{}%' ".format(search)
+            elif self.top_widget.cbx_search.currentText() == "Responsable":
+                sql = sql + "WHERE responsable.prenom LIKE '%{0}%' OR responsable.nom LIKE '%{0}%' ".format(search)
+            else:
+                sql = sql + "WHERE lieu.nom LIKE '%{}%' ".format(search)
+
+        # Ajouter les options de tri
+        if self.top_widget.cbx_sort.currentText() == "Nom de la catégorie":
+            sql = sql + "ORDER BY categorie_activite.nom "
+        elif self.top_widget.cbx_sort.currentText() == "Responsable":
+            sql = sql + "ORDER BY responsable.prenom "
+        elif self.top_widget.cbx_sort.currentText() == "Lieu":
+            sql = sql + "ORDER BY lieu.nom "
+        elif self.top_widget.cbx_sort.currentText() == "Prix membre":
+            sql = sql + "ORDER BY categorie_activite.prix_membre "
+        else:
+            sql = sql + "ORDER BY categorie_activite.prix_non_membre "
+
+        # Order du tri
+        if self.top_widget.chk_desc.isChecked():
+            sql = sql + "DESC "
+        else:
+            sql = sql + "ASC "
+        query.exec_(sql)
+
+        # Show data in table widget
+        self.table_widget.setRowCount(0)
+
+        while query.next():
+            self.table_widget.insertRow(self.table_widget.rowCount())
+            r = self.table_widget.rowCount() - 1
+
+            self.table_widget.setItem(r, 0, QTableWidgetItem(str(query.value(0))))
+            self.table_widget.setItem(r, 1, QTableWidgetItem(str(query.value(1))))
+
+            prix = "Prix membre {0:.2f}: ".format(query.value(2)) + "$" + "\n" \
+                   + "Prix non membre : {0:.2f}".format(query.value(3)) + "$"
+            self.table_widget.setItem(r, 2, QTableWidgetItem(prix))
+
+            participante = str(query.value(4)) + " - " + str(query.value(5))
+            self.table_widget.setItem(r, 3, QTableWidgetItem(participante))
+
+            responsable = str(query.value(6)) + " " + str(query.value(7))
+            self.table_widget.setItem(r, 4, QTableWidgetItem(responsable))
+
+            self.table_widget.setItem(r, 5, QTableWidgetItem(str(query.value(8))))
+            self.table_widget.setItem(r, 6, QTableWidgetItem(str(query.value(9))))
+
+        self.table_widget.resizeColumnsToContents()
+        self.table_widget.resizeRowsToContents()
+
+    def update_search_placeholder(self, text):
+        """
+        Update search placeholder text when combo box item is changed
+        :param text:
+        """
+        self.top_widget.txt_search.clear()
+        self.top_widget.txt_search.setPlaceholderText(text)
 
     def nouvelle_categorie_activite(self):
         """
@@ -502,3 +600,6 @@ class CentralWidgetCategorieActivite(CentralWidget):
         """
         categorie_activite = NouvelleCategorieActivite(self.database)
         categorie_activite.exec()
+
+    def modifier_categorie_activite(self):
+        pass
