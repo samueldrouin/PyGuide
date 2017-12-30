@@ -601,5 +601,12 @@ class CentralWidgetCategorieActivite(CentralWidget):
         categorie_activite = NouvelleCategorieActivite(self.database)
         categorie_activite.exec()
 
-    def modifier_categorie_activite(self):
-        pass
+    def modifier_categorie_activite(self, index):
+        """
+        Ouvre le dialog pour modifier une categorie d'activite
+        :param index: Index de la ligne du tableau
+        """
+        id_categorie_activite = self.table_widget.item(index.row(), 0).text()
+        modifier_categorie_activite = ModifierCategorieActivite(id_categorie_activite, self.database)
+        modifier_categorie_activite.accepted.connect(self.update_list)
+        modifier_categorie_activite.exec()

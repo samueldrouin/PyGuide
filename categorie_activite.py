@@ -118,10 +118,61 @@ class NouvelleCategorieActivite(CategorieActivite):
 
 
 class ModifierCategorieActivite(CategorieActivite):
-    def __init__(self, database):
+    def __init__(self, id_categorie_activite, database):
         super(ModifierCategorieActivite, self).__init__(database)
+
+        # Instance variable definition
+        self.id_categorie_activite = id_categorie_activite
 
         # Interface graphique
         self.setWindowTitle("Modifier une catégorie d'activité")
         self.lbl_titre.setText("Modifier une catégorie d'activité")
         self.btn_add.setText("Modifier")
+        self.show_informations()
+
+    def show_informations(self):
+        """
+        Afficher les informations sur le lieu
+        """
+        # Obtenir les informations de la base de donnees
+        query = QSqlQuery(self.database)
+        query.prepare("SELECT nom, prix_membre, prix_non_membre, participante_minimum, participante_maximum, "
+                      "id_responsable, id_type_activite, id_lieu "
+                      "FROM categorie_activite WHERE id_type_activite = :id_type_activite")
+        query.bindValue(':id_type_activite', self.id_categorie_activite)
+        query.exec_()
+
+        # Afficher les informations
+        query.first()
+
+        self.txt_nom.setText(query.value(0))
+        self.sbx_prix_membre.setValue(query.value(1))
+        self.sbx_prix_non_membre.setValue(query.value(2))
+        self.sbx_participante_minimum.setValue(query.value(3))
+        self.sbx_participantes_maximum.setValue(query.value(4))
+        self.cbx_responsable.setCurrentIndex(query.value(5)-1)
+        self.cbx_type_activite.setCurrentIndex(query.value(6)-1)
+        self.cbx_lieu.setCurrentIndex(query.value(7)-1)
+
+    def process(self):
+        """
+        Traitement des donnees dans la base de donnee
+        """
+        query = QSqlQuery(self.database)
+        query.prepare("UPDATE categorie_activite "
+                      "SET nom = :nom, prix_membre = :prix_membre, prix_non_membre = :prix_non_membre, "
+                      "participante_minimum = :participante_minimum, participante_maximum = :participante_maximum, "
+                      "id_responsable = :id_responsable, id_type_activite = :id_type_activite, id_lieu = :id_lieu "
+                      "WHERE id_categorie_activite = :id_categorie_activite")
+        query.bindValue(':nom', self.check_string(self.txt_nom.text()))
+        query.bindValue(':prix_membre', self.sbx_prix_membre.value())
+        query.bindValue(':prix_non_membre', self.sbx_prix_non_membre.value())
+        query.bindValue(':participante_minimum', self.sbx_participante_minimum.value())
+        query.bindValue(':participante_maximum', self.sbx_participantes_maximum.value())
+        query.bindValue(':id_responsable', self.cbx_responsable.currentIndex() + 1)
+        query.bindValue(':id_type_activite', self.cbx_type_activite.currentIndex() + 1)
+        query.bindValue(':id_lieu', self.cbx_lieu.currentIndex() + 1)
+        query.bindValue(':id_categorie_activite', self.id_categorie_activite)
+        query.exec_()
+
+        self.accept()
