@@ -229,6 +229,10 @@ class CentralWidgetParticipantes(CentralWidget):
         self.top_widget.btn_add.clicked.connect(self.nouvelle_participante)
         self.table_widget.clicked.connect(self.edit_participante)
         self.top_widget.cbx_search.currentTextChanged.connect(self.update_search_placeholder)
+        self.top_widget.txt_search.textEdited.connect(self.update_list)
+        self.top_widget.cbx_sort.currentIndexChanged.connect(self.update_list)
+        self.top_widget.chk_membre.toggled.connect(self.update_list)
+        self.top_widget.chk_desc.toggled.connect(self.update_list)
 
         # Update GUI elements
         self.update_list()
@@ -265,14 +269,49 @@ class CentralWidgetParticipantes(CentralWidget):
         Update participante list in table widget
         """
         # Fetch data from database
-        QSqlDatabase.database()
-        query = QSqlQuery()
-        query.exec("SELECT participante.id_participante, participante.prenom, participante.nom, "
-                   "participante.ville, participante.courriel, participante.telephone_1, "
-                   "participante.poste_telephone_1, membre.numero_membre "
-                   "FROM participante INNER JOIN membre "
-                   "ON membre.id_participante = participante.id_participante")
-        
+        query = QSqlQuery(self.database)
+        if self.top_widget.chk_membre.isChecked():
+            sql = "SELECT participante.id_participante, participante.prenom, participante.nom, " \
+                  "participante.ville, participante.courriel, participante.telephone_1, " \
+                  "participante.poste_telephone_1, membre.numero_membre FROM participante " \
+                  "INNER JOIN membre ON membre.id_participante = participante.id_participante "
+        else:
+            sql = "SELECT participante.id_participante, participante.prenom, participante.nom, " \
+                  "participante.ville, participante.courriel, participante.telephone_1, " \
+                  "participante.poste_telephone_1, membre.numero_membre FROM participante " \
+                  "LEFT JOIN membre ON membre.id_participante = participante.id_participante "
+
+        # Ajout des options de recherche
+        search = self.top_widget.txt_search.text()
+        if search != "":
+            if self.top_widget.cbx_search.currentText() == "Prénom":
+                sql = sql + "WHERE participante.prenom LIKE '%{}%' ".format(search)
+            elif self.top_widget.cbx_search.currentText() == "Nom":
+                sql = sql + "WHERE participante.nom LIKE %{}% ".format(search)
+            elif self.top_widget.cbx_search.currentText() == "Ville":
+                sql = sql + "WHERE participante.ville LIKE %{}% ".format(search)
+            else:
+                sql = sql + "WHERE participante.telephone_1 LIKE %{}% ".format(search)
+
+        # Ajouter les options de tri
+        if self.top_widget.cbx_sort.currentText() == "Prénom":
+            sql = sql + "ORDER BY participante.prenom "
+        elif self.top_widget.cbx_sort.currentText() == "Nom":
+            sql = sql + "ORDER BY participante.nom "
+        elif self.top_widget.cbx_sort.currentText() == "Ville":
+            sql = sql + "ORDER BY participante.ville "
+        elif self.top_widget.cbx_sort.currentText() == "Numéro de téléphone":
+            sql = sql + "ORDER BY participante.telephone_1 "
+        else:
+            sql = sql + "ORDER BY membre.numero_membre "
+
+        # Order du tri
+        if self.top_widget.chk_desc.isChecked():
+            sql = sql + "DESC "
+        else:
+            sql = sql + "ASC "
+        query.exec_(sql)
+
         # Show data in table widget
         self.table_widget.setRowCount(0)
 
