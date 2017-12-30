@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>701</width>
-    <height>257</height>
+    <height>407</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,17 +39,14 @@
      <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Recherche par : </string>
+        <string>Recherche : </string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cbx_search"/>
-     </item>
-     <item>
       <widget class="QLineEdit" name="txt_search">
        <property name="placeholderText">
-        <string/>
+        <string>Nom</string>
        </property>
       </widget>
      </item>
@@ -71,46 +68,35 @@
        <property name="text">
         <string>Ajouter</string>
        </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Trier par : </string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="cbx_sort"/>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="chk_desc">
-       <property name="text">
-        <string>Ordre décroissant</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QTableWidget" name="tbl_result"/>
+    <widget class="QTableWidget" name="tbl_resultat">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::NoSelection</enum>
+     </property>
+     <column>
+      <property name="text">
+       <string>Index</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Nom</string>
+      </property>
+     </column>
+    </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -132,22 +118,12 @@
        <property name="text">
         <string>Fermer</string>
        </property>
+       <property name="default">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
     </layout>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>

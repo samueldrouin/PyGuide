@@ -126,14 +126,14 @@ class MainWindow(QMainWindow):
         """
         Ouvre la fenetre de consultation des responsables
         """
-        consultation = Consultation(2)
+        consultation = Consultation(2, self.database)
         consultation.exec()
 
     def consultation_type_activite(self):
         """
         Ouvrir la fenetre de consultation des types d'activite
         """
-        consultation = Consultation(1)
+        consultation = Consultation(1, self.database)
         consultation.exec()
 
     def reglage(self):
