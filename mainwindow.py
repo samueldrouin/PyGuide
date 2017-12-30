@@ -13,7 +13,7 @@ import pathlib
 from participante import NouvelleParticipante, ModifierParticipante
 from lieu import Lieu
 from activite import Activite
-from categorie_activite import CategorieActivite
+from categorie_activite import NouvelleCategorieActivite, ModifierCategorieActivite
 from a_propos import APropos
 from settings import Settings
 from consultation import Consultation
@@ -37,7 +37,7 @@ class MainWindow(QMainWindow):
         self.act_consult_participantes.triggered.connect(self.set_participantes_central_widget)
         self.act_consult_activites.triggered.connect(self.set_activite_central_widget)
         self.act_consult_lieux.triggered.connect(self.set_lieux_central_widget)
-        self.act_consult_type_activite.triggered.connect(self.set_categorie_activite_central_widget)
+        self.act_consult_categorie_activite.triggered.connect(self.set_categorie_activite_central_widget)
         self.act_about.triggered.connect(self.a_propos)
         self.act_about_qt.triggered.connect(QApplication.aboutQt)
         self.act_reglage.triggered.connect(self.reglage)
@@ -414,6 +414,5 @@ class CentralWidgetCategorieActivite(CentralWidget):
         Ouvrir le dialog pour créer une nouvelle categorie d'activite
         :return:
         """
-        categorie_activite = CategorieActivite()
-        categorie_activite.setWindowTitle("Nouvelle catégorie d'activité")
+        categorie_activite = NouvelleCategorieActivite()
         categorie_activite.exec()

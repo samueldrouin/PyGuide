@@ -77,7 +77,7 @@
    <addaction name="act_consult_participantes"/>
    <addaction name="act_consult_activites"/>
    <addaction name="act_consult_lieux"/>
-   <addaction name="act_consult_type_activite"/>
+   <addaction name="act_consult_categorie_activite"/>
    <addaction name="separator"/>
    <addaction name="act_inscription"/>
    <addaction name="act_facturation"/>
@@ -112,13 +112,16 @@
     <string>Consultation des participantes</string>
    </property>
   </action>
-  <action name="act_consult_type_activite">
+  <action name="act_consult_categorie_activite">
    <property name="icon">
     <iconset>
      <normaloff>../Resources/Type activite.png</normaloff>../Resources/Type activite.png</iconset>
    </property>
    <property name="text">
-    <string>Type d'activité</string>
+    <string>Catégorie d'activité</string>
+   </property>
+   <property name="toolTip">
+    <string>Catégorie d'activité</string>
    </property>
   </action>
   <action name="act_type_activite">
