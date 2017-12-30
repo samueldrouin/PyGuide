@@ -479,6 +479,11 @@ class CentralWidgetLieux(CentralWidget):
 class CentralWidgetCategorieActivite(CentralWidget):
     def __init__(self, database):
         super(CentralWidgetCategorieActivite, self).__init__()
+
+        # Instance variable definition
+        self.database = database
+
+        # GUI setup
         self.top_widget = QWidget()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_categorie_activite.ui')
         uic.loadUi(ui, self.top_widget)
@@ -490,13 +495,10 @@ class CentralWidgetCategorieActivite(CentralWidget):
         # Slots
         self.top_widget.btn_add.clicked.connect(self.nouvelle_categorie_activite)
 
-        # Instance variable definition
-        self.database = database
-
     def nouvelle_categorie_activite(self):
         """
         Ouvrir le dialog pour créer une nouvelle categorie d'activite
         :return:
         """
-        categorie_activite = NouvelleCategorieActivite()
+        categorie_activite = NouvelleCategorieActivite(self.database)
         categorie_activite.exec()
