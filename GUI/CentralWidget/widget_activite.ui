@@ -146,6 +146,9 @@
        <property name="displayFormat">
         <string notr="true">dd-MM-yyyy</string>
        </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -159,6 +162,9 @@
       <widget class="QDateEdit" name="ded_end">
        <property name="displayFormat">
         <string notr="true">dd-MM-yyyy</string>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

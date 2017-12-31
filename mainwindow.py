@@ -365,6 +365,11 @@ class CentralWidgetActivite(CentralWidget):
         self.table_widget.setAlternatingRowColors(True)
         self.table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
+        # Affichage de la date par defaut
+        self.top_widget.ded_start.setDate(QDate.currentDate())
+        self.top_widget.ded_end.setDate(QDate(QDate.currentDate().year()+1, QDate.currentDate().month(),
+                                              QDate.currentDate().day()))
+
         # Slots
         self.top_widget.btn_add.clicked.connect(self.nouvelle_activite)
         self.table_widget.clicked.connect(self.modifier_activite)
@@ -383,7 +388,7 @@ class CentralWidgetActivite(CentralWidget):
         """
         Affichage de la liste des activites
         """
-
+        print("UPDATE LISTE")
         # Fetch data from database
         query = QSqlQuery(self.database)
 
@@ -392,33 +397,40 @@ class CentralWidgetActivite(CentralWidget):
               "categorie_activite.prix_non_membre " \
               "FROM activite " \
               "LEFT JOIN categorie_activite ON activite.id_categorie_activite = categorie_activite.id_categorie_activite " \
-              "LEFT JOIN lieu ON categorie_activite.id_lieu = lieu.id_lieu"
+              "LEFT JOIN lieu ON categorie_activite.id_lieu = lieu.id_lieu "
 
         # Ajout des options de recherche
-        # search = self.top_widget.txt_search.text()
-        # if search != "":
-        #     if self.top_widget.cbx_search.currentText() == "Nom de l'activité":
-        #         sql = sql + "WHERE categorie_activite.nom LIKE '%{}%' ".format(search)
-        #     else:
-        #         sql = sql + "WHERE lieu.nom LIKE '%{}%' ".format(search)
+        search = self.top_widget.txt_search.text()
+        if search != "":
+            if self.top_widget.cbx_search.currentText() == "Nom de l'activité":
+                sql = sql + "WHERE categorie_activite.nom LIKE '%{}%' ".format(search)
+            else:
+                sql = sql + "WHERE lieu.nom LIKE '%{}%' ".format(search)
+
+            sql = sql + "AND activite.date >= " + str(self.top_widget.ded_start.date().toJulianDay()) + \
+                        " AND activite.date <= " + str(self.top_widget.ded_end.date().toJulianDay()) + " "
+        else:
+            sql = sql + "WHERE activite.date >= " + str(self.top_widget.ded_start.date().toJulianDay()) + \
+                        " AND activite.date <= " + str(self.top_widget.ded_end.date().toJulianDay()) + " "
+
 
         # Ajouter les options de tri
-        # if self.top_widget.cbx_sort.currentText() == "Nom de l'activité":
-        #     sql = sql + "ORDER BY categorie_activite.nom "
-        # elif self.top_widget.cbx_sort.currentText() == "Lieu" :
-        #     sql = sql + "ORDER BY lieu.nom "
-        # elif self.top_widget.cbx_sort.currentText() == "Prix régulier":
-        #     sql = sql + "ORDER BY categorie_activite.prix_non_membre "
-        # elif self.top_widget.cbx_sort.currentText() == "Prix membre":
-        #     sql = sql + "ORDER BY categorie_activite.prix_membre "
-        # elif self.top_widget.cbx_sort.currentText() == "Date":
-        #     sql = sql + "ORDER BY activite.date "
-        #
-        # # Order du tri
-        # if self.top_widget.chk_desc.isChecked():
-        #     sql = sql + "DESC "
-        # else:
-        #     sql = sql + "ASC "
+        if self.top_widget.cbx_sort.currentText() == "Nom de l'activité":
+            sql = sql + "ORDER BY categorie_activite.nom "
+        elif self.top_widget.cbx_sort.currentText() == "Lieu" :
+            sql = sql + "ORDER BY lieu.nom "
+        elif self.top_widget.cbx_sort.currentText() == "Prix régulier":
+            sql = sql + "ORDER BY categorie_activite.prix_non_membre "
+        elif self.top_widget.cbx_sort.currentText() == "Prix membre":
+            sql = sql + "ORDER BY categorie_activite.prix_membre "
+        elif self.top_widget.cbx_sort.currentText() == "Date":
+            sql = sql + "ORDER BY activite.date "
+
+        # Order du tri
+        if self.top_widget.chk_desc.isChecked():
+            sql = sql + "DESC "
+        else:
+            sql = sql + "ASC "
 
         query.exec_(sql)
 
