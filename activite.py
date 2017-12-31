@@ -3,6 +3,7 @@ from PyQt5.QtCore import QDate, QTime
 from PyQt5.QtSql import QSqlQuery
 from PyQt5 import uic
 import os
+from datetime import date
 
 # Project import
 from form import Form
@@ -37,6 +38,30 @@ class Activite(Form):
         self.btn_cancel.clicked.connect(self.reject)
         self.rbt_unique.toggled.connect(self.afficher_champs_date)
         self.rbt_recurrente.toggled.connect(self.afficher_champs_date)
+        self.btn_ajouter_exclusion.clicked.connect(self.ajout_date_exclusion)
+        self.btn_vider.clicked.connect(self.vider_date_exclusion)
+
+    def vider_date_exclusion(self):
+        """
+        Vide la liste des date d'exclusion
+        """
+        self.txt_exclusion.clear()
+
+    def ajout_date_exclusion(self):
+        """
+        Ajouter une date à la liste d'exclusion
+        """
+        # Formattage de la date
+        q_date = self.ded_exclusion.date()
+        date_value = date(q_date.year(), q_date.month(), q_date.day())
+
+        # Affichage de la liste
+        liste_exclusion = self.txt_exclusion.text()
+        if liste_exclusion == "":
+            nouvelle_liste_exclusion = str(date_value)
+        else:
+            nouvelle_liste_exclusion = liste_exclusion + ", " + str(date_value)
+        self.txt_exclusion.setText(nouvelle_liste_exclusion)
 
     def afficher_categorie_activite(self):
         """
@@ -65,13 +90,6 @@ class Activite(Form):
             self.widget_unique.setHidden(True)
             self.widget_recurrente.setHidden(False)
 
-    def clearLayout(layout, self):
-        while layout.count():
-            child = layout.takeAt(0)
-            if child.widget() is not None:
-                child.widget().deleteLater()
-            elif child.layout() is not None:
-                self.clearLayout(child.layout())
 
 class NouvelleActivite(Activite):
     def __init__(self, database):
