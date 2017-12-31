@@ -3,19 +3,20 @@ from PyQt5.QtCore import QDate, QTime
 from PyQt5.QtSql import QSqlQuery
 from PyQt5 import uic
 import os
-from datetime import date
+from datetime import date, timedelta, datetime
 
 # Project import
 from form import Form
 
-class Activite(Form):
+class NouvelleActivite(Form):
     def __init__(self, database):
-        super(Activite,self).__init__()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'activite.ui')
+        super(NouvelleActivite,self).__init__()
+        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'nouvelle_activite.ui')
         uic.loadUi(ui, self)
 
         # Instance variable definition
         self.database = database
+        self.liste_exclusion = []
 
         # Afficher les dates et heure par defaut
         current_date = QDate.currentDate()
@@ -37,15 +38,17 @@ class Activite(Form):
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
         self.rbt_unique.toggled.connect(self.afficher_champs_date)
-        self.rbt_recurrente.toggled.connect(self.afficher_champs_date)
+        self.rbt_hebdomadaire.toggled.connect(self.afficher_champs_date)
         self.btn_ajouter_exclusion.clicked.connect(self.ajout_date_exclusion)
         self.btn_vider.clicked.connect(self.vider_date_exclusion)
+        self.btn_add.clicked.connect(self.process)
 
     def vider_date_exclusion(self):
         """
         Vide la liste des date d'exclusion
         """
         self.txt_exclusion.clear()
+        self.liste_exclusion = None
 
     def ajout_date_exclusion(self):
         """
@@ -59,8 +62,12 @@ class Activite(Form):
         liste_exclusion = self.txt_exclusion.text()
         if liste_exclusion == "":
             nouvelle_liste_exclusion = str(date_value)
+            self.liste_exclusion = [str(date_value)]
+
         else:
             nouvelle_liste_exclusion = liste_exclusion + ", " + str(date_value)
+            self.liste_exclusion.append(str(date_value))
+
         self.txt_exclusion.setText(nouvelle_liste_exclusion)
 
     def afficher_categorie_activite(self):
@@ -90,12 +97,76 @@ class Activite(Form):
             self.widget_unique.setHidden(True)
             self.widget_recurrente.setHidden(False)
 
+    def process(self):
+        """
+        Traitement des donnees dans la base de donnee
+        """
+        if self.rbt_unique.isChecked():
+            query = QSqlQuery(self.database)
+            query.prepare("INSERT INTO activite (id_categorie_activite, date, heure_debut, heure_fin, "
+                      "date_limite_inscription) "
+                      "VALUES (:id_categorie_activite, :date, :heure_debut, :heure_fin, "
+                      ":date_limite_inscription)")
+            query.bindValue(':id_categorie_activite', self.cbx_category_activite.currentIndex() + 1)
+            query.bindValue(':date', self.ded_unique.date().toJulianDay())
+            query.bindValue(':heure_debut', self.tim_debut.time().msecsSinceStartOfDay())
+            query.bindValue(':heure_fin', self.tim_fin.time().msecsSinceStartOfDay())
 
-class NouvelleActivite(Activite):
+            # Date limite inscription
+            value_date = self.ded_unique.date().toJulianDay() - self.sbx_fin_inscription.value()
+            query.bindValue(':date_limite_inscription', value_date)
+
+            query.exec_()
+        else:
+            # Lecture des informations du formulaire
+            q_date_debut = self.ded_debut.date()
+            debut = date(q_date_debut.year(), q_date_debut.month(), q_date_debut.day())
+
+            q_date_fin = self.ded_fin.date()
+            fin = date(q_date_fin.year(), q_date_fin.month(), q_date_fin.day())
+
+            # Preparation de la liste des exclusions
+            exclusion_liste = self.txt_exclusion.text().split(', ')
+            if exclusion_liste != ['']:
+                r = 0
+                for exclusion in exclusion_liste:
+                    date_value = datetime.strptime(exclusion, '%Y-%m-%d').date()
+                    exclusion_liste[r] = date_value
+                    r = r + 1
+
+            # Preparation de la liste des dates
+            liste_date = []
+
+            current_date = debut
+            while current_date <= fin:
+                # Ne pas ajouter une date exclue
+                if not current_date in exclusion_liste:
+                    liste_date.append(current_date)
+
+                current_date = current_date + timedelta(weeks=1)
+
+            # Ajouter les informations a la base de donnees
+            for date_activite in liste_date:
+                query = QSqlQuery(self.database)
+                query.prepare("INSERT INTO activite (id_categorie_activite, date, heure_debut, heure_fin, "
+                              "date_limite_inscription) "
+                              "VALUES (:id_categorie_activite, :date_activite, :heure_debut, :heure_fin, "
+                              ":date_limite_inscription)")
+                query.bindValue(':id_categorie_activite', self.cbx_category_activite.currentIndex() + 1)
+                query.bindValue(':date_activite', QDate(date_activite.year, date_activite.month, date_activite.day)
+                                .toJulianDay())
+                query.bindValue(':heure_debut', self.tim_debut.time().msecsSinceStartOfDay())
+                query.bindValue(':heure_fin', self.tim_fin.time().msecsSinceStartOfDay())
+
+                # Date limite inscription
+                value_date = QDate(date_activite.year, date_activite.month, date_activite.day).toJulianDay() - \
+                             self.sbx_fin_inscription.value()
+                query.bindValue(':date_limite_inscription', value_date)
+                query.exec_()
+
+        self.accept()
+
+
+class ModifierActivite(Form):
     def __init__(self, database):
-        super(NouvelleActivite, self).__init__(database)
-
-
-class ModifierActivite(Activite):
-    def __init__(self, database):
-        super(ModifierActivite, self).__init__(database)
+        super(ModifierActivite, self).__init__()
