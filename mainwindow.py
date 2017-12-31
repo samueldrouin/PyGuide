@@ -360,7 +360,7 @@ class CentralWidgetActivite(CentralWidget):
         Ouvrir le dialog pour creer une nouvelle activite
         :return:
         """
-        nouvelle_activite = NouvelleActivite()
+        nouvelle_activite = NouvelleActivite(self.database)
         nouvelle_activite.exec()
 
 
