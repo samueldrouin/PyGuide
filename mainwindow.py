@@ -12,7 +12,7 @@ import pathlib
 # Projet import
 from participante import NouvelleParticipante, ModifierParticipante
 from lieu import NouveauLieu, ModifierLieu
-from activite import Activite
+from activite import NouvelleActivite, ModifierActivite
 from categorie_activite import NouvelleCategorieActivite, ModifierCategorieActivite
 from a_propos import APropos
 from settings import Settings
@@ -360,9 +360,8 @@ class CentralWidgetActivite(CentralWidget):
         Ouvrir le dialog pour creer une nouvelle activite
         :return:
         """
-        activite = Activite()
-        activite.setWindowTitle("Nouvelle activité")
-        activite.exec()
+        nouvelle_activite = NouvelleActivite()
+        nouvelle_activite.exec()
 
 
 class CentralWidgetLieux(CentralWidget):
