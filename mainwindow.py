@@ -2,12 +2,12 @@
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTableWidget, QMessageBox, QTableWidgetItem, \
     QAbstractItemView, QHeaderView
-from PyQt5.QtCore import QSettings
+from PyQt5.QtCore import QSettings, QDate, QTime
 from PyQt5.Qt import QApplication
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 import os
-import sqlite3
 import pathlib
+import datetime
 
 # Projet import
 from participante import NouvelleParticipante, ModifierParticipante
@@ -354,6 +354,120 @@ class CentralWidgetActivite(CentralWidget):
 
         # Instance variable definition
         self.database = database
+
+        # Table widget parameters
+        self.table_widget.setColumnCount(7)
+        self.table_widget.setColumnHidden(0, True)
+        headers = ["Index", "Nom", "Lieu", "Prix", "Date", "Heure", "Date limite d'inscription"]
+        self.table_widget.setHorizontalHeaderLabels(headers)
+        self.table_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.table_widget.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.table_widget.setAlternatingRowColors(True)
+        self.table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
+        # Slots
+        self.top_widget.btn_add.clicked.connect(self.nouvelle_activite)
+        self.table_widget.clicked.connect(self.modifier_activite)
+        self.top_widget.cbx_search.currentTextChanged.connect(self.update_search_placeholder)
+        self.top_widget.txt_search.textEdited.connect(self.update_list)
+        self.top_widget.cbx_sort.currentIndexChanged.connect(self.update_list)
+        self.top_widget.chk_desc.toggled.connect(self.update_list)
+        self.top_widget.ded_start.dateChanged.connect(self.update_list)
+        self.top_widget.ded_end.dateChanged.connect(self.update_list)
+
+        # Update GUI elements
+        self.update_list()
+        self.update_search_placeholder(self.top_widget.cbx_search.currentText())
+
+    def update_list(self):
+        """
+        Affichage de la liste des activites
+        """
+
+        # Fetch data from database
+        query = QSqlQuery(self.database)
+
+        sql = "SELECT activite.id_activite, activite.date, activite.heure_debut, activite.heure_fin, " \
+              "activite.date_limite_inscription, categorie_activite.nom, lieu.nom, categorie_activite.prix_membre, " \
+              "categorie_activite.prix_non_membre " \
+              "FROM activite " \
+              "LEFT JOIN categorie_activite ON activite.id_categorie_activite = categorie_activite.id_categorie_activite " \
+              "LEFT JOIN lieu ON categorie_activite.id_lieu = lieu.id_lieu"
+
+        # Ajout des options de recherche
+        # search = self.top_widget.txt_search.text()
+        # if search != "":
+        #     if self.top_widget.cbx_search.currentText() == "Nom de l'activité":
+        #         sql = sql + "WHERE categorie_activite.nom LIKE '%{}%' ".format(search)
+        #     else:
+        #         sql = sql + "WHERE lieu.nom LIKE '%{}%' ".format(search)
+
+        # Ajouter les options de tri
+        # if self.top_widget.cbx_sort.currentText() == "Nom de l'activité":
+        #     sql = sql + "ORDER BY categorie_activite.nom "
+        # elif self.top_widget.cbx_sort.currentText() == "Lieu" :
+        #     sql = sql + "ORDER BY lieu.nom "
+        # elif self.top_widget.cbx_sort.currentText() == "Prix régulier":
+        #     sql = sql + "ORDER BY categorie_activite.prix_non_membre "
+        # elif self.top_widget.cbx_sort.currentText() == "Prix membre":
+        #     sql = sql + "ORDER BY categorie_activite.prix_membre "
+        # elif self.top_widget.cbx_sort.currentText() == "Date":
+        #     sql = sql + "ORDER BY activite.date "
+        #
+        # # Order du tri
+        # if self.top_widget.chk_desc.isChecked():
+        #     sql = sql + "DESC "
+        # else:
+        #     sql = sql + "ASC "
+
+        query.exec_(sql)
+
+        # Show data in table widget
+        self.table_widget.setRowCount(0)
+
+        while query.next():
+            self.table_widget.insertRow(self.table_widget.rowCount())
+            r = self.table_widget.rowCount() - 1
+
+            self.table_widget.setItem(r, 0, QTableWidgetItem(str(query.value(0))))
+            self.table_widget.setItem(r, 1, QTableWidgetItem(str(query.value(5))))
+            self.table_widget.setItem(r, 2, QTableWidgetItem(str(query.value(6))))
+
+            prix = "Membre : {0:.2f}$".format(query.value(7)) + "\n" \
+                   + "Régulier : {0:.2f}$".format(query.value(8))
+            self.table_widget.setItem(r, 3, QTableWidgetItem(prix))
+
+            date_activite = QDate.fromJulianDay(query.value(1)).toString('dd MMM yyyy')
+            self.table_widget.setItem(r, 4, QTableWidgetItem(date_activite))
+
+            heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(2)).toString('hh:mm')
+            heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(3)).toString('hh:mm')
+            heure = heure_debut + " à " + heure_fin
+            self.table_widget.setItem(r, 5, QTableWidgetItem(heure))
+
+            date_limite = QDate.fromJulianDay(query.value(4)).toString('dd MMM yyyy')
+            self.table_widget.setItem(r, 6, QTableWidgetItem(date_limite))
+
+
+        self.table_widget.resizeColumnsToContents()
+
+    def modifier_activite(self, index):
+        """
+        Ouvre le dialog pour modifier une activite
+        :param index: Index de la colonne
+        """
+        id_activite = self.table_widget.item(index.row(), 0).text()
+        modifier_activite = ModifierActivite(id_activite, self.database)
+        modifier_activite.accepted.connect(self.update_list)
+        modifier_activite.exec()
+
+    def update_search_placeholder(self, text):
+        """
+        Update search placeholder text when combo box item is changed
+        :param text:
+        """
+        self.top_widget.txt_search.clear()
+        self.top_widget.txt_search.setPlaceholderText(text)
 
     def nouvelle_activite(self):
         """

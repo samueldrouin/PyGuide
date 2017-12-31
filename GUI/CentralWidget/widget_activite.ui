@@ -32,16 +32,6 @@
        </item>
        <item>
         <property name="text">
-         <string>Responsable</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Type d'activité</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
          <string>Lieu</string>
         </property>
        </item>
@@ -100,22 +90,12 @@
        </item>
        <item>
         <property name="text">
-         <string>Responsable</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Type d'activité</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
          <string>Lieu</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Prix</string>
+         <string>Prix régulier</string>
         </property>
        </item>
        <item>

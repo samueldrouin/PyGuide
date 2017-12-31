@@ -59,10 +59,10 @@ class NouvelleActivite(Form):
         # Affichage de la liste
         liste_exclusion = self.txt_exclusion.text()
         if liste_exclusion == "":
-            nouvelle_liste_exclusion = str(date_value)
+            nouvelle_liste_exclusion = str(date_value.strftime('%d-%m-%Y'))
 
         else:
-            nouvelle_liste_exclusion = liste_exclusion + ", " + str(date_value)
+            nouvelle_liste_exclusion = liste_exclusion + ", " + str(date_value.strftime('%d-%m-%Y'))
 
         self.txt_exclusion.setText(nouvelle_liste_exclusion)
 
