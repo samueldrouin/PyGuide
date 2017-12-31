@@ -16,7 +16,6 @@ class NouvelleActivite(Form):
 
         # Instance variable definition
         self.database = database
-        self.liste_exclusion = []
 
         # Afficher les dates et heure par defaut
         current_date = QDate.currentDate()
@@ -48,7 +47,6 @@ class NouvelleActivite(Form):
         Vide la liste des date d'exclusion
         """
         self.txt_exclusion.clear()
-        self.liste_exclusion = None
 
     def ajout_date_exclusion(self):
         """
@@ -62,11 +60,9 @@ class NouvelleActivite(Form):
         liste_exclusion = self.txt_exclusion.text()
         if liste_exclusion == "":
             nouvelle_liste_exclusion = str(date_value)
-            self.liste_exclusion = [str(date_value)]
 
         else:
             nouvelle_liste_exclusion = liste_exclusion + ", " + str(date_value)
-            self.liste_exclusion.append(str(date_value))
 
         self.txt_exclusion.setText(nouvelle_liste_exclusion)
 
