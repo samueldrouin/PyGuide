@@ -164,5 +164,5 @@ class NouvelleActivite(Form):
 
 
 class ModifierActivite(Form):
-    def __init__(self, database):
+    def __init__(self, id_activite, database):
         super(ModifierActivite, self).__init__()
