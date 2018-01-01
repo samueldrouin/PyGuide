@@ -12,7 +12,7 @@ import datetime
 # Projet import
 from participante import NouvelleParticipante, ModifierParticipante
 from lieu import NouveauLieu, ModifierLieu
-from activite import NouvelleActivite, ModifierActivite
+from activite import NouvelleActivite
 from categorie_activite import NouvelleCategorieActivite, ModifierCategorieActivite
 from a_propos import APropos
 from settings import Settings
@@ -372,7 +372,6 @@ class CentralWidgetActivite(CentralWidget):
 
         # Slots
         self.top_widget.btn_add.clicked.connect(self.nouvelle_activite)
-        self.table_widget.clicked.connect(self.modifier_activite)
         self.top_widget.cbx_search.currentTextChanged.connect(self.update_search_placeholder)
         self.top_widget.txt_search.textEdited.connect(self.update_list)
         self.top_widget.cbx_sort.currentIndexChanged.connect(self.update_list)
@@ -462,16 +461,6 @@ class CentralWidgetActivite(CentralWidget):
 
 
         self.table_widget.resizeColumnsToContents()
-
-    def modifier_activite(self, index):
-        """
-        Ouvre le dialog pour modifier une activite
-        :param index: Index de la colonne
-        """
-        id_activite = self.table_widget.item(index.row(), 0).text()
-        modifier_activite = ModifierActivite(id_activite, self.database)
-        modifier_activite.accepted.connect(self.update_list)
-        modifier_activite.exec()
 
     def update_search_placeholder(self, text):
         """

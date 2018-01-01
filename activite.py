@@ -161,8 +161,3 @@ class NouvelleActivite(Form):
                 query.exec_()
 
         self.accept()
-
-
-class ModifierActivite(Form):
-    def __init__(self, id_activite, database):
-        super(ModifierActivite, self).__init__()
