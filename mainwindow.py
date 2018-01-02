@@ -19,6 +19,7 @@ from settings import Settings
 from consultation import Consultation
 from facturation import Facturation
 from inscription import Inscription
+from groupe import Groupe
 
 
 class MainWindow(QMainWindow):
@@ -45,6 +46,7 @@ class MainWindow(QMainWindow):
         self.act_responsables.triggered.connect(self.consultation_responsables)
         self.act_inscription.triggered.connect(self.inscription)
         self.act_facturation.triggered.connect(self.facturation)
+        self.act_groupe.triggered.connect(self.groupe)
 
     def check_database_status(self):
         """
@@ -142,6 +144,13 @@ class MainWindow(QMainWindow):
         """
         settings = Settings()
         settings.exec()
+
+    def groupe(self):
+        """
+        Ouvre la fenetre des reglages
+        """
+        groupe = Groupe(self.database)
+        groupe.exec()
 
     @staticmethod
     def a_propos(self):
