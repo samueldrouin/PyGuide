@@ -228,8 +228,6 @@ class Inscription(Form):
                 query.bindValue(':id_activite', self.tbl_panier.item(row, 0).text())
                 query.bindValue(':status', True)
                 query.exec_()
-                print(query.lastError().text())
-                print(query.executedQuery())
 
             # Effacer une inscription
             elif int(self.tbl_panier.item(row, 1).text()) == -1:
@@ -253,15 +251,15 @@ class Inscription(Form):
 
         # Fetch inscriptions from database
         query = QSqlQuery()
-        query.prepare("SELECT inscription.id_inscription, inscription.status, categorie_activite.nom, categorie_activite.prix_membre, "
+        query.prepare("SELECT inscription.id_inscription, categorie_activite.nom, categorie_activite.prix_membre, "
                       "categorie_activite.prix_non_membre, activite.date, activite.heure_debut, activite.heure_fin, "
                       "activite.id_activite FROM inscription "
                       "LEFT JOIN activite ON inscription.id_activite = activite.id_activite "
                       "LEFT JOIN categorie_activite ON activite.id_categorie_activite = categorie_activite.id_categorie_activite "
-                      "WHERE (inscription.id_participante = :id_participante) AND (activite.date >= :current_date) AND "
-                      "(inscription.status = TRUE)")
+                      "WHERE (inscription.id_participante = :id_participante) AND (activite.date >= :current_date) AND (inscription.status = :status)")
         query.bindValue(':id_participante', self.id_participante)
         query.bindValue(':current_date', QDate.currentDate().toJulianDay())
+        query.bindValue(':status', True)
         query.exec_()
 
         # Afficher la liste des activites dans le panier
@@ -269,21 +267,21 @@ class Inscription(Form):
             self.tbl_panier.insertRow(self.tbl_panier.rowCount())
             r = self.tbl_panier.rowCount() - 1
 
-            self.tbl_panier.setItem(r, 0, QTableWidgetItem(str(query.value(8))))
+            self.tbl_panier.setItem(r, 0, QTableWidgetItem(str(query.value(7))))
             self.tbl_panier.setItem(r, 1, QTableWidgetItem(str(query.value(0))))
-            self.tbl_panier.setItem(r, 2, QTableWidgetItem(str(query.value(1))))
-            self.tbl_panier.setItem(r, 3, QTableWidgetItem(str(query.value(2))))
+            self.tbl_panier.setItem(r, 2, QTableWidgetItem(True))
+            self.tbl_panier.setItem(r, 3, QTableWidgetItem(str(query.value(1))))
 
             if self.chk_actif.isChecked():
-                prix = "{0:.2f}$".format(query.value(3))
+                prix = "{0:.2f}$".format(query.value(2))
             else:
-                prix = "{0:.2f}$".format(query.value(4))
+                prix = "{0:.2f}$".format(query.value(3))
             self.tbl_panier.setItem(r, 4, QTableWidgetItem(prix))
 
-            date_activite = QDate.fromJulianDay(query.value(5)).toString('dd MMM yyyy')
+            date_activite = QDate.fromJulianDay(query.value(4)).toString('dd MMM yyyy')
             self.tbl_panier.setItem(r, 5, QTableWidgetItem(date_activite))
 
-            heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(6)).toString('hh:mm')
-            heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(7)).toString('hh:mm')
+            heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(5)).toString('hh:mm')
+            heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(6)).toString('hh:mm')
             heure = heure_debut + " à " + heure_fin
             self.tbl_panier.setItem(r, 6, QTableWidgetItem(heure))

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>Facturation</class>
+ <widget class="QDialog" name="Facturation">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -111,7 +111,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="cbx_actif">
+      <widget class="QCheckBox" name="chk_actif">
        <property name="statusTip">
         <string>Le membre est actif seulement si cette case est sélectionnée</string>
        </property>
@@ -256,7 +256,33 @@
         </layout>
        </item>
        <item>
-        <widget class="QListWidget" name="lst_activite"/>
+        <widget class="QTableWidget" name="tbl_activite">
+         <column>
+          <property name="text">
+           <string>INDEX</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Nom</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Prix</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Date</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Heure</string>
+          </property>
+         </column>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -275,15 +301,27 @@
          </item>
          <item>
           <widget class="QPushButton" name="btn_rembourser">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>Rembourser</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="btn_ajouter_activite">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>Ajouter</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -315,7 +353,33 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="lst_inscription"/>
+        <widget class="QTableWidget" name="tbl_inscription">
+         <column>
+          <property name="text">
+           <string>INDEX</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Nom</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Prix</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Date</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Heure</string>
+          </property>
+         </column>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -334,8 +398,14 @@
          </item>
          <item>
           <widget class="QPushButton" name="btn_ajouter_inscription">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>Ajouter</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -367,7 +437,38 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="lst_facture"/>
+        <widget class="QTableWidget" name="tbl_article">
+         <column>
+          <property name="text">
+           <string>INDEX</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Nom</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Prix</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Date</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Heure</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Quantité</string>
+          </property>
+         </column>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -380,6 +481,36 @@
          </item>
          <item>
           <widget class="QLineEdit" name="lineEdit"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_12">
+         <item>
+          <spacer name="horizontalSpacer_8">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_remove">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Retirer</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -407,6 +538,9 @@
        <property name="text">
         <string>Annuler</string>
        </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -414,12 +548,34 @@
        <property name="text">
         <string>Enregistrer</string>
        </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
     </layout>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_numero</tabstop>
+  <tabstop>txt_activite</tabstop>
+  <tabstop>btn_ajouter_activite</tabstop>
+  <tabstop>btn_enregistrer</tabstop>
+  <tabstop>btn_annuler</tabstop>
+  <tabstop>btn_rembourser</tabstop>
+  <tabstop>txt_nom</tabstop>
+  <tabstop>lineEdit</tabstop>
+  <tabstop>chk_actif</tabstop>
+  <tabstop>txt_ville</tabstop>
+  <tabstop>txt_facture</tabstop>
+  <tabstop>btn_ajouter_inscription</tabstop>
+  <tabstop>txt_recu</tabstop>
+  <tabstop>tbl_activite</tabstop>
+  <tabstop>tbl_inscription</tabstop>
+  <tabstop>tbl_article</tabstop>
+  <tabstop>btn_remove</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -119,7 +119,7 @@ class MainWindow(QMainWindow):
         """
         Ouvre une fenetre pour une nouvelle facture
         """
-        facturation = Facturation()
+        facturation = Facturation(self.database)
         facturation.exec()
 
     def consultation_responsables(self):
