@@ -112,7 +112,7 @@ class MainWindow(QMainWindow):
         """
         Ouvre une fenetre pour une nouvelle inscription
         """
-        inscription = Inscription()
+        inscription = Inscription(self.database)
         inscription.exec()
 
     def facturation(self):

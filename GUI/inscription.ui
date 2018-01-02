@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Inscription</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
@@ -49,12 +49,52 @@
      <item>
       <widget class="QLineEdit" name="txt_numero">
        <property name="placeholderText">
-        <string>Numéro du participant</string>
+        <string>Numéro de téléphone</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="cbx_actif">
+      <widget class="QCheckBox" name="chk_actif">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="palette">
+        <palette>
+         <active>
+          <colorrole role="WindowText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>0</red>
+             <green>0</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </active>
+         <inactive>
+          <colorrole role="WindowText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>0</red>
+             <green>0</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </inactive>
+         <disabled>
+          <colorrole role="WindowText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>0</red>
+             <green>0</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </disabled>
+        </palette>
+       </property>
        <property name="statusTip">
         <string>Le membre est actif seulement si cette case est sélectionnée</string>
        </property>
@@ -62,7 +102,7 @@
         <string>Membre actif</string>
        </property>
        <property name="checkable">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -198,7 +238,33 @@
         </layout>
        </item>
        <item>
-        <widget class="QListWidget" name="lst_activite"/>
+        <widget class="QTableWidget" name="tbl_activite">
+         <column>
+          <property name="text">
+           <string>INDEX</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Nom</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Prix</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Date</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Heure</string>
+          </property>
+         </column>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -217,8 +283,14 @@
          </item>
          <item>
           <widget class="QPushButton" name="btn_ajouter">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>Ajouter</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -249,7 +321,73 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="lst_panier"/>
+        <widget class="QTableWidget" name="tbl_panier">
+         <column>
+          <property name="text">
+           <string>INDEX</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>ID_INSCRIPTION</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>STATUS</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Nom</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Prix</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Date</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Heure</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <item>
+          <spacer name="horizontalSpacer_6">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_remove">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Retirer</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>
@@ -275,12 +413,21 @@
        <property name="text">
         <string>Annuler</string>
        </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="btn_enregistrer">
        <property name="text">
         <string>Enregistrer</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+       <property name="default">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -301,6 +448,16 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_numero</tabstop>
+  <tabstop>txt_activite</tabstop>
+  <tabstop>btn_ajouter</tabstop>
+  <tabstop>btn_enregistrer</tabstop>
+  <tabstop>chk_actif</tabstop>
+  <tabstop>btn_annuler</tabstop>
+  <tabstop>txt_ville</tabstop>
+  <tabstop>txt_nom</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
