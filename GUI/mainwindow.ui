@@ -81,6 +81,7 @@
    <addaction name="separator"/>
    <addaction name="act_inscription"/>
    <addaction name="act_facturation"/>
+   <addaction name="act_groupe"/>
   </widget>
   <action name="act_consult_activites">
    <property name="icon">
@@ -165,6 +166,15 @@
   <action name="act_reglage">
    <property name="text">
     <string>Réglages</string>
+   </property>
+  </action>
+  <action name="act_groupe">
+   <property name="icon">
+    <iconset>
+     <normaloff>../Resources/Groupe.png</normaloff>../Resources/Groupe.png</iconset>
+   </property>
+   <property name="text">
+    <string>Groupe</string>
    </property>
   </action>
  </widget>

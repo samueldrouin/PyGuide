@@ -473,6 +473,19 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
+          <spacer name="horizontalSpacer_9">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
           <widget class="QLabel" name="label_10">
            <property name="text">
             <string>Total : </string>
@@ -480,7 +493,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit"/>
+          <widget class="QLineEdit" name="txt_total">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -565,7 +582,7 @@
   <tabstop>btn_annuler</tabstop>
   <tabstop>btn_rembourser</tabstop>
   <tabstop>txt_nom</tabstop>
-  <tabstop>lineEdit</tabstop>
+  <tabstop>txt_total</tabstop>
   <tabstop>chk_actif</tabstop>
   <tabstop>txt_ville</tabstop>
   <tabstop>txt_facture</tabstop>

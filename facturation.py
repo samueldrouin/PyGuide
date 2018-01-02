@@ -1,6 +1,6 @@
 # Python import
 from PyQt5.QtWidgets import QAbstractItemView, QMessageBox, QTableWidgetItem
-from PyQt5.QtSql import QSqlQuery
+from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 from PyQt5.QtCore import QTime, QDate
 from PyQt5 import uic
 import os
@@ -49,6 +49,7 @@ class Facturation(Form):
         self.btn_ajouter_inscription.clicked.connect(self.ajout_inscription)
         self.btn_rembourser.clicked.connect(self.ajout_activite)
         self.btn_remove.clicked.connect(self.retirer_activite)
+        self.btn_enregistrer.clicked.connect(self.process)
 
     def phone_number_parsing(self, old, new):
         """
@@ -187,8 +188,10 @@ class Facturation(Form):
 
             if self.sender() == self.btn_ajouter_activite:
                 self.tbl_article.setItem(r, 5, QTableWidgetItem("1"))
+                self.changer_total(self.tbl_activite.item(activite_row, 2).text())
             else:
                 self.tbl_article.setItem(r, 5, QTableWidgetItem("(1)"))
+                self.changer_total("-" + self.tbl_activite.item(activite_row, 2).text())
             self.tbl_article.resizeColumnsToContents()
         else:
             msgbox = QMessageBox()
@@ -216,6 +219,7 @@ class Facturation(Form):
             self.tbl_article.setItem(r, 4, self.tbl_activite.item(tbl_inscription, 4).clone())
             self.tbl_article.setItem(r, 5, QTableWidgetItem("1"))
 
+            self.changer_total(self.tbl_activite.item(tbl_inscription, 2).text())
             self.tbl_article.resizeColumnsToContents()
         else:
             msgbox = QMessageBox()
@@ -243,6 +247,23 @@ class Facturation(Form):
             msgbox.setStandardButtons(QMessageBox.Ok)
             msgbox.setDefaultButton(QMessageBox.Ok)
             msgbox.exec()
+
+    def changer_total(self, montant):
+        """
+        Changer le montant du total
+        :param montant: Montant de l'article
+        """
+        total = self.txt_total.text()
+        montant = float(montant[:-1])
+        if total != "":
+            print(montant)
+            total = float((self.txt_total.text())[:-1])
+            total = total + montant
+            print(total)
+            self.txt_total.setText("{0:.2f}$".format(total))
+        else:
+            print(montant)
+            self.txt_total.setText("{0:.2f}$".format(montant))
 
     def afficher_inscriptions(self):
         """
@@ -286,3 +307,50 @@ class Facturation(Form):
             heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(6)).toString('hh:mm')
             heure = heure_debut + " à " + heure_fin
             self.tbl_inscription.setItem(r, 4, QTableWidgetItem(heure))
+
+    def process(self):
+        """
+        Traitement des donnees pour la base de données
+        """
+        for row in range(self.tbl_article.rowCount()):
+            # Commencer une transaction
+            QSqlDatabase(self.database).transaction()
+
+            # Ajouter une facture
+            query = QSqlQuery()
+            query.prepare("INSERT INTO facture (numero_recu, id_participante) "
+                          "VALUES (:numero_recu, :id_participante)")
+            query.bindValue(':numero_recu', self.check_string(self.txt_recu.text()))
+            query.bindValue(':id_participante', self.id_participante)
+            query.exec_()
+
+            # Ajouter les inscriptions
+            query = QSqlQuery()
+            query.prepare("INSERT OR REPLACE INTO inscription (id_inscription, id_participante, id_activite, status, id_facture) "
+                          "VALUES "
+                          "((SELECT id_inscription FROM inscription WHERE (id_participante = :id_participante) "
+                          "AND (id_activite = :id_activite)), :id_participante, :id_activite, :status, (SELECT last_insert_rowid()))")
+            query.bindValue(':id_participante', self.id_participante)
+            query.bindValue(':id_activite', self.tbl_article.item(row, 0).text())
+            query.bindValue(':status', True)
+            query.exec_()
+
+            # Termer la transaction
+            QSqlDatabase(self.database).commit()
+        self.accept()
+
+    def get_numero_facture(self):
+        """
+        Recuperer le numero de la facture
+        """
+        query = QSqlQuery()
+        query.exec_("SELECT MAX(id_facture) FROM facture")
+
+        query.first()
+
+        # S'il existe deja des facture dans la base de donnees
+        if query.value(0) != "":
+            self.txt_facture.setText(str(query.value(0)+1))
+        # S'il s'agit de la première facture
+        else:
+            self.txt_facture.setText("1")
