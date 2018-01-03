@@ -138,8 +138,8 @@ class ModifierCategorieActivite(CategorieActivite):
         query = QSqlQuery(self.database)
         query.prepare("SELECT nom, prix_membre, prix_non_membre, participante_minimum, participante_maximum, "
                       "id_responsable, id_type_activite, id_lieu "
-                      "FROM categorie_activite WHERE id_type_activite = :id_type_activite")
-        query.bindValue(':id_type_activite', self.id_categorie_activite)
+                      "FROM categorie_activite WHERE (id_categorie_activite = :id_categorie_activite)")
+        query.bindValue(':id_categorie_activite', self.id_categorie_activite)
         query.exec_()
 
         # Afficher les informations
