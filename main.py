@@ -1,3 +1,7 @@
+# Screen scaling on HiDPI
+import os
+os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+
 from mainwindow import MainWindow
 from PyQt5.QtWidgets import QApplication
 import sys

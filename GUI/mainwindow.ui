@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>842</width>
-    <height>804</height>
+    <width>600</width>
+    <height>400</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>600</width>
+    <height>400</height>
+   </size>
+  </property>
+  <property name="font">
+   <font>
+    <family>Segoe UI</family>
+    <pointsize>10</pointsize>
+   </font>
   </property>
   <property name="windowTitle">
    <string>GUIDE - Centre de femmes du Haut-Richelieu </string>
@@ -21,8 +33,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>842</width>
-     <height>22</height>
+     <width>600</width>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuGestion">

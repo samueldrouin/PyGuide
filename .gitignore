@@ -60,3 +60,9 @@ target/
 \.idea/
 
 \.DS_Store
+
+\.vs/
+
+Source\.pyproj
+
+Source\.sln

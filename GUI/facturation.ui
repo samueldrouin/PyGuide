@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>694</width>
-    <height>442</height>
+    <width>1200</width>
+    <height>600</height>
    </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>Segoe UI</family>
+    <pointsize>10</pointsize>
+   </font>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
@@ -24,7 +30,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>16</pointsize>
+       <pointsize>14</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -227,9 +233,9 @@
         <widget class="QLabel" name="label_5">
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -342,9 +348,9 @@
         <widget class="QLabel" name="label_8">
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -426,9 +432,9 @@
         <widget class="QLabel" name="label_9">
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">

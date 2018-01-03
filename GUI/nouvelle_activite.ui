@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>569</width>
-    <height>514</height>
+    <width>480</width>
+    <height>454</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>480</width>
+    <height>454</height>
+   </size>
+  </property>
+  <property name="font">
+   <font>
+    <family>Segoe UI</family>
+    <pointsize>10</pointsize>
+   </font>
   </property>
   <property name="windowTitle">
    <string>Nouvelle activité</string>
@@ -24,7 +36,8 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>16</pointsize>
+       <family>Segoe UI</family>
+       <pointsize>14</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
