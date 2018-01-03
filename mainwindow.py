@@ -231,6 +231,7 @@ class CentralWidgetParticipantes(CentralWidget):
         self.table_widget.setHorizontalHeaderLabels(headers)
         self.table_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table_widget.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.table_widget.setSelectionMode(QAbstractItemView.NoSelection)
         self.table_widget.setAlternatingRowColors(True)
         self.table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 

@@ -23,19 +23,8 @@ class Facturation(Form):
 
         # Table widget parameters
         self.tbl_activite.setColumnHidden(0, True)
-        self.tbl_activite.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.tbl_activite.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tbl_activite.setAlternatingRowColors(True)
-
         self.tbl_inscription.setColumnHidden(0, True)
-        self.tbl_inscription.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.tbl_inscription.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tbl_inscription.setAlternatingRowColors(True)
-
         self.tbl_article.setColumnHidden(0, True)
-        self.tbl_article.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.tbl_article.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tbl_article.setAlternatingRowColors(True)
 
         # Afficher la liste des activite
         self.afficher_liste_activite()

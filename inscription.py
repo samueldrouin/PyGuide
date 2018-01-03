@@ -24,16 +24,9 @@ class Inscription(Form):
 
         # Table widget parameters
         self.tbl_activite.setColumnHidden(0, True)
-        self.tbl_activite.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.tbl_activite.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tbl_activite.setAlternatingRowColors(True)
-
         self.tbl_panier.setColumnHidden(0, True)
         self.tbl_panier.setColumnHidden(1, True)
         self.tbl_panier.setColumnHidden(2, True)
-        self.tbl_panier.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.tbl_panier.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tbl_panier.setAlternatingRowColors(True)
 
         # Afficher la liste des activite
         self.afficher_liste_activite()

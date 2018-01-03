@@ -20,9 +20,6 @@ class Groupe(Form):
 
         # Table widget parameters
         self.tbl_activite.setColumnHidden(0, True)
-        self.tbl_activite.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.tbl_activite.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tbl_activite.setAlternatingRowColors(True)
 
         # Afficher la liste des activite
         self.afficher_liste_activite()
