@@ -73,11 +73,11 @@ class NouvelleActivite(Form):
         """
         # Fetch data from database
         query = QSqlQuery(self.database)
-        query.exec_("SELECT nom FROM categorie_activite")
+        query.exec_("SELECT id_categorie_activite, nom FROM categorie_activite")
 
         # Ajouter les responsables a la liste
         while query.next():
-            self.cbx_category_activite.addItem(str(query.value(0)))
+            self.cbx_category_activite.addItem(str(query.value(1)), userData = query.value(0))
 
     def afficher_champs_date(self):
         """
@@ -104,7 +104,7 @@ class NouvelleActivite(Form):
                           "heure_fin, date_limite_inscription) "
                           "VALUES (:id_categorie_activite, :date, :heure_debut, :heure_fin, "
                           ":date_limite_inscription)")
-            query.bindValue(':id_categorie_activite', self.cbx_category_activite.currentIndex() + 1)
+            query.bindValue(':id_categorie_activite', self.cbx_category_activite.itemData(self.cbx_category_activite.currentIndex()))
             query.bindValue(':date', self.ded_unique.date().toJulianDay())
             query.bindValue(':heure_debut', self.tim_debut.time().msecsSinceStartOfDay())
             query.bindValue(':heure_fin', self.tim_fin.time().msecsSinceStartOfDay())
@@ -149,7 +149,7 @@ class NouvelleActivite(Form):
                               "heure_fin, date_limite_inscription) "
                               "VALUES (:id_categorie_activite, :date_activite, :heure_debut, "
                               ":heure_fin, :date_limite_inscription)")
-                query.bindValue(':id_categorie_activite', self.cbx_category_activite.currentIndex() + 1)
+                query.bindValue(':id_categorie_activite', self.cbx_category_activite.itemData(self.cbx_category_activite.currentIndex()))
                 query.bindValue(':date_activite', QDate(date_activite.year, date_activite.month, 
                                                         date_activite.day).toJulianDay())
                 query.bindValue(':heure_debut', self.tim_debut.time().msecsSinceStartOfDay())

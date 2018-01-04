@@ -5,9 +5,10 @@ import os
 
 # PyQt import
 from PyQt5.QtWidgets import QDialog, QCompleter, QMessageBox
-from PyQt5.QtCore import QRegExp, Qt
+from PyQt5.QtCore import QRegExp, Qt, QAbstractItemModel, QVariant
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5 import uic
+from PyQt5.QtSql import QSqlQuery
 
 
 class Form(QDialog):

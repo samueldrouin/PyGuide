@@ -39,12 +39,12 @@ class CategorieActivite(Form):
         """
         # Fetch data from database
         query = QSqlQuery(self.database)
-        query.exec_("SELECT prenom, nom FROM responsable")
+        query.exec_("SELECT id_responsable, prenom, nom FROM responsable ORDER BY nom ASC")
 
         # Ajouter les responsables a la liste
         while query.next():
-            nom = str(query.value(0)) + " " + str(query.value(1))
-            self.cbx_responsable.addItem(nom)
+            nom = str(query.value(2)) + ", " + str(query.value(1))
+            self.cbx_responsable.addItem(nom, userData = query.value(0))
 
     def afficher_type_activite(self):
         """
@@ -53,11 +53,11 @@ class CategorieActivite(Form):
 
         # Fetch data from database
         query = QSqlQuery(self.database)
-        query.exec_("SELECT nom FROM type_activite")
+        query.exec_("SELECT id_type_activite, nom FROM type_activite ORDER BY nom ASC")
 
         # Ajouter les types d'activite a la liste
         while query.next():
-            self.cbx_type_activite.addItem(str(query.value(0)))
+            self.cbx_type_activite.addItem(str(query.value(1)), userData = query.value(0))
 
     def afficher_lieu(self):
         """
@@ -66,11 +66,11 @@ class CategorieActivite(Form):
 
         # Fetch data from database
         query = QSqlQuery(self.database)
-        query.exec_("SELECT nom FROM lieu")
+        query.exec_("SELECT id_lieu, nom FROM lieu")
 
         # Ajouter les types d'activite a la liste
         while query.next():
-            self.cbx_lieu.addItem(str(query.value(0)))
+            self.cbx_lieu.addItem(str(query.value(1)), userData = query.value(0))
 
     def check_fields(self):
         """
@@ -116,9 +116,9 @@ class NouvelleCategorieActivite(CategorieActivite):
         query.bindValue(':prix_non_membre', self.sbx_prix_non_membre.value())
         query.bindValue(':participante_minimum', self.sbx_participante_minimum.value())
         query.bindValue(':participante_maximum', self.sbx_participantes_maximum.value())
-        query.bindValue(':id_responsable', self.cbx_responsable.currentIndex()+1)
-        query.bindValue(':id_type_activite', self.cbx_type_activite.currentIndex()+1)
-        query.bindValue(':id_lieu', self.cbx_lieu.currentIndex()+1)
+        query.bindValue(':id_responsable', self.cbx_responsable.itemData(self.cbx_responsable.currentIndex()))
+        query.bindValue(':id_type_activite', self.cbx_type_activite.itemData(self.cbx_type_activite.currentIndex()))
+        query.bindValue(':id_lieu', self.cbx_lieu.itemData(self.cbx_lieu.currentIndex()))
         query.exec_()
 
         self.accept()
@@ -159,9 +159,12 @@ class ModifierCategorieActivite(CategorieActivite):
         self.sbx_prix_non_membre.setValue(query.value(2))
         self.sbx_participante_minimum.setValue(query.value(3))
         self.sbx_participantes_maximum.setValue(query.value(4))
-        self.cbx_responsable.setCurrentIndex(query.value(5)-1)
-        self.cbx_type_activite.setCurrentIndex(query.value(6)-1)
-        self.cbx_lieu.setCurrentIndex(query.value(7)-1)
+        index_responsable = self.cbx_responsable.findData(query.value(5))
+        self.cbx_responsable.setCurrentIndex(index_responsable)
+        index_type_activite = self.cbx_type_activite.findData(query.value(6))
+        self.cbx_type_activite.setCurrentIndex(index_type_activite)
+        index_lieu = self.cbx_lieu.findData(query.value(7))
+        self.cbx_lieu.setCurrentIndex(index_lieu)
 
     def process(self):
         """
@@ -178,9 +181,9 @@ class ModifierCategorieActivite(CategorieActivite):
         query.bindValue(':prix_non_membre', self.sbx_prix_non_membre.value())
         query.bindValue(':participante_minimum', self.sbx_participante_minimum.value())
         query.bindValue(':participante_maximum', self.sbx_participantes_maximum.value())
-        query.bindValue(':id_responsable', self.cbx_responsable.currentIndex() + 1)
-        query.bindValue(':id_type_activite', self.cbx_type_activite.currentIndex() + 1)
-        query.bindValue(':id_lieu', self.cbx_lieu.currentIndex() + 1)
+        query.bindValue(':id_responsable', self.cbx_responsable.itemData(self.cbx_responsable.currentIndex()))
+        query.bindValue(':id_type_activite', self.cbx_type_activite.itemData(self.cbx_type_activite.currentIndex()))
+        query.bindValue(':id_lieu', self.cbx_lieu.itemData(self.cbx_lieu.currentIndex()))
         query.bindValue(':id_categorie_activite', self.id_categorie_activite)
         query.exec_()
 

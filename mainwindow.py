@@ -335,7 +335,7 @@ class CentralWidgetParticipantes(CentralWidget):
 
         while query.next():
             self.table_widget.insertRow(self.table_widget.rowCount())
-            r = self.table_widget.rowCount()-1
+            r = self.table_widget.rowCount() - 1
 
             self.table_widget.setItem(r, 0, QTableWidgetItem(str(query.value(0))))
 
