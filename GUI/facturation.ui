@@ -112,7 +112,7 @@
      <item>
       <widget class="QLineEdit" name="txt_numero">
        <property name="placeholderText">
-        <string>Numéro du participant</string>
+        <string>Numéro de téléphone</string>
        </property>
       </widget>
      </item>

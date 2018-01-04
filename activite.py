@@ -24,10 +24,6 @@ class NouvelleActivite(Form):
         self.ded_fin.setDate(current_date)
         self.ded_exclusion.setDate(current_date)
 
-        current_time = QTime.currentTime()
-        self.tim_debut.setTime(current_time)
-        self.tim_fin.setTime(current_time)
-
         # Affichage des champs pour les dates
         self.afficher_champs_date()
 
