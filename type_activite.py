@@ -1,13 +1,18 @@
+"""Création et modification des types d'activité"""
+
 # Python import
-from PyQt5 import uic
-from PyQt5.QtSql import QSqlQuery
 import os
+
+# PyQt import
+from PyQt5 import (uic)
+from PyQt5.QtSql import (QSqlQuery)
 
 # Project import
 from form import Form
 
 
 class TypeActivite(Form):
+    """Dialog pour la création ou la modification de type d'activité"""
     def __init__(self):
         super(TypeActivite, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'type_activite.ui')
@@ -42,6 +47,7 @@ class TypeActivite(Form):
 
 
 class NouveauTypeActivite(TypeActivite):
+    """Dialog pour la création de nouveau type d'activité"""
     def __init__(self, database):
         super(NouveauTypeActivite, self).__init__()
 
@@ -63,6 +69,7 @@ class NouveauTypeActivite(TypeActivite):
 
 
 class ModifierTypeActivite(TypeActivite):
+    """Dialog pour la modification de type d'activité"""
     def __init__(self, database, id_type_activite):
         super(ModifierTypeActivite, self).__init__()
 

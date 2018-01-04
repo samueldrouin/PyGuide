@@ -1,15 +1,20 @@
+"""Inscription et renouvellement des membres"""
+
 # Python import
+import os
+
+# PyQt import
 from PyQt5.QtWidgets import QTableWidgetItem, QMessageBox
 from PyQt5.QtCore import QDate, Qt
 from PyQt5 import uic
 from PyQt5.QtSql import QSqlQuery, QSqlDatabase
-import os
 
 # Project import
 from form import Form
 
 
 class InscriptionMembre(Form):
+    """Dialog pour l'inscription ou le renouvellement d'un nouveau membre"""
     def __init__(self):
         super(InscriptionMembre, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'inscription_membre.ui')
@@ -124,6 +129,7 @@ class InscriptionMembre(Form):
 
 
 class NouvelleInscription(InscriptionMembre):
+    """Dialog pour l'inscription de nouveau membre"""
     def __init__(self, nom, phone, id_participante, database):
         super(NouvelleInscription, self).__init__()
 
@@ -204,6 +210,7 @@ class NouvelleInscription(InscriptionMembre):
 
 
 class RenouvelerInscription(InscriptionMembre):
+    """Dialog pour le renouvellement de l'inscription d'un membre"""
     def __init__(self, nom, phone, id_participante, database):
         super(RenouvelerInscription, self).__init__()
 

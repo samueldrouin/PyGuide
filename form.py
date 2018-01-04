@@ -1,12 +1,17 @@
+"""Classe de base des dialogs"""
+
 # Python import
+import os
+
+# PyQt import
 from PyQt5.QtWidgets import QDialog, QCompleter, QMessageBox
 from PyQt5.QtCore import QRegExp, Qt
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5 import uic
-import os
 
 
 class Form(QDialog):
+    """Classe de base des dialogs"""
     def __init__(self):
         super(Form, self).__init__()
 

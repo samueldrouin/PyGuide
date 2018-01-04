@@ -1,13 +1,18 @@
+"""Créaction et la modification de catégorie d'activité"""
+
 # Python import
+import os
+
+# PyQt import
 from PyQt5.QtSql import QSqlQuery
 from PyQt5 import uic
-import os
 
 # Projet import
 from form import Form
 
 
 class CategorieActivite(Form):
+    """Classe de bases des dialogs de création et de modification des catégories d'activité"""
     def __init__(self, database):
         super(CategorieActivite, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'categorie_activite.ui')
@@ -76,7 +81,8 @@ class CategorieActivite(Form):
             self.process()
             return True
         else:
-            self.message_box_missing_information("Le nom de la catégorie d'activité doit être remplis")
+            self.message_box_missing_information("Le nom de la catégorie d'activité "\
+                                                 "doit être remplis")
         return False
 
     def process(self):
@@ -88,6 +94,7 @@ class CategorieActivite(Form):
 
 
 class NouvelleCategorieActivite(CategorieActivite):
+    """Dialog pour la création de nouvelle catégorie d'activité"""
     def __init__(self, database):
         super(NouvelleCategorieActivite, self).__init__(database)
 
@@ -100,8 +107,8 @@ class NouvelleCategorieActivite(CategorieActivite):
         Traitement des donnees dans la base de donnee
         """
         query = QSqlQuery(self.database)
-        query.prepare("INSERT INTO categorie_activite (nom, prix_membre, prix_non_membre, participante_minimum, "
-                      "participante_maximum, id_responsable, id_type_activite, id_lieu) "
+        query.prepare("INSERT INTO categorie_activite (nom, prix_membre, prix_non_membre, "
+                      "participante_minimum, participante_maximum, id_responsable, id_type_activite, id_lieu) "
                       "VALUES (:nom, :prix_membre, :prix_non_membre, :participante_minimum, :participante_maximum, "
                       ":id_responsable, :id_type_activite, :id_lieu)")
         query.bindValue(':nom', self.check_string(self.txt_nom.text()))
@@ -118,6 +125,7 @@ class NouvelleCategorieActivite(CategorieActivite):
 
 
 class ModifierCategorieActivite(CategorieActivite):
+    """Dialog pour la modification de categorie d'activité"""
     def __init__(self, id_categorie_activite, database):
         super(ModifierCategorieActivite, self).__init__(database)
 
@@ -136,9 +144,10 @@ class ModifierCategorieActivite(CategorieActivite):
         """
         # Obtenir les informations de la base de donnees
         query = QSqlQuery(self.database)
-        query.prepare("SELECT nom, prix_membre, prix_non_membre, participante_minimum, participante_maximum, "
-                      "id_responsable, id_type_activite, id_lieu "
-                      "FROM categorie_activite WHERE (id_categorie_activite = :id_categorie_activite)")
+        query.prepare("SELECT nom, prix_membre, prix_non_membre, participante_minimum, "
+                      "participante_maximum, id_responsable, id_type_activite, id_lieu "
+                      "FROM categorie_activite WHERE (id_categorie_activite = "
+                      ":id_categorie_activite)")
         query.bindValue(':id_categorie_activite', self.id_categorie_activite)
         query.exec_()
 

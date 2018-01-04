@@ -1,12 +1,17 @@
+"""Création ou modification d'un lieu"""
+
 # Python import
+import os
+
+# PyQt import
 from PyQt5.QtSql import QSqlQuery
 from PyQt5 import uic
-import os
 
 # Project import
 from form import Form
 
 class Lieu(Form):
+    """Dialog de base pour la création ou la modification des lieux"""
     def __init__(self):
         super(Lieu, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'lieu.ui')
@@ -61,6 +66,7 @@ class Lieu(Form):
 
 
 class NouveauLieu(Lieu):
+    """Dialog pour la création de nouveau lieu"""
     def __init__(self, database):
         super(NouveauLieu, self).__init__()
 
@@ -90,6 +96,7 @@ class NouveauLieu(Lieu):
 
 
 class ModifierLieu(Lieu):
+    """Dialog pour la modification d'un lieu existant"""
     def __init__(self, id_lieu, database):
         super(ModifierLieu, self).__init__()
 

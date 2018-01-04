@@ -1,13 +1,17 @@
+"""Fenetre principale"""
+
 # Python import
+import os
+import pathlib
+import datetime
+
+# PyQt import
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTableWidget, QMessageBox, QTableWidgetItem, \
     QAbstractItemView, QHeaderView
 from PyQt5.QtCore import QSettings, QDate, QTime
 from PyQt5.Qt import QApplication
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
-import os
-import pathlib
-import datetime
 
 # Projet import
 from participante import NouvelleParticipante, ModifierParticipante
@@ -23,6 +27,7 @@ from groupe import Groupe
 
 
 class MainWindow(QMainWindow):
+    """Interface de la fenêtre principale"""
     def __init__(self):
         super(MainWindow, self).__init__()
         ui = os.path.join(os.path.dirname(__file__),'GUI','mainwindow.ui')
@@ -188,14 +193,11 @@ class MainWindow(QMainWindow):
         central_widget = CentralWidgetLieux(self.database)
         self.setCentralWidget(central_widget)
 
-
-"""
-Classe principale pour les CentralWidget
-Contient les fonction communes à tout les CentralWidget
-"""
-
-
 class CentralWidget(QWidget):
+    """
+    Classe principale pour les CentralWidget
+    Contient les fonction communes à tout les CentralWidget
+    """
     def __init__(self):
         super(CentralWidget, self).__init__()
         self.layout = QVBoxLayout(self)
@@ -209,6 +211,12 @@ CentralWidget spécifiques :
 
 
 class CentralWidgetParticipantes(CentralWidget):
+    """
+    CentralWidget pour les participantes
+    
+    Affiche les informations sur les participantes
+    Permet l'ouverture des dialogs pour modificer et ajouter des participantes
+    """
     def __init__(self, database):
         super(CentralWidgetParticipantes, self).__init__()
 
@@ -349,6 +357,12 @@ class CentralWidgetParticipantes(CentralWidget):
         self.table_widget.resizeColumnsToContents()
 
 class CentralWidgetActivite(CentralWidget):
+    """
+    CentralWidget pour les activités
+    
+    Affiche les informations sur les activités
+    Permet l'ouverture des dialogs pour modificer et ajouter des activités
+    """
     def __init__(self, database):
         super(CentralWidgetActivite, self).__init__()
         self.top_widget = QWidget()
@@ -486,6 +500,12 @@ class CentralWidgetActivite(CentralWidget):
 
 
 class CentralWidgetLieux(CentralWidget):
+    """
+    CentralWidget pour les lieux
+    
+    Affiche les informations sur les lieux
+    Permet l'ouverture des dialogs pour modificer et ajouter des lieux
+    """
     def __init__(self, database):
         super(CentralWidgetLieux, self).__init__()
         # GUI setup
@@ -594,6 +614,12 @@ class CentralWidgetLieux(CentralWidget):
 
 
 class CentralWidgetCategorieActivite(CentralWidget):
+    """
+    CentralWidget pour les catégories d'activité
+    
+    Affiche les informations sur les catégories d'activité
+    Permet l'ouverture des dialogs pour modificer et ajouter des catégories d'activité
+    """
     def __init__(self, database):
         super(CentralWidgetCategorieActivite, self).__init__()
 

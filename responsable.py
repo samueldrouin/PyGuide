@@ -1,13 +1,18 @@
+"""Création ou modification des responsables"""
+
 # Python import
+import os
+
+# PyQt import
 from PyQt5 import uic
 from PyQt5.QtSql import QSqlQuery
-import os
 
 # Project import
 from form import Form
 
 
 class Responsable(Form):
+    """Dialog pour la créaction ou la modification des responsables"""
     def __init__(self):
         super(Responsable, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'responsable.ui')
@@ -43,6 +48,7 @@ class Responsable(Form):
 
 
 class NouveauResponsable(Responsable):
+    """Dialog pour la créaction de nouveau responsables"""
     def __init__(self, database):
         super(NouveauResponsable, self).__init__()
 
@@ -65,6 +71,7 @@ class NouveauResponsable(Responsable):
 
 
 class ModifierResponsable(Responsable):
+    """Dialog pour la modification de responsable"""
     def __init__(self, database, id_responsable):
         super(ModifierResponsable, self).__init__()
 
@@ -97,7 +104,8 @@ class ModifierResponsable(Responsable):
         Modifier le responsable dans la base de donnees
         """
         query = QSqlQuery(self.database)
-        query.prepare("UPDATE responsable SET prenom = :prenom, nom = :nom WHERE id_responsable=:id_responsable")
+        query.prepare("UPDATE responsable SET prenom = :prenom, nom = :nom "
+                      "WHERE id_responsable=:id_responsable")
         query.bindValue(':prenom', self.txt_prenom.text())
         query.bindValue(':nom', self.txt_nom.text())
         query.bindValue(':id_responsable', self.id_responsable)

@@ -1,3 +1,5 @@
+"""Script de lancement du programme GUIDE-CFR"""
+
 # Screen scaling on HiDPI
 import os
 os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"

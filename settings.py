@@ -1,11 +1,15 @@
+"""Modification des réglages du programme"""
 # Python import
-from PyQt5.QtWidgets import QDialog, QFileDialog
-from PyQt5.QtCore import QSettings
-from PyQt5 import uic
 import os
 from pathlib import Path
 
+# PyQt import
+from PyQt5.QtWidgets import QDialog, QFileDialog
+from PyQt5.QtCore import QSettings
+from PyQt5 import uic
+
 class Settings(QDialog):
+    """Dialog permettant de modifier les réglages du programme"""
     def __init__(self):
         super(Settings, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'settings.ui')

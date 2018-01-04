@@ -1,16 +1,21 @@
+"""Création et affichage des activité"""
+
 # Python import
-from PyQt5.QtCore import QDate, QTime
-from PyQt5.QtSql import QSqlQuery
-from PyQt5 import uic
 import os
 from datetime import date, timedelta, datetime
+
+# PyQt import
+from PyQt5.QtCore import (QDate)
+from PyQt5.QtSql import (QSqlQuery)
+from PyQt5 import uic
 
 # Project import
 from form import Form
 
 class NouvelleActivite(Form):
+    """Dialog pour la création d'une nouvelle activité"""
     def __init__(self, database):
-        super(NouvelleActivite,self).__init__()
+        super(NouvelleActivite, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'nouvelle_activite.ui')
         uic.loadUi(ui, self)
 
@@ -95,10 +100,10 @@ class NouvelleActivite(Form):
         """
         if self.rbt_unique.isChecked():
             query = QSqlQuery(self.database)
-            query.prepare("INSERT INTO activite (id_categorie_activite, date, heure_debut, heure_fin, "
-                      "date_limite_inscription) "
-                      "VALUES (:id_categorie_activite, :date, :heure_debut, :heure_fin, "
-                      ":date_limite_inscription)")
+            query.prepare("INSERT INTO activite (id_categorie_activite, date, heure_debut, "
+                          "heure_fin, date_limite_inscription) "
+                          "VALUES (:id_categorie_activite, :date, :heure_debut, :heure_fin, "
+                          ":date_limite_inscription)")
             query.bindValue(':id_categorie_activite', self.cbx_category_activite.currentIndex() + 1)
             query.bindValue(':date', self.ded_unique.date().toJulianDay())
             query.bindValue(':heure_debut', self.tim_debut.time().msecsSinceStartOfDay())
@@ -140,19 +145,19 @@ class NouvelleActivite(Form):
             # Ajouter les informations a la base de donnees
             for date_activite in liste_date:
                 query = QSqlQuery(self.database)
-                query.prepare("INSERT INTO activite (id_categorie_activite, date, heure_debut, heure_fin, "
-                              "date_limite_inscription) "
-                              "VALUES (:id_categorie_activite, :date_activite, :heure_debut, :heure_fin, "
-                              ":date_limite_inscription)")
+                query.prepare("INSERT INTO activite (id_categorie_activite, date, heure_debut, "
+                              "heure_fin, date_limite_inscription) "
+                              "VALUES (:id_categorie_activite, :date_activite, :heure_debut, "
+                              ":heure_fin, :date_limite_inscription)")
                 query.bindValue(':id_categorie_activite', self.cbx_category_activite.currentIndex() + 1)
-                query.bindValue(':date_activite', QDate(date_activite.year, date_activite.month, date_activite.day)
-                                .toJulianDay())
+                query.bindValue(':date_activite', QDate(date_activite.year, date_activite.month, 
+                                                        date_activite.day).toJulianDay())
                 query.bindValue(':heure_debut', self.tim_debut.time().msecsSinceStartOfDay())
                 query.bindValue(':heure_fin', self.tim_fin.time().msecsSinceStartOfDay())
 
                 # Date limite inscription
-                value_date = QDate(date_activite.year, date_activite.month, date_activite.day).toJulianDay() - \
-                             self.sbx_fin_inscription.value()
+                value_date = QDate(date_activite.year, date_activite.month, 
+                                   date_activite.day).toJulianDay() - self.sbx_fin_inscription.value()
                 query.bindValue(':date_limite_inscription', value_date)
                 query.exec_()
 

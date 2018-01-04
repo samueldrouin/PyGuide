@@ -1,9 +1,13 @@
+"""Création et modification des participantes"""
+
 # Python import
+import os
+
+# PyQt import
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QDate
 from PyQt5.QtSql import QSqlQuery
 from PyQt5 import uic
-import os
 
 # Project import
 from inscription_membre import NouvelleInscription, RenouvelerInscription
@@ -11,6 +15,7 @@ from form import Form
 
 
 class Participante(Form):
+    """Dialog permettant la création et la modification des participantes"""
     def __init__(self):
         super(Participante, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'participante.ui')
@@ -270,6 +275,7 @@ class Participante(Form):
 
 
 class NouvelleParticipante(Participante):
+    """Dialog permettant la création de nouvelle participante"""
     def __init__(self, database):
         super(NouvelleParticipante, self).__init__()
 
@@ -318,6 +324,7 @@ class NouvelleParticipante(Participante):
 
 
 class ModifierParticipante(Participante):
+    """Dialog permettant la modification de participante"""
     def __init__(self, participante_id, database):
         super(ModifierParticipante, self).__init__()
 

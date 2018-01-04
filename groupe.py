@@ -1,15 +1,20 @@
+"""Création de nouveau groupe"""
+
 # Python import
+import os
+
+# PyQt import
 from PyQt5.QtWidgets import QTableWidgetItem, QAbstractItemView, QMessageBox
 from PyQt5.QtCore import QTime, QDate
 from PyQt5 import uic
 from PyQt5.QtSql import QSqlQuery
-import os
 
 # Project import
 from form import Form
 
 
 class Groupe(Form):
+    """Dialog pour la création de l'inscription d'un nouveau groupe"""
     def __init__(self, database):
         super(Groupe, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'groupe.ui')

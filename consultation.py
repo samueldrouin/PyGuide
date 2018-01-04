@@ -1,8 +1,16 @@
+"""
+Dialog de consultation
+
+Sert à afficher les éléments simples qui sont rarement modifié
+"""
+
 # Python import
+import os
+
+# PyQt import
 from PyQt5 import uic
 from PyQt5.QtWidgets import QDialog, QHeaderView, QTableWidgetItem
 from PyQt5.QtSql import QSqlQuery
-import os
 
 # Project import
 from responsable import NouveauResponsable, ModifierResponsable
@@ -10,6 +18,7 @@ from type_activite import NouveauTypeActivite, ModifierTypeActivite
 
 
 class Consultation(QDialog):
+    """Affichage du dialog de consultation"""
     def __init__(self, type, database):
         """
         :param type:
