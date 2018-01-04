@@ -359,9 +359,6 @@ class CentralWidgetActivite(CentralWidget):
         self.table_widget = QTableWidget()
         self.layout.addWidget(self.table_widget)
 
-        # Slots
-        self.top_widget.btn_add.clicked.connect(self.nouvelle_activite)
-
         # Instance variable definition
         self.database = database
 
@@ -397,7 +394,6 @@ class CentralWidgetActivite(CentralWidget):
         """
         Affichage de la liste des activites
         """
-        print("UPDATE LISTE")
         # Fetch data from database
         query = QSqlQuery(self.database)
 
@@ -503,9 +499,6 @@ class CentralWidgetLieux(CentralWidget):
 
         # Instance variable definition
         self.database = database
-
-        # Slots
-        self.top_widget.btn_add.clicked.connect(self.nouveau_lieu)
 
         # Table widget parameters
         self.table_widget.setColumnCount(5)
