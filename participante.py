@@ -53,7 +53,7 @@ class Participante(Form):
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
-        self.txt_code_postal.cursorPositionChanged.connect(self.zip_code_parsing)
+        self.txt_code_postal.cursorPositionChanged.connect(self.afficher_code_postal)
         self.txt_telephone1.cursorPositionChanged.connect(self.set_parsed_phone_number)
         self.txt_telephone2.cursorPositionChanged.connect(self.set_parsed_phone_number)
         self.chk_membre.clicked.connect(self.nouveau_membre)
@@ -224,22 +224,14 @@ class Participante(Form):
         """
         self.chk_membre.setChecked(False)
 
-    def zip_code_parsing(self, old, new):
+    def afficher_code_postal(self, old, new):
         """
-        Parsing zip code
+        Affiche le code postal formatté
         :param old: Old cursor position
         :param new: New cursor position
         """
-        # Récupérer le code postal
-        zip_code = self.txt_code_postal.text()
-
-        # Ajouter l'espace au code postal
-        if new == 4 and old == 3:
-            if zip_code[3] != " ":
-                zip_code = zip_code[:3] + " " + zip_code[3:]
-        
-        # Afficher le code postal en majuscules
-        self.txt_code_postal.setText(zip_code.upper())
+        code_postal = self.zip_code_parsing(old, new, self.sender().text())
+        self.sender().setText(code_postal)
 
     def set_parsed_phone_number(self, old, new):
         """

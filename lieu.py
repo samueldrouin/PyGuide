@@ -33,24 +33,16 @@ class Lieu(Form):
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
         self.btn_add.clicked.connect(self.check_fields)
-        self.txt_code_postal.cursorPositionChanged.connect(self.zip_code_parsing)
+        self.txt_code_postal.cursorPositionChanged.connect(self.afficher_code_postal)
 
-    def zip_code_parsing(self, old, new):
+    def afficher_code_postal(self, old, new):
         """
-        Parsing zip code
+        Affiche le code postal formatté
         :param old: Old cursor position
         :param new: New cursor position
         """
-        # Récupérer le code postal
-        zip_code = self.txt_code_postal.text()
-
-        # Ajouter l'espace au code postal
-        if new == 4 and old == 3:
-            if zip_code[3] != " ":
-                zip_code = zip_code[:3] + " " + zip_code[3:]
-
-        # Afficher le code postal en majuscules
-        self.txt_code_postal.setText(zip_code.upper())
+        code_postal = self.zip_code_parsing(old, new, self.sender().text())
+        self.sender().setText(code_postal)
 
     def check_fields(self):
         """

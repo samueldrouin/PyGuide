@@ -161,12 +161,30 @@ class Form(QDialog):
         :param str: Current text string
         :return: Parsed phone number
         """
+        # Ajouter le premier espace
         if new == 4 and old == 3:
             if str[3] != " ":
                 phone_number = str[:3] + " " + str[3:]
                 return phone_number
+        # Ajouter le dash
         if new == 8 and old == 7:
             if str[7] != "-":
                 phone_number = str[:7] + "-" + str[7:]
                 return phone_number
+        # Aucune modification ne doit être effectuée
         return str
+
+    def zip_code_parsing(self, old, new, str):
+        """
+        Parsing zip code
+        :param old: Old cursor position
+        :param new: New cursor position
+        :return: Code postal formatte
+        """
+        # Ajouter l'espace au code postal
+        if new == 4 and old == 3:
+            if str[3] != " ":
+                str = str[:3] + " " + str[3:]
+        
+        # Retourner le code postal en majuscules
+        return str.upper()
