@@ -9,7 +9,7 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTableWidget, QMessageBox, QTableWidgetItem, \
     QAbstractItemView, QHeaderView
 from PyQt5.QtCore import QSettings, QDate, QTime
-from PyQt5.Qt import QApplication
+from PyQt5.Qt import QApplication, QDialog
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 
 # Projet import
@@ -162,7 +162,10 @@ class MainWindow(QMainWindow):
         """
         Affiche les informations sur l'application
         """
-        a_propos = APropos()
+        a_propos = QDialog()
+        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'about.ui')
+        uic.loadUi(ui, a_propos)
+        a_propos.btn_close.clicked.connect(a_propos.close)
         a_propos.exec()
 
     def set_participantes_central_widget(self):
