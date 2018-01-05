@@ -4,7 +4,7 @@
 import os
 
 # PyQt import
-from PyQt5.QtWidgets import QTableWidgetItem, QAbstractItemView, QMessageBox
+from PyQt5.QtWidgets import QTableWidgetItem, QMessageBox
 from PyQt5.QtCore import QTime, QDate
 from PyQt5 import uic
 from PyQt5.QtSql import QSqlQuery
@@ -41,9 +41,13 @@ class Groupe(Form):
         activite_row = self.tbl_activite.currentRow()
         if activite_row != -1:
             query = QSqlQuery(self.database)
-            query.prepare("INSERT OR REPLACE INTO groupe (id_groupe, id_activite, f_0_4, f_5_11, f_12_17, f_18_34, f_35_64, f_65, h_0_4, h_5_11, h_12_17, h_18_34, h_35_64, h_65) "
-                          "VALUES ((SELECT id_groupe FROM groupe WHERE id_activite = :id_activite), "
-                          ":id_activite, :f_0_4, :f_5_11, :f_12_17, :f_18_34, :f_35_64, :f_65, :h_0_4, :h_5_11, :h_12_17, :h_18_34, :h_35_64, :h_65) ")
+            query.prepare("INSERT OR REPLACE INTO groupe (id_groupe, id_activite, f_0_4, f_5_11, "
+                          "f_12_17, f_18_34, f_35_64, f_65, h_0_4, h_5_11, h_12_17, h_18_34, "
+                          "h_35_64, h_65) "
+                          "VALUES ((SELECT id_groupe FROM groupe WHERE id_activite = "
+                          ":id_activite), :id_activite, :f_0_4, :f_5_11, :f_12_17, :f_18_34, "
+                          ":f_35_64, :f_65, :h_0_4, :h_5_11, :h_12_17, :h_18_34, :h_35_64, "
+                          ":h_65) ")
             query.bindValue(':id_activite', self.tbl_activite.item(activite_row, 0).text())
             query.bindValue(':f_0_4', self.sbx_f_0_4.value())
             query.bindValue(':f_5_11', self.sbx_f_5_11.value())

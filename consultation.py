@@ -19,7 +19,7 @@ from type_activite import NouveauTypeActivite, ModifierTypeActivite
 
 class Consultation(QDialog):
     """Affichage du dialog de consultation"""
-    def __init__(self, type, database):
+    def __init__(self, type_consultation, database):
         """
         :param type:
             1 : Type d'activite
@@ -40,7 +40,7 @@ class Consultation(QDialog):
         self.tbl_resultat.setColumnHidden(0, True)
 
         # Type d'activite
-        if type == 1:
+        if type_consultation == 1:
             # Interface
             self.lbl_title.setText("Consultation des types d'activité")
             self.window().setWindowTitle("Consultation des types d'activité")
@@ -54,7 +54,7 @@ class Consultation(QDialog):
             self.update_liste_type_activite()
 
         # Responsable
-        elif type == 2:
+        elif type_consultation == 2:
             # Interface
             self.lbl_title.setText("Consultation des responsables")
             self.window().setWindowTitle("Consultation des responsables")

@@ -104,7 +104,8 @@ class NouvelleActivite(Form):
                           "heure_fin, date_limite_inscription) "
                           "VALUES (:id_categorie_activite, :date, :heure_debut, :heure_fin, "
                           ":date_limite_inscription)")
-            query.bindValue(':id_categorie_activite', self.cbx_category_activite.itemData(self.cbx_category_activite.currentIndex()))
+            query.bindValue(':id_categorie_activite',
+                            self.cbx_category_activite.itemData(self.cbx_category_activite.currentIndex()))
             query.bindValue(':date', self.ded_unique.date().toJulianDay())
             query.bindValue(':heure_debut', self.tim_debut.time().msecsSinceStartOfDay())
             query.bindValue(':heure_fin', self.tim_fin.time().msecsSinceStartOfDay())
@@ -149,14 +150,15 @@ class NouvelleActivite(Form):
                               "heure_fin, date_limite_inscription) "
                               "VALUES (:id_categorie_activite, :date_activite, :heure_debut, "
                               ":heure_fin, :date_limite_inscription)")
-                query.bindValue(':id_categorie_activite', self.cbx_category_activite.itemData(self.cbx_category_activite.currentIndex()))
-                query.bindValue(':date_activite', QDate(date_activite.year, date_activite.month, 
+                query.bindValue(':id_categorie_activite',
+                                self.cbx_category_activite.itemData(self.cbx_category_activite.currentIndex()))
+                query.bindValue(':date_activite', QDate(date_activite.year, date_activite.month,
                                                         date_activite.day).toJulianDay())
                 query.bindValue(':heure_debut', self.tim_debut.time().msecsSinceStartOfDay())
                 query.bindValue(':heure_fin', self.tim_fin.time().msecsSinceStartOfDay())
 
                 # Date limite inscription
-                value_date = QDate(date_activite.year, date_activite.month, 
+                value_date = QDate(date_activite.year, date_activite.month,
                                    date_activite.day).toJulianDay() - self.sbx_fin_inscription.value()
                 query.bindValue(':date_limite_inscription', value_date)
                 query.exec_()

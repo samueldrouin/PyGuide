@@ -1,20 +1,13 @@
 """Classe de base des dialogs"""
 
-# Python import
-import os
-
 # PyQt import
 from PyQt5.QtWidgets import QDialog, QCompleter, QMessageBox
-from PyQt5.QtCore import QRegExp, Qt, QAbstractItemModel, QVariant
+from PyQt5.QtCore import QRegExp, Qt
 from PyQt5.QtGui import QRegExpValidator
-from PyQt5 import uic
-from PyQt5.QtSql import QSqlQuery
 
 
 class Form(QDialog):
     """Classe de base des dialogs"""
-    def __init__(self):
-        super(Form, self).__init__()
 
     @staticmethod
     def address_validator():
@@ -94,54 +87,54 @@ class Form(QDialog):
         return c
 
     @staticmethod
-    def check_string(s):
+    def check_string(str):
         """
         Check if the string s is empty for SQLite
         :param s: String
         :return: String or None
         """
-        if not s:
-            s = None
-        return s
+        if not str:
+            str = None
+        return str
 
     @staticmethod
-    def check_int(s):
+    def check_int(str):
         """
         Convert s to an int for SQLite
         :param s: String
         :return: Int or None
         """
-        if s is "":
-            s = None
+        if str == "":
+            str = None
         else:
-            int(s)
-        return s
+            int(str)
+        return str
 
     @staticmethod
-    def check_phone_number(s):
+    def check_phone_number(str):
         """
         Convert s to phone number for SQLite
         :param s: String
         :return: Phone number Int or None
         """
-        if s is not "":
-            s = s.replace(" ", "")
-            s = s.replace("-", "")
-            s = int(s)
+        if str != "":
+            str = str.replace(" ", "")
+            str = str.replace("-", "")
+            str = int(str)
         else:
-            s = None
-        return s
+            str = None
+        return str
 
     @staticmethod
-    def xstr(s):
+    def xstr(str):
         """
         Return and empty string instead of None
         :param s: String or None
         :return: String or empty string
         """
-        if not s:
-            s = ''
-        return s
+        if not str:
+            str = ''
+        return str
 
     @staticmethod
     def message_box_missing_information(text):

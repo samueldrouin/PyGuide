@@ -3,7 +3,6 @@
 # Python import
 import os
 import pathlib
-import datetime
 
 # PyQt import
 from PyQt5 import uic
@@ -30,7 +29,7 @@ class MainWindow(QMainWindow):
     """Interface de la fenêtre principale"""
     def __init__(self):
         super(MainWindow, self).__init__()
-        ui = os.path.join(os.path.dirname(__file__),'GUI','mainwindow.ui')
+        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'mainwindow.ui')
         uic.loadUi(ui, self)
 
         # Connection à la base de données
@@ -66,8 +65,8 @@ class MainWindow(QMainWindow):
         while database is None:
             msgbox = QMessageBox()
             msgbox.setText("Aucune base de donnée")
-            msgbox.setInformativeText("Vous devez sélectionner la base de donnée dans les réglages avant de pouvoir "
-                                      "utiliser le programme. ")
+            msgbox.setInformativeText("Vous devez sélectionner la base de donnée dans les réglages "
+                                      "avant de pouvoir utiliser le programme. ")
             msgbox.setIcon(QMessageBox.Critical)
             msgbox.setStandardButtons(QMessageBox.Ok)
             msgbox.setDefaultButton(QMessageBox.Ok)
@@ -104,7 +103,8 @@ class MainWindow(QMainWindow):
                 msgbox = QMessageBox()
                 msgbox.setText("Erreur de connection")
                 msgbox.setInformativeText(
-                    "Une erreur lors de la connection à la base de données empêche l'ouverture du programme. Appuyez "
+                    "Une erreur lors de la connection à la base de données "
+                    "empêche l'ouverture du programme. Appuyez "
                     "sur annuler pour fermer le programme")
                 msgbox.setDetailedText(db.lastError().text())
                 msgbox.setIcon(QMessageBox.Critical)
@@ -158,7 +158,7 @@ class MainWindow(QMainWindow):
         groupe.exec()
 
     @staticmethod
-    def a_propos(self):
+    def a_propos():
         """
         Affiche les informations sur l'application
         """
@@ -213,7 +213,7 @@ CentralWidget spécifiques :
 class CentralWidgetParticipantes(CentralWidget):
     """
     CentralWidget pour les participantes
-    
+
     Affiche les informations sur les participantes
     Permet l'ouverture des dialogs pour modificer et ajouter des participantes
     """
@@ -359,7 +359,7 @@ class CentralWidgetParticipantes(CentralWidget):
 class CentralWidgetActivite(CentralWidget):
     """
     CentralWidget pour les activités
-    
+
     Affiche les informations sur les activités
     Permet l'ouverture des dialogs pour modificer et ajouter des activités
     """
@@ -412,10 +412,11 @@ class CentralWidgetActivite(CentralWidget):
         query = QSqlQuery(self.database)
 
         sql = "SELECT activite.id_activite, activite.date, activite.heure_debut, activite.heure_fin, " \
-              "activite.date_limite_inscription, categorie_activite.nom, lieu.nom, categorie_activite.prix_membre, " \
-              "categorie_activite.prix_non_membre " \
+              "activite.date_limite_inscription, categorie_activite.nom, lieu.nom, " \
+              "categorie_activite.prix_membre, categorie_activite.prix_non_membre " \
               "FROM activite " \
-              "LEFT JOIN categorie_activite ON activite.id_categorie_activite = categorie_activite.id_categorie_activite " \
+              "LEFT JOIN categorie_activite ON activite.id_categorie_activite = " \
+              "categorie_activite.id_categorie_activite " \
               "LEFT JOIN lieu ON categorie_activite.id_lieu = lieu.id_lieu "
 
         # Ajout des options de recherche
@@ -426,17 +427,21 @@ class CentralWidgetActivite(CentralWidget):
             else:
                 sql = sql + "WHERE lieu.nom LIKE '%{}%' ".format(search)
 
-            sql = sql + "AND activite.date >= " + str(self.top_widget.ded_start.date().toJulianDay()) + \
-                        " AND activite.date <= " + str(self.top_widget.ded_end.date().toJulianDay()) + " "
+            sql = sql + "AND activite.date >= " + \
+                        str(self.top_widget.ded_start.date().toJulianDay()) + \
+                        " AND activite.date <= " + \
+                        str(self.top_widget.ded_end.date().toJulianDay()) + " "
         else:
-            sql = sql + "WHERE activite.date >= " + str(self.top_widget.ded_start.date().toJulianDay()) + \
-                        " AND activite.date <= " + str(self.top_widget.ded_end.date().toJulianDay()) + " "
+            sql = sql + "WHERE activite.date >= " + \
+                        str(self.top_widget.ded_start.date().toJulianDay()) + \
+                        " AND activite.date <= " + \
+                        str(self.top_widget.ded_end.date().toJulianDay()) + " "
 
 
         # Ajouter les options de tri
         if self.top_widget.cbx_sort.currentText() == "Nom de l'activité":
             sql = sql + "ORDER BY categorie_activite.nom "
-        elif self.top_widget.cbx_sort.currentText() == "Lieu" :
+        elif self.top_widget.cbx_sort.currentText() == "Lieu":
             sql = sql + "ORDER BY lieu.nom "
         elif self.top_widget.cbx_sort.currentText() == "Prix régulier":
             sql = sql + "ORDER BY categorie_activite.prix_non_membre "
@@ -616,7 +621,7 @@ class CentralWidgetLieux(CentralWidget):
 class CentralWidgetCategorieActivite(CentralWidget):
     """
     CentralWidget pour les catégories d'activité
-    
+
     Affiche les informations sur les catégories d'activité
     Permet l'ouverture des dialogs pour modificer et ajouter des catégories d'activité
     """
@@ -628,7 +633,8 @@ class CentralWidgetCategorieActivite(CentralWidget):
 
         # GUI setup
         self.top_widget = QWidget()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_categorie_activite.ui')
+        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 
+                          'widget_categorie_activite.ui')
         uic.loadUi(ui, self.top_widget)
         self.layout.addWidget(self.top_widget)
 
@@ -663,14 +669,16 @@ class CentralWidgetCategorieActivite(CentralWidget):
         """
         query = QSqlQuery(self.database)
 
-        sql = "SELECT categorie_activite.id_categorie_activite, categorie_activite.nom, categorie_activite.prix_membre, " \
-              "categorie_activite.prix_non_membre, " \
+        sql = "SELECT categorie_activite.id_categorie_activite, categorie_activite.nom, " \
+              "categorie_activite.prix_membre, categorie_activite.prix_non_membre, " \
               "categorie_activite.participante_minimum, categorie_activite.participante_maximum, " \
               "responsable.prenom, responsable.nom, lieu.nom, type_activite.nom " \
               "FROM categorie_activite " \
-              "LEFT JOIN responsable ON categorie_activite.id_responsable = responsable.id_responsable " \
+              "LEFT JOIN responsable ON categorie_activite.id_responsable = " \
+              "responsable.id_responsable " \
               "LEFT JOIN lieu ON categorie_activite.id_lieu = lieu.id_lieu " \
-              "LEFT JOIN type_activite  ON categorie_activite.id_type_activite = type_activite.id_type_activite "
+              "LEFT JOIN type_activite  ON categorie_activite.id_type_activite = " \
+              "type_activite.id_type_activite "
         query.exec_(sql)
 
         # Ajout des options de recherche
@@ -679,7 +687,8 @@ class CentralWidgetCategorieActivite(CentralWidget):
             if self.top_widget.cbx_search.currentText() == "Nom de la catégorie":
                 sql = sql + "WHERE categorie_activite.nom LIKE '%{}%' ".format(search)
             elif self.top_widget.cbx_search.currentText() == "Responsable":
-                sql = sql + "WHERE responsable.prenom LIKE '%{0}%' OR responsable.nom LIKE '%{0}%' ".format(search)
+                sql = sql + "WHERE responsable.prenom LIKE '%{0}%' " \
+                            "OR responsable.nom LIKE '%{0}%' ".format(search)
             else:
                 sql = sql + "WHERE lieu.nom LIKE '%{}%' ".format(search)
 
@@ -750,6 +759,7 @@ class CentralWidgetCategorieActivite(CentralWidget):
         :param index: Index de la ligne du tableau
         """
         id_categorie_activite = self.table_widget.item(index.row(), 0).text()
-        modifier_categorie_activite = ModifierCategorieActivite(id_categorie_activite, self.database)
+        modifier_categorie_activite = ModifierCategorieActivite(id_categorie_activite, 
+                                                                self.database)
         modifier_categorie_activite.accepted.connect(self.update_list)
         modifier_categorie_activite.exec()

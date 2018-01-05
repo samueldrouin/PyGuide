@@ -4,7 +4,7 @@
 import os
 
 # PyQt import
-from PyQt5.QtWidgets import QAbstractItemView, QMessageBox, QTableWidgetItem
+from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem
 from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 from PyQt5.QtCore import QTime, QDate
 from PyQt5 import uic
@@ -15,7 +15,7 @@ from form import Form
 class Facturation(Form):
     """Dialog pour la création de nouvelle facture"""
     def __init__(self, database):
-        super(Facturation,self).__init__()
+        super(Facturation, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'facturation.ui')
         uic.loadUi(ui, self)
 

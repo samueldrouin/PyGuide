@@ -91,8 +91,8 @@ class Participante(Form):
         """
         if self.txt_prenom.text() != "":
             if len(self.txt_telephone1.text()) == 12:
-                    self.prepare_data()
-                    return True
+                self.prepare_data()
+                return True
             else:
                 msgbox = QMessageBox()
                 msgbox.setWindowTitle("Information manquante")
@@ -163,13 +163,13 @@ class Participante(Form):
         fields['Poste 2'] = poste2
 
         if self.sbx_annee_naissance.value() == 0:
-            annee_naissance = QDate(1,1,1).toJulianDay()
+            annee_naissance = QDate(1, 1, 1).toJulianDay()
         else:
             annee_naissance = QDate(self.sbx_annee_naissance.value(), 1, 1).toJulianDay()
         fields['Annee Naissance'] = annee_naissance
 
         personne_nourries = self.sbx_personnes_nourries.value()
-        fields['Personne nourries']  = personne_nourries
+        fields['Personne nourries'] = personne_nourries
 
         consentement_photo = self.cbx_photo.isChecked()
         fields['Consentement photo'] = consentement_photo
@@ -194,7 +194,8 @@ class Participante(Form):
             phone = self.txt_telephone1.text()
 
             # Ouverture de la fenetre d'inscription
-            inscription_membre = RenouvelerInscription(nom, phone, self.participante_id, self.database)
+            inscription_membre = RenouvelerInscription(nom, phone, self.participante_id,
+                                                       self.database)
             inscription_membre.accepted.connect(self.show_member_informations)
             inscription_membre.exec()
 
@@ -209,7 +210,8 @@ class Participante(Form):
             phone = self.txt_telephone1.text()
 
             # Ouverture de la fenetre d'inscription
-            inscription_membre = NouvelleInscription(nom, phone, self.participante_id, self.database)
+            inscription_membre = NouvelleInscription(nom, phone, self.participante_id,
+                                                     self.database)
             inscription_membre.accepted.connect(self.show_member_informations)
             inscription_membre.rejected.connect(self.inscription_annulee)
             inscription_membre.exec()
@@ -300,12 +302,13 @@ class NouvelleParticipante(Participante):
     def process_data(self, prepared_data):
         # Insert data
         query = QSqlQuery(self.database)
-        query.prepare("INSERT INTO participante (appellation, prenom, nom, adresse_1, adresse_2, ville, province, code_postal," \
-              "courriel, telephone_1, poste_telephone_1, telephone_2, poste_telephone_2, date_naissance, " \
-              "personne_nourrie, consentement_photo) " \
-              "VALUES (:appelation, :prenom, :nom, :adresse1, :adresse2, :ville, :province, :codepostal, "
-                      ":courriel, :phone1, :poste1, :phone2, :poste2, :anneenaissance, :personnenourries, "
-                      ":consentementphoto)")
+        query.prepare("INSERT INTO participante (appellation, prenom, nom, adresse_1, adresse_2, "
+                      "ville, province, code_postal, courriel, telephone_1, poste_telephone_1, "
+                      "telephone_2, poste_telephone_2, date_naissance, personne_nourrie, "
+                      "consentement_photo) "
+                      "VALUES (:appelation, :prenom, :nom, :adresse1, :adresse2, :ville, "
+                      ":province, :codepostal, :courriel, :phone1, :poste1, :phone2, :poste2, "
+                      ":anneenaissance, :personnenourries, :consentementphoto)")
         query.bindValue(':appelation', prepared_data['Appelation'])
         query.bindValue(':prenom', prepared_data['Prenom'])
         query.bindValue(':nom', prepared_data['Nom'])
@@ -363,9 +366,11 @@ class ModifierParticipante(Participante):
 
         # Get informations from database
         query = QSqlQuery(self.database)
-        query.prepare   ("SELECT appellation, prenom, nom, adresse_1, adresse_2, ville, province, code_postal," \
-              "courriel, telephone_1, poste_telephone_1, telephone_2, poste_telephone_2, date_naissance, " \
-              "personne_nourrie, consentement_photo FROM participante WHERE id_participante = :idparticipante")
+        query.prepare("SELECT appellation, prenom, nom, adresse_1, adresse_2, ville, province, "
+                      "code_postal, courriel, telephone_1, poste_telephone_1, telephone_2, "
+                      "poste_telephone_2, date_naissance, personne_nourrie, consentement_photo "
+                      "FROM participante "
+                      "WHERE id_participante = :idparticipante")
         query.bindValue(':idparticipante', int(self.participante_id))
         query.exec_()
 
@@ -409,8 +414,9 @@ class ModifierParticipante(Participante):
     def process_data(self, prepared_data):
         query = QSqlQuery(self.database)
         query.prepare("UPDATE participante "
-                      "SET appellation = :appelation, prenom = :prenom, nom = :nom, adresse_1 = :adresse1, "
-                      "adresse_2 = :adresse2, ville = :ville, province = :province, code_postal = :codepostal, "
+                      "SET appellation = :appelation, prenom = :prenom, nom = :nom, "
+                      "adresse_1 = :adresse1, adresse_2 = :adresse2, ville = :ville, "
+                      "province = :province, code_postal = :codepostal, "
                       "courriel = :courriel, telephone_1 = :phone1, poste_telephone_1 = :poste1, "
                       "telephone_2 = :phone2, poste_telephone_2 = :poste2, "
                       "date_naissance = :anneenaissance, personne_nourrie = :personnenourries, "

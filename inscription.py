@@ -4,7 +4,7 @@
 import os
 
 # PyQt import
-from PyQt5.QtWidgets import QMessageBox, QAbstractItemView, QTableWidgetItem
+from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem
 from PyQt5.QtCore import QDate, QTime
 from PyQt5.QtSql import QSqlQuery
 from PyQt5 import uic
@@ -16,7 +16,7 @@ from form import Form
 class Inscription(Form):
     """Dialog pour la création de nouvelle inscriptions"""
     def __init__(self, database):
-        super(Inscription,self).__init__()
+        super(Inscription, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'inscription.ui')
         uic.loadUi(ui, self)
 
