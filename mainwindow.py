@@ -758,6 +758,7 @@ class CentralWidgetCategorieActivite(CentralWidget):
         :return:
         """
         categorie_activite = NouvelleCategorieActivite(self.database)
+        categorie_activite.accepted.connect(self.update_list)
         categorie_activite.exec()
 
     def modifier_categorie_activite(self, index):
