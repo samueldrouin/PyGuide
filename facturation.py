@@ -34,6 +34,9 @@ class Facturation(Form):
         # Afficher la liste des activite
         self.afficher_liste_activite()
 
+        # Afficher le numero de la facture
+        self.get_numero_facture()
+
         # Slots
         self.btn_annuler.clicked.connect(self.close)
         self.txt_numero.cursorPositionChanged.connect(self.phone_number_parsing)
