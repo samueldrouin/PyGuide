@@ -12,16 +12,21 @@ from PyQt5 import uic
 # Project import
 from form import Form
 
-class Facturation(Form):
-    """Dialog pour la création de nouvelle facture"""
+class Facture(Form):
+    """Fonctions nécessaires pour tous les types de facture"""
     def __init__(self, database):
-        super(Facturation, self).__init__()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'facturation.ui')
-        uic.loadUi(ui, self)
-
+        return super(Facture, self).__init__()
+   
         # Instance variable definition
         self.database = database
         self.id_participante = None
+
+class Facturation(Facture):
+    """Dialog pour la création de nouvelle facture"""
+    def __init__(self, database):
+        super(Facturation, self).__init__(database)
+        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'facturation.ui')
+        uic.loadUi(ui, self)
 
         # Validator
         self.txt_numero.setValidator(self.phone_validator())
@@ -39,7 +44,7 @@ class Facturation(Form):
 
         # Slots
         self.btn_annuler.clicked.connect(self.close)
-        self.txt_numero.cursorPositionChanged.connect(self.phone_number_parsing)
+        self.txt_numero.cursorPositionChanged.connect(self.set_parsed_phone_number)
         self.txt_numero.returnPressed.connect(self.afficher_information_participante)
         self.txt_activite.textChanged.connect(self.afficher_liste_activite)
         self.btn_ajouter_activite.clicked.connect(self.ajout_activite)
@@ -48,21 +53,14 @@ class Facturation(Form):
         self.btn_remove.clicked.connect(self.retirer_activite)
         self.btn_enregistrer.clicked.connect(self.process)
 
-    def phone_number_parsing(self, old, new):
+    def set_parsed_phone_number(self, old, new):
         """
-        Parsing phone number
+        Show parsed phone number
         :param old: Old cursor position
         :param new: New cursor position
         """
-        phone_number = self.sender().text()
-        if new == 4 and old == 3:
-            if phone_number[3] != " ":
-                phone_number = phone_number[:3] + " " + phone_number[3:]
-                self.sender().setText(phone_number)
-        if new == 8 and old == 7:
-            if phone_number[7] != "-":
-                phone_number = phone_number[:7] + "-" + phone_number[7:]
-                self.sender().setText(phone_number)
+        phone_number = self.phone_number_parsing(old, new, self.sender().text())
+        self.sender().setText(phone_number)
 
     def afficher_information_participante(self):
         """

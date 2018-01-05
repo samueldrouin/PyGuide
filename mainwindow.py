@@ -17,7 +17,6 @@ from participante import NouvelleParticipante, ModifierParticipante
 from lieu import NouveauLieu, ModifierLieu
 from activite import NouvelleActivite
 from categorie_activite import NouvelleCategorieActivite, ModifierCategorieActivite
-from a_propos import APropos
 from settings import Settings
 from consultation import Consultation
 from facturation import Facturation

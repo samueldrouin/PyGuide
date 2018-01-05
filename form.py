@@ -151,3 +151,22 @@ class Form(QDialog):
         msgbox.setStandardButtons(QMessageBox.Ok)
         msgbox.setDefaultButton(QMessageBox.Ok)
         msgbox.exec()
+
+    @staticmethod
+    def phone_number_parsing(old, new, str):
+        """
+        Parsing phone number
+        :param old: Old cursor position
+        :param new: New cursor position
+        :param str: Current text string
+        :return: Parsed phone number
+        """
+        if new == 4 and old == 3:
+            if str[3] != " ":
+                phone_number = str[:3] + " " + str[3:]
+                return phone_number
+        if new == 8 and old == 7:
+            if str[7] != "-":
+                phone_number = str[:7] + "-" + str[7:]
+                return phone_number
+        return str

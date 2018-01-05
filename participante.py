@@ -54,8 +54,8 @@ class Participante(Form):
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
         self.txt_code_postal.cursorPositionChanged.connect(self.zip_code_parsing)
-        self.txt_telephone1.cursorPositionChanged.connect(self.phone_number_parsing)
-        self.txt_telephone2.cursorPositionChanged.connect(self.phone_number_parsing)
+        self.txt_telephone1.cursorPositionChanged.connect(self.set_parsed_phone_number)
+        self.txt_telephone2.cursorPositionChanged.connect(self.set_parsed_phone_number)
         self.chk_membre.clicked.connect(self.nouveau_membre)
         self.btn_add.clicked.connect(self.check_fields)
         self.cbx_appelation.currentTextChanged.connect(self.appellation_changed)
@@ -241,21 +241,14 @@ class Participante(Form):
         # Afficher le code postal en majuscules
         self.txt_code_postal.setText(zip_code.upper())
 
-    def phone_number_parsing(self, old, new):
+    def set_parsed_phone_number(self, old, new):
         """
         Parsing phone number
         :param old: Old cursor position
         :param new: New cursor position
         """
-        phone_number = self.sender().text()
-        if new == 4 and old == 3:
-            if phone_number[3] != " ":
-                phone_number = phone_number[:3] + " " + phone_number[3:]
-                self.sender().setText(phone_number)
-        if new == 8 and old == 7:
-            if phone_number[7] != "-":
-                phone_number = phone_number[:7] + "-" + phone_number[7:]
-                self.sender().setText(phone_number)
+        phone_number = self.phone_number_parsing(old, new, self.sender().text())
+        self.sender().setText(phone_number)
 
     def show_member_informations(self):
         """
