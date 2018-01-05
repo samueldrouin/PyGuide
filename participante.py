@@ -42,10 +42,6 @@ class Participante(Form):
         # Completer
         self.txt_ville.setCompleter(self.ville_completer())
 
-        # Valeur par default de l'annee de naissance
-        current_date = QDate.currentDate()
-        self.ded_date_naissance.setDate(current_date)
-
         # Cacher les informations du membre par default
         self.chk_actif.setHidden(True)
         self.lbl_numero_membre.setHidden(True)
@@ -71,9 +67,21 @@ class Participante(Form):
         """
         if text == "Mme." or text == "M." or text == "Autre" or text == "Employée":
             self.txt_nom.show()
+            self.lbl_annee_naissance.show()
+            self.sbx_annee_naissance.show()
+            self.lbl_personne_nourries.show()
+            self.sbx_personnes_nourries.show()
+            self.lbl_consentement.show()
+            self.cbx_photo.show()
             self.txt_prenom.setPlaceholderText("Prénom")
         else:
             self.txt_nom.hide()
+            self.lbl_annee_naissance.hide()
+            self.sbx_annee_naissance.hide()
+            self.lbl_personne_nourries.hide()
+            self.sbx_personnes_nourries.hide()
+            self.lbl_consentement.hide()
+            self.cbx_photo.hide()
             self.txt_prenom.setPlaceholderText(text)
 
     def check_fields(self):
@@ -154,7 +162,10 @@ class Participante(Form):
         poste2 = self.check_int(self.txt_poste2.text())
         fields['Poste 2'] = poste2
 
-        annee_naissance = self.ded_date_naissance.date().toJulianDay()
+        if self.sbx_annee_naissance.value() == 0:
+            annee_naissance = QDate(1,1,1).toJulianDay()
+        else:
+            annee_naissance = QDate(self.sbx_annee_naissance.value(), 1, 1).toJulianDay()
         fields['Annee Naissance'] = annee_naissance
 
         personne_nourries = self.sbx_personnes_nourries.value()
@@ -385,7 +396,7 @@ class ModifierParticipante(Participante):
             self.txt_telephone2.setText(telephone2)
 
         self.txt_poste2.setText(str(query.value(12)))
-        self.ded_date_naissance.setDate(QDate.fromJulianDay(int(query.value(13))))
+        self.sbx_annee_naissance.setValue(QDate.fromJulianDay(int(query.value(13))).year())
         self.sbx_personnes_nourries.setValue(int(query.value(14)))
 
         if int(query.value(15)):
