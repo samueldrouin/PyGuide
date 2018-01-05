@@ -33,7 +33,7 @@ class Form(QDialog):
         RegExp validator for canadian zip code
         :return: Zip Code RegExpValidator
         """
-        v = QRegExpValidator(QRegExp("^[A-Z]{1}[0-9]{1}[A-Z]{1}[0-9 ]{1}[0-9]{1}[A-Z]{1}[0-9]{1}$"))
+        v = QRegExpValidator(QRegExp("^[A-Za-z]{1}[0-9]{1}[A-Za-z]{1}[0-9 ]{1}[0-9]{1}[A-Za-z]{1}[0-9]{1}$"))
         return v
 
     @staticmethod
@@ -78,7 +78,7 @@ class Form(QDialog):
         Haut-Richelieu cities completer
         :return: Completer
         """
-        liste_ville = ["Saint-Jean-sur-Richelieu", "Saint-Blaire-sur-Richelieu", "Saint-Paul-de-l'Île-aux-Noix",
+        liste_ville = ["Saint-Jean-sur-Richelieu", "Saint-Blaise-sur-Richelieu", "Saint-Paul-de-l'Île-aux-Noix",
                        "Saint-Valentin", "Lacolle", "Noyan", "Saint-Sébastien", "Henryville", "Saint-Alexandre",
                        "Sainte-Anne-de-Sabrevois", "Sainte-Brigide-d'Iberville", "Mont-Saint-Grégoire",
                        "Venise-en-Québec", "Saint-Georges-de-Clarenceville"]

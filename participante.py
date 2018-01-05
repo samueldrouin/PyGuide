@@ -230,11 +230,16 @@ class Participante(Form):
         :param old: Old cursor position
         :param new: New cursor position
         """
+        # Récupérer le code postal
+        zip_code = self.txt_code_postal.text()
+
+        # Ajouter l'espace au code postal
         if new == 4 and old == 3:
-            zip_code = self.txt_code_postal.text()
             if zip_code[3] != " ":
                 zip_code = zip_code[:3] + " " + zip_code[3:]
-                self.txt_code_postal.setText(zip_code)
+        
+        # Afficher le code postal en majuscules
+        self.txt_code_postal.setText(zip_code.upper())
 
     def phone_number_parsing(self, old, new):
         """
