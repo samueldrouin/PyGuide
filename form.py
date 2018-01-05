@@ -174,6 +174,7 @@ class Form(QDialog):
         # Aucune modification ne doit être effectuée
         return str
 
+    @staticmethod
     def zip_code_parsing(self, old, new, str):
         """
         Parsing zip code
