@@ -15,14 +15,14 @@ from form import Form
 
 class InscriptionMembre(Form):
     """Dialog pour l'inscription ou le renouvellement d'un nouveau membre"""
-    def __init__(self):
+    def __init__(self, database):
         super(InscriptionMembre, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'inscription_membre.ui')
         uic.loadUi(ui, self)
 
         # Instance variable definition
         self.id_participante = None
-        self.database = None
+        self.database = database
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
@@ -131,11 +131,10 @@ class InscriptionMembre(Form):
 class NouvelleInscription(InscriptionMembre):
     """Dialog pour l'inscription de nouveau membre"""
     def __init__(self, nom, phone, id_participante, database):
-        super(NouvelleInscription, self).__init__()
+        super(NouvelleInscription, self).__init__(database)
 
         # Instance variable definition
         self.id_participante = id_participante
-        self.database = database
 
         # Affichage de l'interface
         self.txt_nom.setText(nom)
@@ -212,11 +211,10 @@ class NouvelleInscription(InscriptionMembre):
 class RenouvelerInscription(InscriptionMembre):
     """Dialog pour le renouvellement de l'inscription d'un membre"""
     def __init__(self, nom, phone, id_participante, database):
-        super(RenouvelerInscription, self).__init__()
+        super(RenouvelerInscription, self).__init__(database)
 
         # Instance variable definition
         self.id_participante = id_participante
-        self.database = database
 
         # Modifier les labels
         self.lbl_titre.setText("Renouveler une inscription")

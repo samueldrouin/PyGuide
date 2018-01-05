@@ -13,13 +13,13 @@ from form import Form
 
 class TypeActivite(Form):
     """Dialog pour la création ou la modification de type d'activité"""
-    def __init__(self):
+    def __init__(self, database):
         super(TypeActivite, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'type_activite.ui')
         uic.loadUi(ui, self)
 
         # Instance variable definition
-        self.database = None
+        self.database = database
 
         # Validator
         self.txt_nom.setValidator(self.name_validator())
@@ -49,10 +49,7 @@ class TypeActivite(Form):
 class NouveauTypeActivite(TypeActivite):
     """Dialog pour la création de nouveau type d'activité"""
     def __init__(self, database):
-        super(NouveauTypeActivite, self).__init__()
-
-        # Instance variable definition
-        self.database = database
+        super(NouveauTypeActivite, self).__init__(database)
 
         # Interface graphique
         self.lbl_titre.setText("Nouveau type d'activité")
@@ -71,10 +68,9 @@ class NouveauTypeActivite(TypeActivite):
 class ModifierTypeActivite(TypeActivite):
     """Dialog pour la modification de type d'activité"""
     def __init__(self, database, id_type_activite):
-        super(ModifierTypeActivite, self).__init__()
+        super(ModifierTypeActivite, self).__init__(database)
 
         # Instance variable definition
-        self.database = database
         self.id_type_activite = id_type_activite
 
         # Interface graphique

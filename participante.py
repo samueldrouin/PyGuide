@@ -16,14 +16,14 @@ from form import Form
 
 class Participante(Form):
     """Dialog permettant la création et la modification des participantes"""
-    def __init__(self):
+    def __init__(self, database):
         super(Participante, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'participante.ui')
         uic.loadUi(ui, self)
 
         # Instance variable definition
         self.participante_id = None
-        self.database = None
+        self.database = database
 
         # Validator
         self.txt_prenom.setValidator(self.name_validator())
@@ -290,10 +290,7 @@ class Participante(Form):
 class NouvelleParticipante(Participante):
     """Dialog permettant la création de nouvelle participante"""
     def __init__(self, database):
-        super(NouvelleParticipante, self).__init__()
-
-        # Instance variable definition
-        self.database = database
+        super(NouvelleParticipante, self).__init__(database)
 
         # Titre de la fenetre
         self.setWindowTitle("Nouvelle participante")
@@ -340,10 +337,9 @@ class NouvelleParticipante(Participante):
 class ModifierParticipante(Participante):
     """Dialog permettant la modification de participante"""
     def __init__(self, participante_id, database):
-        super(ModifierParticipante, self).__init__()
+        super(ModifierParticipante, self).__init__(database)
 
         # Instance variable definition
-        self.database = database
         self.participante_id = participante_id
 
         # Titre de la fenetre

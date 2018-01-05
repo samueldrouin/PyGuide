@@ -13,13 +13,13 @@ from form import Form
 
 class Responsable(Form):
     """Dialog pour la créaction ou la modification des responsables"""
-    def __init__(self):
+    def __init__(self, database):
         super(Responsable, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'responsable.ui')
         uic.loadUi(ui, self)
 
         # Instance variable definition
-        self.database = None
+        self.database = database
 
         # Validator
         self.txt_prenom.setValidator(self.name_validator())
@@ -50,10 +50,7 @@ class Responsable(Form):
 class NouveauResponsable(Responsable):
     """Dialog pour la créaction de nouveau responsables"""
     def __init__(self, database):
-        super(NouveauResponsable, self).__init__()
-
-        # Instance variable definition
-        self.database = database
+        super(NouveauResponsable, self).__init__(database)
 
         # Interface graphique
         self.lbl_titre.setText("Nouveau responsable")
@@ -73,10 +70,9 @@ class NouveauResponsable(Responsable):
 class ModifierResponsable(Responsable):
     """Dialog pour la modification de responsable"""
     def __init__(self, database, id_responsable):
-        super(ModifierResponsable, self).__init__()
+        super(ModifierResponsable, self).__init__(database)
 
         # Instance variable definition
-        self.database = database
         self.id_responsable = id_responsable
 
         # Interface graphique

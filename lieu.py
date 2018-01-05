@@ -12,13 +12,13 @@ from form import Form
 
 class Lieu(Form):
     """Dialog de base pour la création ou la modification des lieux"""
-    def __init__(self):
+    def __init__(self, database):
         super(Lieu, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'lieu.ui')
         uic.loadUi(ui, self)
 
         # Instance variable definition
-        self.database = None
+        self.database = database
 
         # Validator
         self.txt_nom.setValidator(self.address_validator())
@@ -68,10 +68,7 @@ class Lieu(Form):
 class NouveauLieu(Lieu):
     """Dialog pour la création de nouveau lieu"""
     def __init__(self, database):
-        super(NouveauLieu, self).__init__()
-
-        # Instance variable definition
-        self.database = database
+        super(NouveauLieu, self).__init__(database)
 
         # Interface graphique
         self.setWindowTitle("Nouveau lieu")
@@ -98,10 +95,9 @@ class NouveauLieu(Lieu):
 class ModifierLieu(Lieu):
     """Dialog pour la modification d'un lieu existant"""
     def __init__(self, id_lieu, database):
-        super(ModifierLieu, self).__init__()
+        super(ModifierLieu, self).__init__(database)
 
         # Instance variable definition
-        self.database = database
         self.id_lieu = id_lieu
 
         # Interface graphique
