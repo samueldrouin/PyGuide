@@ -82,7 +82,8 @@ class Consultation(QDialog):
 
         sql = "SELECT * FROM responsable "
         if self.txt_search.text() != "":
-            sql = sql + "WHERE prenom LIKE '%{0}%' OR nom LIKE '%{0}%'".format(self.txt_search.text())
+            sql = sql + "WHERE prenom LIKE '%{0}%' OR nom LIKE '%{0}%' ".format(self.txt_search.text())
+        sql = sql + "ORDER BY nom ASC"
         query.exec_(sql)
 
         # Afficher la liste des reponsables dans le tableau
@@ -92,7 +93,7 @@ class Consultation(QDialog):
             self.tbl_resultat.setItem(r, 0, QTableWidgetItem(str(query.value(0))))
 
             # Format du nom
-            nom = query.value(1) + " " + query.value(2)
+            nom = query.value(2) + ", " + query.value(1)
             self.tbl_resultat.setItem(r, 1, QTableWidgetItem(nom))
 
     def nouveau_responsable(self):
@@ -129,7 +130,8 @@ class Consultation(QDialog):
         sql = "SELECT * FROM type_activite "
 
         if self.txt_search.text() != "":
-            sql = sql + "WHERE nom LIKE '%{}%'".format(self.txt_search.text())
+            sql = sql + "WHERE nom LIKE '%{}%' ".format(self.txt_search.text())
+        sql = sql + "ORDER BY nom ASC"
         query.exec_(sql)
 
         # Afficher la liste des types d'activite
