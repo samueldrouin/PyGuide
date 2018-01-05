@@ -510,6 +510,7 @@ class CentralWidgetActivite(CentralWidget):
         :return:
         """
         nouvelle_activite = NouvelleActivite(self.database)
+        nouvelle_activite.accepted.connect(self.update_list)
         nouvelle_activite.exec()
 
 
