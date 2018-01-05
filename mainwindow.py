@@ -339,10 +339,19 @@ class CentralWidgetParticipantes(CentralWidget):
 
             self.table_widget.setItem(r, 0, QTableWidgetItem(str(query.value(0))))
 
-            if not query.value(2) is None:
-                nom = "{} {}".format(str(query.value(1)), str(query.value(2)))
+            print(query.value(1))
+            print(query.value(2))
+            if self.top_widget.cbx_sort.currentText() == "Prénom":
+                if not query.value(2) == "":
+                    nom = str(query.value(1)) + " " + str(query.value(2))
+                else:
+                    nom = str(query.value(1))
             else:
-                nom = str(query.value(1))
+                if not query.value(2) == "":
+                    nom = str(query.value(2)) + ", " + str(query.value(1))
+                else:
+                    nom = str(query.value(1))
+
             self.table_widget.setItem(r, 1, QTableWidgetItem(nom))
 
             self.table_widget.setItem(r, 2, QTableWidgetItem(str(query.value(3))))

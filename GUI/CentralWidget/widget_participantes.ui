@@ -33,12 +33,12 @@
       <widget class="QComboBox" name="cbx_search">
        <item>
         <property name="text">
-         <string>Prénom</string>
+         <string>Nom</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Nom</string>
+         <string>Prénom</string>
         </property>
        </item>
        <item>
@@ -95,12 +95,12 @@
       <widget class="QComboBox" name="cbx_sort">
        <item>
         <property name="text">
-         <string>Prénom</string>
+         <string>Nom</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Nom</string>
+         <string>Prénom</string>
         </property>
        </item>
        <item>
