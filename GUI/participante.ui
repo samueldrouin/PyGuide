@@ -593,19 +593,6 @@
          <item row="7" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_14">
            <item>
-            <spacer name="verticalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
             <widget class="QLineEdit" name="txt_email">
              <property name="placeholderText">
               <string>Courriel</string>
@@ -966,15 +953,17 @@
   <tabstop>txt_poste1</tabstop>
   <tabstop>txt_telephone2</tabstop>
   <tabstop>txt_poste2</tabstop>
+  <tabstop>sbx_annee_naissance</tabstop>
   <tabstop>sbx_personnes_nourries</tabstop>
   <tabstop>cbx_photo</tabstop>
-  <tabstop>chk_membre</tabstop>
-  <tabstop>btn_cancel</tabstop>
   <tabstop>btn_add</tabstop>
+  <tabstop>btn_cancel</tabstop>
   <tabstop>chk_honoraire</tabstop>
   <tabstop>ded_renouvellement</tabstop>
   <tabstop>chk_actif</tabstop>
   <tabstop>txt_numero_membre</tabstop>
+  <tabstop>chk_membre</tabstop>
+  <tabstop>btn_renew</tabstop>
  </tabstops>
  <resources/>
  <connections/>

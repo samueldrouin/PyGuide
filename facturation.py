@@ -4,7 +4,7 @@
 import os
 
 # PyQt import
-from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWidgets import QTableWidgetItem, QDialog
 from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 from PyQt5.QtCore import QTime, QDate
 from PyQt5 import uic
@@ -12,6 +12,7 @@ from PyQt5 import uic
 # Project import
 from form import Form
 from Script import Error
+import Selection
 
 
 class Facture(Form):
@@ -67,7 +68,9 @@ class Facture(Form):
             # Obtenir les informations de la requete
             while query.next():
                 informations = {}
+                informations["index"] = int(query.value(0))
                 self.id_participante = int(query.value(0))
+
                 
                 nom = str(query.value(1)) + " " + str(query.value(2))
                 informations["nom"] = nom
@@ -79,6 +82,14 @@ class Facture(Form):
             # La requête ne contient aucune information
             if len(resultat) == 0:
                 Error.DataError.numero_telephone_inexistant()
+            # La requête contient plusieurs comptes
+            elif len(resultat) != 1:
+                selection = Selection.SelectionParticipante(resultat)
+                print(resultat)
+                if selection.exec() == QDialog.Accepted:
+                    index = selection.get_index()
+                    self.activer_facturation()
+                    return [element for element in resultat if element["index"] == index][0]
             else:
                 self.activer_facturation()
                 return resultat[0]
