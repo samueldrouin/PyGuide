@@ -100,7 +100,7 @@ class Facture(Form):
         if search != "":
             sql = sql + "WHERE categorie_activite.nom LIKE '%{}%' ".format(search)
 
-        sql = sql + "LIMIT 100"
+        sql = sql + "ORDER BY categorie_activite.nom ASC, activite.date ASC LIMIT 100"
         query.exec_(sql)
 
         table.setRowCount(0) 
@@ -130,16 +130,17 @@ class Facture(Form):
         # Fetch inscriptions from database
         query = QSqlQuery()
         query.prepare("SELECT inscription.id_inscription, categorie_activite.nom, categorie_activite.prix_membre, "
-                      "categorie_activite.prix_non_membre, activite.date, activite.heure_debut, activite.heure_fin, "
-                      "activite.id_activite FROM inscription " 
+                      "categorie_activite.prix_non_membre, activite.date, activite.heure_debut, activite.heure_fin, activite.id_activite "
                       "FROM inscription "
                       "LEFT JOIN activite ON inscription.id_activite = activite.id_activite "
                       "LEFT JOIN categorie_activite ON activite.id_categorie_activite = categorie_activite.id_categorie_activite "
-                      "WHERE (inscription.id_participante = :id_participante) AND (activite.date >= :current_date) AND (inscription.status = :status)")
+                      "WHERE (inscription.id_participante = :id_participante) AND (activite.date >= :current_date) AND (inscription.status = :status) "
+                      "ORDER BY categorie_activite.nom ASC, activite.date ASC")
         query.bindValue(':id_participante', self.id_participante)
         query.bindValue(':current_date', QDate.currentDate().toJulianDay())
         query.bindValue(':status', True)
         query.exec_()
+        print(query.lastError().text())
 
         # Préparer les données de la requete
         resultat = []
