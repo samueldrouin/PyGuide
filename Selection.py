@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 # PyQt import
-from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView
 from PyQt5 import uic
 
 # Project import
@@ -20,6 +20,9 @@ class Selection(Form):
 
         # Slots
         self.table_widget.itemClicked.connect(self.accept)
+
+        # Paramètre du tableau
+        self.table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
     def get_index(self):
         """
