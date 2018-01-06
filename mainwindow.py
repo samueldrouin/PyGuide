@@ -19,8 +19,7 @@ from activite import NouvelleActivite
 from categorie_activite import NouvelleCategorieActivite, ModifierCategorieActivite
 from settings import Settings
 from consultation import Consultation
-from facturation import Facturation
-from inscription import Inscription
+from facturation import Facturation, Inscription
 from groupe import Groupe
 
 
