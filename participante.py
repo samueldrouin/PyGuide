@@ -12,6 +12,7 @@ from PyQt5 import uic
 # Project import
 from inscription_membre import NouvelleInscription, RenouvelerInscription
 from form import Form
+from Script import Error
 
 
 class Participante(Form):
@@ -252,6 +253,9 @@ class Participante(Form):
         query.bindValue(':id_participante', int(self.participante_id))
         query.exec_()
 
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
+
         if query.first() and int(query.value(0)):
             # Afficher les champs du formulaire
             self.chk_actif.setHidden(False)
@@ -314,14 +318,18 @@ class NouvelleParticipante(Participante):
         query.bindValue(':consentementphoto', prepared_data['Consentement photo'])
         query.exec_()
 
-        if self.sender() == self.btn_add:
-            self.accept()
-        else:
-            # Fetch inserted participante_id
-            query = QSqlQuery()
-            query.exec_("SELECT last_insert_rowid()")
-            query.first()
-            self.participante_id = query.value(0)
+        # Affichage d'un message d'erreur si la requete echoue
+        if not Error.DatabaseError.sql_error_handler(query.lastError()):
+            # Continuer le traitement seulement si la requete reussie
+            if self.sender() == self.btn_add:
+                self.accept()
+            else:
+                # Fetch inserted participante_id
+                query = QSqlQuery()
+                query.exec_("SELECT last_insert_rowid()")
+                Error.DatabaseError.sql_error_handler(query.lastError())
+                query.first()
+                self.participante_id = query.value(0)
 
 
 class ModifierParticipante(Participante):
@@ -359,6 +367,9 @@ class ModifierParticipante(Participante):
                       "WHERE id_participante = :idparticipante")
         query.bindValue(':idparticipante', int(self.participante_id))
         query.exec_()
+
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
 
         query.first()
 
@@ -427,5 +438,9 @@ class ModifierParticipante(Participante):
         query.bindValue(':id_participante', int(self.participante_id))
         query.exec_()
 
-        if self.sender() == self.btn_add:
-            self.accept()
+        # Affichage d'un message d'erreur si la requete echoue
+        if not Error.DatabaseError.sql_error_handler(query.lastError()):
+            # Fermeture du dialog seulement si la requete reussie
+            # et le signal vient du bouton add
+            if self.sender() == self.btn_add:
+                self.accept()

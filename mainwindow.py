@@ -21,6 +21,7 @@ from settings import Settings
 from consultation import Consultation
 from facturation import Facturation, Inscription
 from groupe import Groupe
+from Script import Error
 
 
 class MainWindow(QMainWindow):
@@ -331,6 +332,9 @@ class CentralWidgetParticipantes(CentralWidget):
             sql = sql + "ASC "
         query.exec_(sql)
 
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
+
         # Show data in table widget
         self.table_widget.setRowCount(0)
 
@@ -465,6 +469,9 @@ class CentralWidgetActivite(CentralWidget):
             sql = sql + "ASC "
 
         query.exec_(sql)
+
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
 
         # Show data in table widget
         self.table_widget.setRowCount(0)
@@ -611,6 +618,9 @@ class CentralWidgetLieux(CentralWidget):
             sql = sql + "ASC "
         query.exec_(sql)
 
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
+
         # Show data in table widget
         self.table_widget.setRowCount(0)
 
@@ -688,7 +698,6 @@ class CentralWidgetCategorieActivite(CentralWidget):
               "LEFT JOIN lieu ON categorie_activite.id_lieu = lieu.id_lieu " \
               "LEFT JOIN type_activite  ON categorie_activite.id_type_activite = " \
               "type_activite.id_type_activite "
-        query.exec_(sql)
 
         # Ajout des options de recherche
         search = self.top_widget.txt_search.text()
@@ -719,6 +728,9 @@ class CentralWidgetCategorieActivite(CentralWidget):
         else:
             sql = sql + "ASC "
         query.exec_(sql)
+
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
 
         # Show data in table widget
         self.table_widget.setRowCount(0)

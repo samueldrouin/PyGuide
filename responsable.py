@@ -9,6 +9,7 @@ from PyQt5.QtSql import QSqlQuery
 
 # Project import
 from form import Form
+from Script import Error
 
 
 class Responsable(Form):
@@ -64,7 +65,10 @@ class NouveauResponsable(Responsable):
         query.bindValue(':prenom', self.txt_prenom.text())
         query.bindValue(':nom', self.txt_nom.text())
         query.exec_()
-        self.accept()
+
+        # Affichage d'un message d'erreur si la requete echoue
+        if not Error.DatabaseError.sql_error_handler(query.lastError()):
+            self.accept() # Fermer le dialog seulement si la requete reussie
 
 
 class ModifierResponsable(Responsable):
@@ -90,6 +94,9 @@ class ModifierResponsable(Responsable):
         query.bindValue(':id_responsable', self.id_responsable)
         query.exec_()
 
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
+
         # Afficher les informations
         query.first()
         self.txt_prenom.setText(query.value(0))
@@ -106,4 +113,7 @@ class ModifierResponsable(Responsable):
         query.bindValue(':nom', self.txt_nom.text())
         query.bindValue(':id_responsable', self.id_responsable)
         query.exec_()
-        self.accept()
+
+        # Affichage d'un message d'erreur si la requete echoue
+        if not Error.DatabaseError.sql_error_handler(query.lastError()):
+            self.accept() # Fermer le dialog seulement si la requete reussie

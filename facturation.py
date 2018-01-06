@@ -4,7 +4,7 @@
 import os
 
 # PyQt import
-from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem
+from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 from PyQt5.QtCore import QTime, QDate
 from PyQt5 import uic
@@ -12,6 +12,7 @@ from PyQt5 import uic
 # Project import
 from form import Form
 from Script import Error
+
 
 class Facture(Form):
     """Fonctions nécessaires pour tous les types de facture"""
@@ -49,6 +50,9 @@ class Facture(Form):
                           "WHERE (participante.telephone_1 = :phone) OR (participante.telephone_2 = :phone)")
             query.bindValue(':phone', phone_number)
             query.exec_()
+
+            # Affichage d'un message d'erreur si la requete echoue
+            Error.DatabaseError.sql_error_handler(query.lastError())
 
             resultat = []
 
@@ -103,6 +107,9 @@ class Facture(Form):
         sql = sql + "ORDER BY categorie_activite.nom ASC, activite.date ASC LIMIT 100"
         query.exec_(sql)
 
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
+
         table.setRowCount(0) 
         while query.next(): 
             table.insertRow(table.rowCount()) 
@@ -140,7 +147,9 @@ class Facture(Form):
         query.bindValue(':current_date', QDate.currentDate().toJulianDay())
         query.bindValue(':status', True)
         query.exec_()
-        print(query.lastError().text())
+
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
 
         # Préparer les données de la requete
         resultat = []
@@ -330,6 +339,11 @@ class Facturation(Facture):
             query.bindValue(':id_participante', self.id_participante)
             query.exec_()
 
+            # Affichage d'un message d'erreur si la requete echoue
+            if Error.DatabaseError.sql_error_handler(query.lastError()):
+                QSqlDatabase(self.database).rollback() # Annuler la transaction
+                return # Empêche la fermeture du dialog
+
             # Ajouter les inscriptions
             query = QSqlQuery()
             query.prepare("INSERT OR REPLACE INTO inscription (id_inscription, id_participante, id_activite, status, id_facture) "
@@ -341,6 +355,11 @@ class Facturation(Facture):
             query.bindValue(':status', True)
             query.exec_()
 
+            # Affichage d'un message d'erreur si la requete echoue
+            if Error.DatabaseError.sql_error_handler(query.lastError()):
+                QSqlDatabase(self.database).rollback() # Annuler la transaction
+                return # Empêche la fermeture du dialog
+
             # Termer la transaction
             QSqlDatabase(self.database).commit()
         self.accept()
@@ -350,6 +369,8 @@ class Facturation(Facture):
         query = QSqlQuery()
         query.exec_("SELECT MAX(id_facture) FROM facture")
 
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
         query.first()
 
         # S'il existe deja des facture dans la base de donnees
@@ -464,6 +485,10 @@ class Inscription(Facture):
                 query.bindValue(':status', True)
                 query.exec_()
 
+                # Affichage d'un message d'erreur si la requete echoue
+                if Error.DatabaseError.sql_error_handler(query.lastError()):
+                    return # Empêche la fermeture du dialog
+
             # Effacer une inscription
             elif int(self.tbl_panier.item(row, 1).text()) == -1:
                 query = QSqlQuery()
@@ -473,6 +498,10 @@ class Inscription(Facture):
                 query.bindValue(':status', False)
                 query.bindValue(':id_inscription', self.tbl_panier.item(row, 2).text())
                 query.exec_()
+
+                # Affichage d'un message d'erreur si la requete echoue
+                if Error.DatabaseError.sql_error_handler(query.lastError()):
+                    return # Empêche la fermeture du dialog
 
         self.accept()
     

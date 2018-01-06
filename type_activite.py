@@ -4,11 +4,12 @@
 import os
 
 # PyQt import
-from PyQt5 import (uic)
-from PyQt5.QtSql import (QSqlQuery)
+from PyQt5 import uic
+from PyQt5.QtSql import QSqlQuery
 
 # Project import
 from form import Form
+from Script import Error
 
 
 class TypeActivite(Form):
@@ -62,7 +63,10 @@ class NouveauTypeActivite(TypeActivite):
         query.prepare("INSERT INTO type_activite (nom) VALUES (:nom)")
         query.bindValue(':nom', self.txt_nom.text())
         query.exec_()
-        self.accept()
+
+        # Affichage d'un message d'erreur si la requete echoue
+        if not Error.DatabaseError.sql_error_handler(query.lastError()):
+            self.accept() # Fermer le dialog seulement si la requete reussie
 
 
 class ModifierTypeActivite(TypeActivite):
@@ -79,26 +83,28 @@ class ModifierTypeActivite(TypeActivite):
         self.show_informations()
 
     def show_informations(self):
-        """
-        Afficher les informations sur le type d'activite
-        """
+        """Afficher les informations sur le type d'activite"""
         # Obtenir les informations de la base de donnees
         query = QSqlQuery(self.database)
         query.prepare("SELECT nom FROM type_activite WHERE id_type_activite = :id_type_activite")
         query.bindValue(':id_type_activite', self.id_type_activite)
         query.exec_()
 
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
+
         # Afficher les informations
         query.first()
         self.txt_nom.setText(query.value(0))
 
     def process(self):
-        """
-        Modifier le type d'activite dans la base de donnees
-        """
+        """Modifier le type d'activite dans la base de donnees"""
         query = QSqlQuery(self.database)
         query.prepare("UPDATE type_activite SET nom=:nom WHERE id_type_activite=:id_type_activite")
         query.bindValue(':nom', self.txt_nom.text())
         query.bindValue(':id_type_activite', self.id_type_activite)
         query.exec_()
-        self.accept()
+
+        # Affichage d'un message d'erreur si la requete echoue
+        if not Error.DatabaseError.sql_error_handler(query.lastError()):
+            self.accept() # Fermer le dialog seulement si la requete reussie

@@ -9,6 +9,7 @@ from PyQt5 import uic
 
 # Projet import
 from form import Form
+from Script import Error
 
 
 class CategorieActivite(Form):
@@ -24,10 +25,10 @@ class CategorieActivite(Form):
         # Validator
         self.txt_nom.setValidator(self.address_validator())
 
-        # Elements des ComboBox
-        self.afficher_lieu()
+        # Affiche le contenu des combobox
         self.afficher_responsable()
         self.afficher_type_activite()
+        self.afficher_lieu()
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
@@ -40,6 +41,9 @@ class CategorieActivite(Form):
         # Fetch data from database
         query = QSqlQuery(self.database)
         query.exec_("SELECT id_responsable, prenom, nom FROM responsable ORDER BY nom ASC")
+
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
 
         # Ajouter les responsables a la liste
         while query.next():
@@ -55,6 +59,9 @@ class CategorieActivite(Form):
         query = QSqlQuery(self.database)
         query.exec_("SELECT id_type_activite, nom FROM type_activite ORDER BY nom ASC")
 
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
+
         # Ajouter les types d'activite a la liste
         while query.next():
             self.cbx_type_activite.addItem(str(query.value(1)), userData = query.value(0))
@@ -67,6 +74,9 @@ class CategorieActivite(Form):
         # Fetch data from database
         query = QSqlQuery(self.database)
         query.exec_("SELECT id_lieu, nom FROM lieu")
+
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
 
         # Ajouter les types d'activite a la liste
         while query.next():
@@ -120,8 +130,9 @@ class NouvelleCategorieActivite(CategorieActivite):
         query.bindValue(':id_type_activite', self.cbx_type_activite.itemData(self.cbx_type_activite.currentIndex()))
         query.bindValue(':id_lieu', self.cbx_lieu.itemData(self.cbx_lieu.currentIndex()))
         query.exec_()
-
-        self.accept()
+        # Affichage d'un message d'erreur si la requete echoue
+        if not Error.DatabaseError.sql_error_handler(query.lastError()):
+            self.accept() # Fermer si dialog seulement si la requete reussie
 
 
 class ModifierCategorieActivite(CategorieActivite):
@@ -150,6 +161,9 @@ class ModifierCategorieActivite(CategorieActivite):
                       ":id_categorie_activite)")
         query.bindValue(':id_categorie_activite', self.id_categorie_activite)
         query.exec_()
+
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
 
         # Afficher les informations
         query.first()
@@ -187,4 +201,6 @@ class ModifierCategorieActivite(CategorieActivite):
         query.bindValue(':id_categorie_activite', self.id_categorie_activite)
         query.exec_()
 
-        self.accept()
+        # Affichage d'un message d'erreur si la requete echoue
+        if not Error.DatabaseError.sql_error_handler(query.lastError()):
+            self.accept() # Fermer le dialog seulement si la requete reussie

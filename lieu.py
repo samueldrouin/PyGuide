@@ -9,6 +9,8 @@ from PyQt5 import uic
 
 # Project import
 from form import Form
+from Script import Error
+
 
 class Lieu(Form):
     """Dialog de base pour la création ou la modification des lieux"""
@@ -86,7 +88,9 @@ class NouveauLieu(Lieu):
         query.bindValue(':code_postal', self.check_string(self.txt_code_postal.text()))
         query.exec_()
 
-        self.accept()
+        # Affichage d'un message d'erreur si la requete echoue
+        if not Error.DatabaseError.sql_error_handler(query.lastError()):
+            self.accept() # Fermer le dialog seulement si la requete reussie
 
 
 class ModifierLieu(Lieu):
@@ -114,6 +118,9 @@ class ModifierLieu(Lieu):
         query.bindValue(':id_lieu', self.id_lieu)
         query.exec_()
 
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
+
         # Afficher les informations
         query.first()
         self.txt_nom.setText(query.value(0))
@@ -140,6 +147,7 @@ class ModifierLieu(Lieu):
         query.bindValue(':code_postal', self.check_string(self.txt_code_postal.text()))
         query.bindValue(':id_lieu', self.id_lieu)
         query.exec_()
-        print(query.lastError().text())
 
-        self.accept()
+        # Affichage d'un message d'erreur si la requete echoue
+        if not Error.DatabaseError.sql_error_handler(query.lastError()):
+            self.accept() # Fermer le dialog seulement si la requete reussie

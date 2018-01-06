@@ -5,12 +5,13 @@ import os
 from datetime import date, timedelta, datetime
 
 # PyQt import
-from PyQt5.QtCore import (QDate)
-from PyQt5.QtSql import (QSqlQuery)
+from PyQt5.QtCore import QDate
+from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 from PyQt5 import uic
 
 # Project import
 from form import Form
+from Script import Error
 
 class NouvelleActivite(Form):
     """Dialog pour la création d'une nouvelle activité"""
@@ -75,6 +76,9 @@ class NouvelleActivite(Form):
         query = QSqlQuery(self.database)
         query.exec_("SELECT id_categorie_activite, nom FROM categorie_activite")
 
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
+
         # Ajouter les responsables a la liste
         while query.next():
             self.cbx_category_activite.addItem(str(query.value(1)), userData = query.value(0))
@@ -115,6 +119,9 @@ class NouvelleActivite(Form):
             query.bindValue(':date_limite_inscription', value_date)
 
             query.exec_()
+            # Affichage d'un message d'erreur si la requete echoue
+            if not Error.DatabaseError.sql_error_handler(query.lastError()):
+                self.accept() # Fermer le dialog seulement si la requete est réussie
         else:
             # Lecture des informations du formulaire
             q_date_debut = self.ded_debut.date()
@@ -144,6 +151,8 @@ class NouvelleActivite(Form):
                 current_date = current_date + timedelta(weeks=1)
 
             # Ajouter les informations a la base de donnees
+            
+            QSqlDatabase(self.database).transaction()
             for date_activite in liste_date:
                 query = QSqlQuery(self.database)
                 query.prepare("INSERT INTO activite (id_categorie_activite, date, heure_debut, "
@@ -163,4 +172,9 @@ class NouvelleActivite(Form):
                 query.bindValue(':date_limite_inscription', value_date)
                 query.exec_()
 
+                # Affichage d'un message d'erreur si la requete echoue
+                if Error.DatabaseError.sql_error_handler(query.lastError()):
+                    QSqlDatabase(self.database).rollback() # Annuler la transaction
+                    return # Empêche la fermeture du dialog
+            QSqlDatabase(self.database).commit()
         self.accept()

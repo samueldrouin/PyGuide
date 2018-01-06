@@ -15,6 +15,7 @@ from PyQt5.QtSql import QSqlQuery
 # Project import
 from responsable import NouveauResponsable, ModifierResponsable
 from type_activite import NouveauTypeActivite, ModifierTypeActivite
+from Script import Error
 
 
 class Consultation(QDialog):
@@ -86,6 +87,9 @@ class Consultation(QDialog):
         sql = sql + "ORDER BY nom ASC"
         query.exec_(sql)
 
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
+
         # Afficher la liste des reponsables dans le tableau
         while query.next():
             self.tbl_resultat.insertRow(self.tbl_resultat.rowCount())
@@ -133,6 +137,9 @@ class Consultation(QDialog):
             sql = sql + "WHERE nom LIKE '%{}%' ".format(self.txt_search.text())
         sql = sql + "ORDER BY nom ASC"
         query.exec_(sql)
+
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
 
         # Afficher la liste des types d'activite
         while query.next():

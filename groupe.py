@@ -4,13 +4,14 @@
 import os
 
 # PyQt import
-from PyQt5.QtWidgets import QTableWidgetItem, QMessageBox
+from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtCore import QTime, QDate
 from PyQt5 import uic
 from PyQt5.QtSql import QSqlQuery
 
 # Project import
 from form import Form
+from Script import Error
 
 
 class Groupe(Form):
@@ -62,18 +63,12 @@ class Groupe(Form):
             query.bindValue(':h_35_64', self.sbx_h_35_64.value())
             query.bindValue(':h_65', self.sbx_h_65.value())
             query.exec_()
-            print(query.lastError().text())
 
-            self.accept()
+            # Affichage d'un message d'erreur si la requete echoue
+            if not Error.DatabaseError.sql_error_handler(query.lastError()):
+                self.accept() # Fermer le dialog seulement si la requete reussie
         else:
-            msgbox = QMessageBox()
-            msgbox.setWindowTitle("Aucune activité sélectionnée")
-            msgbox.setText("Aucune activité sélectionnée")
-            msgbox.setInformativeText("Veuillez sélectionner une activité.")
-            msgbox.setIcon(QMessageBox.Information)
-            msgbox.setStandardButtons(QMessageBox.Ok)
-            msgbox.setDefaultButton(QMessageBox.Ok)
-            msgbox.exec()
+            Error.DataError.aucun_article_selectionne()
 
     def afficher_liste_activite(self):
         """
@@ -93,6 +88,9 @@ class Groupe(Form):
 
         sql = sql + "LIMIT 100"
         query.exec_(sql)
+
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
 
         self.tbl_activite.setRowCount(0)
         while query.next():

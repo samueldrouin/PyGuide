@@ -11,6 +11,7 @@ from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 
 # Project import
 from form import Form
+from Script import Error
 
 
 class InscriptionMembre(Form):
@@ -149,6 +150,9 @@ class NouvelleInscription(InscriptionMembre):
         query = QSqlQuery()
         query.exec_("SELECT MAX(numero_membre) FROM membre")
 
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
+
         query.first()
 
         # S'il existe deja des membres dans la base de donnees
@@ -163,7 +167,7 @@ class NouvelleInscription(InscriptionMembre):
         Enregistre le status de membre lorsque l'inscritpion est completee
         """
         # Ouvre une transation
-        QSqlDatabase.transaction(self.database)
+        QSqlDatabase(self.database).transaction()
 
         # Active le membre
         query = QSqlQuery(self.database)
@@ -193,6 +197,11 @@ class NouvelleInscription(InscriptionMembre):
             query.bindValue(':renouvellement', date)
         query.exec_()
 
+        # Affichage d'un message d'erreur si la requete echoue
+        if Error.DatabaseError.sql_error_handler(query.lastError()):
+            QSqlDatabase(self.database).rollback() # Annuler la transaction
+            return # Empecher la fermeture du dialog
+
         # Enregistre la commande
         query = QSqlQuery(self.database)
         query.prepare("INSERT INTO inscription_membre (id_membre, date, article, prix, numero_recu) "
@@ -202,8 +211,14 @@ class NouvelleInscription(InscriptionMembre):
         query.bindValue(':prix', self.tbl_commande.item(0, 1).text())
         query.bindValue(':numero_recu', self.check_string(self.txt_recu.text()))
         query.exec_()
+
+        # Affichage d'un message d'erreur si la requete echoue
+        if Error.DatabaseError.sql_error_handler(query.lastError()):
+            QSqlDatabase(self.database).rollback() # Annuler la transaction
+            return# Empecher la fermeture du dialog
+
         #Termine la transation
-        QSqlDatabase.commit(self.database)
+        QSqlDatabase(self.database).commit()
 
         self.accept()
 
@@ -237,6 +252,9 @@ class RenouvelerInscription(InscriptionMembre):
         query.bindValue(':id_participante', self.id_participante)
         query.exec_()
 
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
+
         query.first()
         self.txt_numero_membre.setText(str(query.value(0)))
 
@@ -245,7 +263,7 @@ class RenouvelerInscription(InscriptionMembre):
         Enregistre le status de membre lorsque l'inscription est completee
         """
         # Ouvre une transation
-        QSqlDatabase.transaction(self.database)
+        QSqlDatabase(self.database).transaction()
         # Active le membre
         query = QSqlQuery(self.database)
         query.prepare("UPDATE membre "
@@ -276,6 +294,11 @@ class RenouvelerInscription(InscriptionMembre):
 
         query.exec_()
 
+        # Affichage d'un message d'erreur si la requete echoue
+        if Error.DatabaseError.sql_error_handler(query.lastError()):
+            QSqlDatabase(self.database).rollback() # Annuler la transaction
+            return # Empecher la fermeture du dialog
+
         # Enregistre la commande
         query = QSqlQuery(self.database)
         query.prepare("INSERT INTO inscription_membre (id_membre, date, article, prix, numero_recu) "
@@ -286,9 +309,12 @@ class RenouvelerInscription(InscriptionMembre):
         query.bindValue(':prix', self.tbl_commande.item(0, 1).text())
         query.bindValue(':numero_recu', self.check_string(self.txt_recu.text()))
         query.exec_()
-        print(query.lastError().text())
-        print(query.executedQuery())
+
+        # Affichage d'un message d'erreur si la requete echoue
+        if Error.DatabaseError.sql_error_handler(query.lastError()):
+            QSqlDatabase(self.database).rollback() # Annuler la transaction
+            return # Empecher la fermeture du dialog
         #Termine la transation
-        QSqlDatabase.commit(self.database)
+        QSqlDatabase(self.database).commit()
 
         self.accept()
