@@ -113,8 +113,17 @@ class ModifierLieu(Lieu):
         """
         # Obtenir les informations de la base de donnees
         query = QSqlQuery(self.database)
-        query.prepare("SELECT nom, adresse_1, adresse_2, ville, province, code_postal "
-                      "FROM lieu WHERE id_lieu = :id_lieu")
+        query.prepare("SELECT "
+                        "nom, "
+                        "adresse_1, "
+                        "adresse_2, "
+                        "ville, "
+                        "province, "
+                        "code_postal "
+                      "FROM "
+                        "lieu "
+                      "WHERE "
+                        "id_lieu = :id_lieu")
         query.bindValue(':id_lieu', self.id_lieu)
         query.exec_()
 
@@ -135,10 +144,17 @@ class ModifierLieu(Lieu):
         Traitement des donnees dans la base de donnee
         """
         query = QSqlQuery(self.database)
-        query.prepare("UPDATE lieu "
-                      "SET nom = :nom, adresse_1 = :adresse_1, adresse_2 = :adresse_2, ville = :ville, "
-                      "province = :province, code_postal = :code_postal "
-                      "WHERE id_lieu = :id_lieu")
+        query.prepare("UPDATE "
+                        "lieu "
+                      "SET "
+                        "nom = :nom, "
+                        "adresse_1 = :adresse_1, "
+                        "adresse_2 = :adresse_2, "
+                        "ville = :ville, "
+                        "province = :province, "
+                        "code_postal = :code_postal "
+                      "WHERE "
+                        "id_lieu = :id_lieu")
         query.bindValue(':nom', self.check_string(self.txt_nom.text()))
         query.bindValue(':adresse_1', self.check_string(self.txt_adresse1.text()))
         query.bindValue(':adresse_2', self.check_string(self.txt_adresse2.text()))

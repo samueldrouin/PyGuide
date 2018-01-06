@@ -171,9 +171,18 @@ class NouvelleInscription(InscriptionMembre):
 
         # Active le membre
         query = QSqlQuery(self.database)
-        query.prepare(
-            "INSERT INTO membre (actif, id_participante, numero_membre, membre_honoraire, date_renouvellement) "
-            "VALUES (:actif, :id_participante, :numero_membre, :honoraire, :renouvellement)")
+        query.prepare("INSERT INTO membre "
+                        "(actif, "
+                        "id_participante, "
+                        "numero_membre, "
+                        "membre_honoraire, "
+                        "date_renouvellement) "
+                      "VALUES "
+                        "(:actif, "
+                        ":id_participante, "
+                        ":numero_membre, "
+                        ":honoraire, "
+                        ":renouvellement)")
         query.bindValue(':actif', True)
         query.bindValue(':id_participante', int(self.id_participante))
         query.bindValue(':numero_membre', self.txt_numero_membre.text())
@@ -204,9 +213,18 @@ class NouvelleInscription(InscriptionMembre):
 
         # Enregistre la commande
         query = QSqlQuery(self.database)
-        query.prepare("INSERT INTO inscription_membre (id_membre, date, article, prix, numero_recu) "
-                      "VALUES ((SELECT last_insert_rowid()), (SELECT date('now')), :article, :prix, "
-                      ":numero_recu)")
+        query.prepare("INSERT INTO inscription_membre "
+                        "(id_membre, "
+                        "date, "
+                        "article, "
+                        "prix, "
+                        "numero_recu) "
+                      "VALUES "
+                        "((SELECT last_insert_rowid()), "
+                        "(SELECT date('now')), "
+                        ":article, "
+                        ":prix, "
+                        ":numero_recu)")
         query.bindValue(':article', self.tbl_commande.item(0, 0).text())
         query.bindValue(':prix', self.tbl_commande.item(0, 1).text())
         query.bindValue(':numero_recu', self.check_string(self.txt_recu.text()))
@@ -248,7 +266,11 @@ class RenouvelerInscription(InscriptionMembre):
         Determiner le numero de membre
         """
         query = QSqlQuery(self.database)
-        query.prepare("SELECT numero_membre FROM membre WHERE id_participante = :id_participante")
+        query.prepare("SELECT "
+                        "numero_membre "
+                      "FROM "
+                        "membre "
+                      "WHERE id_participante = :id_participante")
         query.bindValue(':id_participante', self.id_participante)
         query.exec_()
 
@@ -301,9 +323,20 @@ class RenouvelerInscription(InscriptionMembre):
 
         # Enregistre la commande
         query = QSqlQuery(self.database)
-        query.prepare("INSERT INTO inscription_membre (id_membre, date, article, prix, numero_recu) "
-                      "VALUES ((SELECT id_membre FROM membre WHERE id_participante = :id_participante), "
-                      "(SELECT date('now')), :article, :prix, :numero_recu)")
+        query.prepare("INSERT INTO inscription_membre "
+                        "(id_membre, "
+                        "date, "
+                        "article, "
+                        "prix, "
+                        "numero_recu) "
+                      "VALUES "
+                        "((SELECT id_membre "
+                          "FROM membre "
+                          "WHERE id_participante = :id_participante), "
+                        "(SELECT date('now')), "
+                        ":article, "
+                        ":prix, "
+                        ":numero_recu)")
         query.bindValue(':id_participante', self.id_participante)
         query.bindValue(':article', self.tbl_commande.item(0, 0).text())
         query.bindValue(':prix', self.tbl_commande.item(0, 1).text())

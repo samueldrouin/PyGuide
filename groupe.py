@@ -42,13 +42,39 @@ class Groupe(Form):
         activite_row = self.tbl_activite.currentRow()
         if activite_row != -1:
             query = QSqlQuery(self.database)
-            query.prepare("INSERT OR REPLACE INTO groupe (id_groupe, id_activite, f_0_4, f_5_11, "
-                          "f_12_17, f_18_34, f_35_64, f_65, h_0_4, h_5_11, h_12_17, h_18_34, "
-                          "h_35_64, h_65) "
-                          "VALUES ((SELECT id_groupe FROM groupe WHERE id_activite = "
-                          ":id_activite), :id_activite, :f_0_4, :f_5_11, :f_12_17, :f_18_34, "
-                          ":f_35_64, :f_65, :h_0_4, :h_5_11, :h_12_17, :h_18_34, :h_35_64, "
-                          ":h_65) ")
+            query.prepare("INSERT OR REPLACE INTO groupe "
+                            "(id_groupe, "
+                            "id_activite, "
+                            "f_0_4, "
+                            "f_5_11, "
+                            "f_12_17, "
+                            "f_18_34, "
+                            "f_35_64, "
+                            "f_65, "
+                            "h_0_4, "
+                            "h_5_11, "
+                            "h_12_17, "
+                            "h_18_34, "
+                            "h_35_64, "
+                            "h_65) "
+                          "VALUES "
+                            "((SELECT id_groupe "
+                              "FROM groupe "
+                              "WHERE id_activite = "
+                              ":id_activite), "
+                            ":id_activite, "
+                            ":f_0_4, "
+                            ":f_5_11, "
+                            ":f_12_17, "
+                            ":f_18_34, "
+                            ":f_35_64, "
+                            ":f_65, "
+                            ":h_0_4, "
+                            ":h_5_11, "
+                            ":h_12_17, "
+                            ":h_18_34, "
+                            ":h_35_64, "
+                            ":h_65) ")
             query.bindValue(':id_activite', self.tbl_activite.item(activite_row, 0).text())
             query.bindValue(':f_0_4', self.sbx_f_0_4.value())
             query.bindValue(':f_5_11', self.sbx_f_5_11.value())
@@ -77,9 +103,15 @@ class Groupe(Form):
 
         # Fetch data from database
         query = QSqlQuery()
-        sql = "SELECT categorie_activite.nom, activite.date, activite.heure_debut, activite.heure_fin, activite.id_activite "\
+        sql = "SELECT "\
+                "categorie_activite.nom, "\
+                "activite.date, "\
+                "activite.heure_debut, "\
+                "activite.heure_fin, "\
+                "activite.id_activite "\
               "FROM activite "\
-              "INNER JOIN categorie_activite ON activite.id_categorie_activite = categorie_activite.id_categorie_activite " \
+              "INNER JOIN categorie_activite "\
+                "ON activite.id_categorie_activite = categorie_activite.id_categorie_activite " \
               "WHERE activite.date_limite_inscription >= {} ".format(int(QDate.currentDate().toJulianDay()))
 
         # Recherche par nom d'activite

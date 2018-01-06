@@ -61,7 +61,10 @@ class NouveauResponsable(Responsable):
         Ajouter le nouveau responsable a la base de donnees
         """
         query = QSqlQuery(self.database)
-        query.prepare("INSERT INTO responsable (prenom, nom) VALUES (:prenom, :nom)")
+        query.prepare("INSERT INTO responsable "
+                        "(prenom, nom) "
+                      "VALUES "
+                        "(:prenom, :nom)")
         query.bindValue(':prenom', self.txt_prenom.text())
         query.bindValue(':nom', self.txt_nom.text())
         query.exec_()
@@ -90,7 +93,13 @@ class ModifierResponsable(Responsable):
         """
         # Obtenir les informations de la base de donnees
         query = QSqlQuery(self.database)
-        query.prepare("SELECT prenom, nom FROM responsable WHERE id_responsable = :id_responsable")
+        query.prepare("SELECT "
+                        "prenom, "
+                        "nom "
+                      "FROM "
+                        "responsable "
+                      "WHERE "
+                        "id_responsable = :id_responsable")
         query.bindValue(':id_responsable', self.id_responsable)
         query.exec_()
 
@@ -107,8 +116,12 @@ class ModifierResponsable(Responsable):
         Modifier le responsable dans la base de donnees
         """
         query = QSqlQuery(self.database)
-        query.prepare("UPDATE responsable SET prenom = :prenom, nom = :nom "
-                      "WHERE id_responsable=:id_responsable")
+        query.prepare("UPDATE responsable "
+                      "SET "
+                        "prenom = :prenom, "
+                        "nom = :nom "
+                      "WHERE "
+                        "id_responsable=:id_responsable")
         query.bindValue(':prenom', self.txt_prenom.text())
         query.bindValue(':nom', self.txt_nom.text())
         query.bindValue(':id_responsable', self.id_responsable)

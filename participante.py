@@ -248,8 +248,15 @@ class Participante(Form):
         Afficher les informations sur le membre
         """
         query = QSqlQuery(self.database)
-        query.prepare("SELECT actif, numero_membre, membre_honoraire, date_renouvellement "
-                      "FROM membre WHERE id_participante = :id_participante")
+        query.prepare("SELECT "
+                        "actif, "
+                        "numero_membre, "
+                        "membre_honoraire, "
+                        "date_renouvellement "
+                      "FROM "
+                        "membre "
+                      "WHERE "
+                        "id_participante = :id_participante")
         query.bindValue(':id_participante', int(self.participante_id))
         query.exec_()
 
@@ -293,12 +300,37 @@ class NouvelleParticipante(Participante):
     def process_data(self, prepared_data):
         # Insert data
         query = QSqlQuery(self.database)
-        query.prepare("INSERT INTO participante (appellation, prenom, nom, adresse_1, adresse_2, "
-                      "ville, province, code_postal, courriel, telephone_1, poste_telephone_1, "
-                      "telephone_2, poste_telephone_2, date_naissance, personne_nourrie, "
-                      "consentement_photo) "
-                      "VALUES (:appelation, :prenom, :nom, :adresse1, :adresse2, :ville, "
-                      ":province, :codepostal, :courriel, :phone1, :poste1, :phone2, :poste2, "
+        query.prepare("INSERT INTO participante "
+                        "(appellation, "
+                        "prenom, "
+                        "nom, "
+                        "adresse_1, "
+                        "adresse_2, "
+                        "ville, "
+                        "province, "
+                        "code_postal, "
+                        "courriel, "
+                        "telephone_1, "
+                        "poste_telephone_1, "
+                        "telephone_2, "
+                        "poste_telephone_2, "
+                        "date_naissance, "
+                        "personne_nourrie, "
+                        "consentement_photo) "
+                      "VALUES "
+                        "(:appelation, "
+                        ":prenom, "
+                        ":nom, "
+                        ":adresse1, "
+                        ":adresse2, "
+                        ":ville, "
+                        ":province, "
+                        ":codepostal, "
+                        ":courriel, "
+                        ":phone1, "
+                        ":poste1, "
+                        ":phone2, "
+                        ":poste2, "
                       ":anneenaissance, :personnenourries, :consentementphoto)")
         query.bindValue(':appelation', prepared_data['Appelation'])
         query.bindValue(':prenom', prepared_data['Prenom'])
@@ -360,11 +392,27 @@ class ModifierParticipante(Participante):
 
         # Get informations from database
         query = QSqlQuery(self.database)
-        query.prepare("SELECT appellation, prenom, nom, adresse_1, adresse_2, ville, province, "
-                      "code_postal, courriel, telephone_1, poste_telephone_1, telephone_2, "
-                      "poste_telephone_2, date_naissance, personne_nourrie, consentement_photo "
-                      "FROM participante "
-                      "WHERE id_participante = :idparticipante")
+        query.prepare("SELECT "
+                        "appellation, "
+                        "prenom, "
+                        "nom, "
+                        "adresse_1, "
+                        "adresse_2, "
+                        "ville, "
+                        "province, "
+                        "code_postal, "
+                        "courriel, "
+                        "telephone_1, "
+                        "poste_telephone_1, "
+                        "telephone_2, "
+                        "poste_telephone_2, "
+                        "date_naissance, "
+                        "personne_nourrie, "
+                        "consentement_photo "
+                      "FROM "
+                        "participante "
+                      "WHERE "
+                        "id_participante = :idparticipante")
         query.bindValue(':idparticipante', int(self.participante_id))
         query.exec_()
 
@@ -411,14 +459,25 @@ class ModifierParticipante(Participante):
     def process_data(self, prepared_data):
         query = QSqlQuery(self.database)
         query.prepare("UPDATE participante "
-                      "SET appellation = :appelation, prenom = :prenom, nom = :nom, "
-                      "adresse_1 = :adresse1, adresse_2 = :adresse2, ville = :ville, "
-                      "province = :province, code_postal = :codepostal, "
-                      "courriel = :courriel, telephone_1 = :phone1, poste_telephone_1 = :poste1, "
-                      "telephone_2 = :phone2, poste_telephone_2 = :poste2, "
-                      "date_naissance = :anneenaissance, personne_nourrie = :personnenourries, "
-                      "consentement_photo = :consentementphoto "
-                      "WHERE id_participante = :id_participante")
+                      "SET "
+                        "appellation = :appelation, "
+                        "prenom = :prenom, "
+                        "nom = :nom, "
+                        "adresse_1 = :adresse1, "
+                        "adresse_2 = :adresse2, "
+                        "ville = :ville, "
+                        "province = :province, "
+                        "code_postal = :codepostal, "
+                        "courriel = :courriel, "
+                        "telephone_1 = :phone1, "
+                        "poste_telephone_1 = :poste1, "
+                        "telephone_2 = :phone2, "
+                        "poste_telephone_2 = :poste2, "
+                        "date_naissance = :anneenaissance, "
+                        "personne_nourrie = :personnenourries, "
+                        "consentement_photo = :consentementphoto "
+                      "WHERE "
+                        "id_participante = :id_participante")
         query.bindValue(':appelation', prepared_data['Appelation'])
         query.bindValue(':prenom', prepared_data['Prenom'])
         query.bindValue(':nom', prepared_data['Nom'])

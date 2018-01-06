@@ -291,15 +291,31 @@ class CentralWidgetParticipantes(CentralWidget):
         # Fetch data from database
         query = QSqlQuery(self.database)
         if self.top_widget.chk_membre.isChecked():
-            sql = "SELECT participante.id_participante, participante.prenom, participante.nom, " \
-                  "participante.ville, participante.courriel, participante.telephone_1, " \
-                  "participante.poste_telephone_1, membre.numero_membre FROM participante " \
-                  "INNER JOIN membre ON membre.id_participante = participante.id_participante "
+            sql = "SELECT "\
+                    "participante.id_participante, "\
+                    "participante.prenom, participante.nom, " \
+                    "participante.ville, "\
+                    "participante.courriel, "\
+                    "participante.telephone_1, " \
+                    "participante.poste_telephone_1, "\
+                    "membre.numero_membre "\
+                  "FROM "\
+                    "participante " \
+                  "INNER JOIN membre "\
+                    "ON membre.id_participante = participante.id_participante "
         else:
-            sql = "SELECT participante.id_participante, participante.prenom, participante.nom, " \
-                  "participante.ville, participante.courriel, participante.telephone_1, " \
-                  "participante.poste_telephone_1, membre.numero_membre FROM participante " \
-                  "LEFT JOIN membre ON membre.id_participante = participante.id_participante "
+            sql = "SELECT "\
+                    "participante.id_participante, "\
+                    "participante.prenom, participante.nom, " \
+                    "participante.ville, "\
+                    "participante.courriel, "\
+                    "participante.telephone_1, " \
+                    "participante.poste_telephone_1, "\
+                    "membre.numero_membre "\
+                  "FROM "\
+                    "participante " \
+                  "LEFT JOIN membre "\
+                    "ON membre.id_participante = participante.id_participante "
 
         # Ajout des options de recherche
         search = self.top_widget.txt_search.text()
@@ -423,13 +439,21 @@ class CentralWidgetActivite(CentralWidget):
         # Fetch data from database
         query = QSqlQuery(self.database)
 
-        sql = "SELECT activite.id_activite, activite.date, activite.heure_debut, activite.heure_fin, " \
-              "activite.date_limite_inscription, categorie_activite.nom, lieu.nom, " \
-              "categorie_activite.prix_membre, categorie_activite.prix_non_membre " \
+        sql = "SELECT "\
+                "activite.id_activite, "\
+                "activite.date, "\
+                "activite.heure_debut, "\
+                "activite.heure_fin, " \
+                "activite.date_limite_inscription, "\
+                "categorie_activite.nom, "\
+                "lieu.nom, " \
+                "categorie_activite.prix_membre, "\
+                "categorie_activite.prix_non_membre " \
               "FROM activite " \
-              "LEFT JOIN categorie_activite ON activite.id_categorie_activite = " \
-              "categorie_activite.id_categorie_activite " \
-              "LEFT JOIN lieu ON categorie_activite.id_lieu = lieu.id_lieu "
+              "LEFT JOIN categorie_activite "\
+                "ON activite.id_categorie_activite = categorie_activite.id_categorie_activite " \
+              "LEFT JOIN lieu ON "\
+                "categorie_activite.id_lieu = lieu.id_lieu "
 
         # Ajout des options de recherche
         search = self.top_widget.txt_search.text()
@@ -595,7 +619,14 @@ class CentralWidgetLieux(CentralWidget):
         """
         # Fetch data from database
         query = QSqlQuery(self.database)
-        sql = "SELECT id_lieu, nom, adresse_1, ville, code_postal from lieu "
+        sql = "SELECT "\
+                "id_lieu, "\
+                "nom, "\
+                "adresse_1, "\
+                "ville, "\
+                "code_postal "\
+              "FROM "\
+                "lieu "
 
         # Ajout des options de recherche
         search = self.top_widget.txt_search.text()
@@ -688,16 +719,25 @@ class CentralWidgetCategorieActivite(CentralWidget):
         """
         query = QSqlQuery(self.database)
 
-        sql = "SELECT categorie_activite.id_categorie_activite, categorie_activite.nom, " \
-              "categorie_activite.prix_membre, categorie_activite.prix_non_membre, " \
-              "categorie_activite.participante_minimum, categorie_activite.participante_maximum, " \
-              "responsable.prenom, responsable.nom, lieu.nom, type_activite.nom " \
-              "FROM categorie_activite " \
-              "LEFT JOIN responsable ON categorie_activite.id_responsable = " \
-              "responsable.id_responsable " \
-              "LEFT JOIN lieu ON categorie_activite.id_lieu = lieu.id_lieu " \
-              "LEFT JOIN type_activite  ON categorie_activite.id_type_activite = " \
-              "type_activite.id_type_activite "
+        sql = "SELECT "\
+                "categorie_activite.id_categorie_activite, "\
+                "categorie_activite.nom, " \
+                "categorie_activite.prix_membre, "\
+                "categorie_activite.prix_non_membre, " \
+                "categorie_activite.participante_minimum, "\
+                "categorie_activite.participante_maximum, " \
+                "responsable.prenom, "\
+                "responsable.nom, "\
+                "lieu.nom, "\
+                "type_activite.nom " \
+              "FROM "\
+                "categorie_activite " \
+              "LEFT JOIN responsable "\
+                "ON categorie_activite.id_responsable = responsable.id_responsable " \
+              "LEFT JOIN lieu ON "\
+                "categorie_activite.id_lieu = lieu.id_lieu " \
+              "LEFT JOIN type_activite "\
+                "ON categorie_activite.id_type_activite = type_activite.id_type_activite "
 
         # Ajout des options de recherche
         search = self.top_widget.txt_search.text()

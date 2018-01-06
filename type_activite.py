@@ -60,7 +60,10 @@ class NouveauTypeActivite(TypeActivite):
         Ajouter le nouveau type d'activite a la base de donnees
         """
         query = QSqlQuery(self.database)
-        query.prepare("INSERT INTO type_activite (nom) VALUES (:nom)")
+        query.prepare("INSERT INTO type_activite "
+                        "(nom) "
+                      "VALUES "
+                        "(:nom)")
         query.bindValue(':nom', self.txt_nom.text())
         query.exec_()
 
@@ -86,7 +89,12 @@ class ModifierTypeActivite(TypeActivite):
         """Afficher les informations sur le type d'activite"""
         # Obtenir les informations de la base de donnees
         query = QSqlQuery(self.database)
-        query.prepare("SELECT nom FROM type_activite WHERE id_type_activite = :id_type_activite")
+        query.prepare("SELECT "
+                        "nom "
+                      "FROM "
+                        "type_activite "
+                      "WHERE "
+                        "id_type_activite = :id_type_activite")
         query.bindValue(':id_type_activite', self.id_type_activite)
         query.exec_()
 
@@ -100,7 +108,11 @@ class ModifierTypeActivite(TypeActivite):
     def process(self):
         """Modifier le type d'activite dans la base de donnees"""
         query = QSqlQuery(self.database)
-        query.prepare("UPDATE type_activite SET nom=:nom WHERE id_type_activite=:id_type_activite")
+        query.prepare("UPDATE type_activite "
+                      "SET "
+                        "nom=:nom "
+                      "WHERE "
+                        "id_type_activite=:id_type_activite")
         query.bindValue(':nom', self.txt_nom.text())
         query.bindValue(':id_type_activite', self.id_type_activite)
         query.exec_()

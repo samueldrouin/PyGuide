@@ -44,10 +44,18 @@ class Facture(Form):
             phone_number = int(self.check_phone_number(numero_telephone))
 
             query = QSqlQuery()
-            query.prepare("SELECT participante.id_participante, participante.prenom, participante.nom, "
-                          "participante.ville, membre.actif FROM participante "
+            query.prepare("SELECT "
+                            "participante.id_participante, "
+                            "participante.prenom, "
+                            "participante.nom, "
+                            "participante.ville, "
+                            "membre.actif "
+                          "FROM participante "
                           "LEFT JOIN membre ON participante.id_participante = membre.id_participante "
-                          "WHERE (participante.telephone_1 = :phone) OR (participante.telephone_2 = :phone)")
+                          "WHERE "
+                            "(participante.telephone_1 = :phone) "
+                            "OR "
+                            "(participante.telephone_2 = :phone)")
             query.bindValue(':phone', phone_number)
             query.exec_()
 
@@ -94,10 +102,17 @@ class Facture(Form):
         """
         # Fetch data from database
         query = QSqlQuery()
-        sql = "SELECT categorie_activite.nom, categorie_activite.prix_membre, categorie_activite.prix_non_membre, "\
-              "activite.date, activite.heure_debut, activite.heure_fin, activite.id_activite "\
-              "FROM activite "\
-              "INNER JOIN categorie_activite ON activite.id_categorie_activite = categorie_activite.id_categorie_activite " \
+        sql = "SELECT " \
+                "categorie_activite.nom, " \
+                "categorie_activite.prix_membre, " \
+                "categorie_activite.prix_non_membre, " \
+                "activite.date, " \
+                "activite.heure_debut, " \
+                "activite.heure_fin, " \
+                "activite.id_activite "\
+              "FROM activite " \
+              "INNER JOIN categorie_activite "\
+                "ON activite.id_categorie_activite = categorie_activite.id_categorie_activite " \
               "WHERE activite.date_limite_inscription >= {} ".format(int(QDate.currentDate().toJulianDay()))
 
         # Recherche par nom d'activite
@@ -136,12 +151,24 @@ class Facture(Form):
         """Obtenir les inscriptions associetes au compte"""
         # Fetch inscriptions from database
         query = QSqlQuery()
-        query.prepare("SELECT inscription.id_inscription, categorie_activite.nom, categorie_activite.prix_membre, "
-                      "categorie_activite.prix_non_membre, activite.date, activite.heure_debut, activite.heure_fin, activite.id_activite "
+        query.prepare("SELECT "
+                        "inscription.id_inscription, "
+                        "categorie_activite.nom, "
+                        "categorie_activite.prix_membre, "
+                        "categorie_activite.prix_non_membre, "
+                        "activite.date, "
+                        "activite.heure_debut, "
+                        "activite.heure_fin, "
+                        "activite.id_activite "
                       "FROM inscription "
-                      "LEFT JOIN activite ON inscription.id_activite = activite.id_activite "
-                      "LEFT JOIN categorie_activite ON activite.id_categorie_activite = categorie_activite.id_categorie_activite "
-                      "WHERE (inscription.id_participante = :id_participante) AND (activite.date >= :current_date) AND (inscription.status = :status) "
+                      "LEFT JOIN activite "
+                        "ON inscription.id_activite = activite.id_activite "
+                      "LEFT JOIN categorie_activite "
+                        "ON activite.id_categorie_activite = categorie_activite.id_categorie_activite "
+                      "WHERE "
+                        "(inscription.id_participante = :id_participante) "
+                        "AND (activite.date >= :current_date) "
+                        "AND (inscription.status = :status) "
                       "ORDER BY categorie_activite.nom ASC, activite.date ASC")
         query.bindValue(':id_participante', self.id_participante)
         query.bindValue(':current_date', QDate.currentDate().toJulianDay())
@@ -333,8 +360,10 @@ class Facturation(Facture):
 
             # Ajouter une facture
             query = QSqlQuery()
-            query.prepare("INSERT INTO facture (numero_recu, id_participante) "
-                          "VALUES (:numero_recu, :id_participante)")
+            query.prepare("INSERT INTO facture "
+                            "(numero_recu, id_participante) "
+                          "VALUES "
+                            "(:numero_recu, :id_participante)")
             query.bindValue(':numero_recu', self.check_string(self.txt_recu.text()))
             query.bindValue(':id_participante', self.id_participante)
             query.exec_()
@@ -346,10 +375,15 @@ class Facturation(Facture):
 
             # Ajouter les inscriptions
             query = QSqlQuery()
-            query.prepare("INSERT OR REPLACE INTO inscription (id_inscription, id_participante, id_activite, status, id_facture) "
+            query.prepare("INSERT OR REPLACE INTO inscription "
+                            "(id_inscription, id_participante, id_activite, status, id_facture) "
                           "VALUES "
-                          "((SELECT id_inscription FROM inscription WHERE (id_participante = :id_participante) "
-                          "AND (id_activite = :id_activite)), :id_participante, :id_activite, :status, (SELECT last_insert_rowid()))")
+                            "((SELECT id_inscription "
+                              "FROM inscription "
+                              "WHERE (id_participante = :id_participante) "
+                              "AND (id_activite = :id_activite)), "
+                            ":id_participante, :id_activite, :status, "
+                            "(SELECT last_insert_rowid()))")
             query.bindValue(':id_participante', self.id_participante)
             query.bindValue(':id_activite', self.tbl_article.item(row, 0).text())
             query.bindValue(':status', True)
@@ -477,9 +511,14 @@ class Inscription(Facture):
             # Ajouter une inscription
             if int(self.tbl_panier.item(row, 1).text()) == 1:
                 query = QSqlQuery()
-                query.prepare("INSERT OR REPLACE INTO inscription (id_inscription, id_participante, id_activite, status)   VALUES "
-                              "((SELECT id_inscription FROM inscription WHERE (id_participante = :id_participante) "
-                              "AND (id_activite = :id_activite)), :id_participante, :id_activite, :status)")
+                query.prepare("INSERT OR REPLACE INTO inscription "
+                                "(id_inscription, id_participante, id_activite, status) "
+                              "VALUES "
+                                "((SELECT id_inscription "
+                                  "FROM inscription "
+                                  "WHERE (id_participante = :id_participante) "
+                                "AND (id_activite = :id_activite)), "
+                                ":id_participante, :id_activite, :status)")
                 query.bindValue(':id_participante', self.id_participante)
                 query.bindValue(':id_activite', self.tbl_panier.item(row, 0).text())
                 query.bindValue(':status', True)
