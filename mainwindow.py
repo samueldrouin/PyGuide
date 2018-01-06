@@ -15,7 +15,7 @@ from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 # Projet import
 from participante import NouvelleParticipante, ModifierParticipante
 from lieu import NouveauLieu, ModifierLieu
-from activite import NouvelleActivite
+from activite import NouvelleActivite, AfficherActivite
 from categorie_activite import NouvelleCategorieActivite, ModifierCategorieActivite
 from settings import Settings
 from consultation import Consultation
@@ -427,6 +427,7 @@ class CentralWidgetActivite(CentralWidget):
         self.top_widget.chk_desc.toggled.connect(self.update_list)
         self.top_widget.ded_start.dateChanged.connect(self.update_list)
         self.top_widget.ded_end.dateChanged.connect(self.update_list)
+        self.table_widget.clicked.connect(self.afficher_activite)
 
         # Update GUI elements
         self.update_list()
@@ -523,7 +524,6 @@ class CentralWidgetActivite(CentralWidget):
             date_limite = QDate.fromJulianDay(query.value(4)).toString('dd MMM yyyy')
             self.table_widget.setItem(r, 6, QTableWidgetItem(date_limite))
 
-
         self.table_widget.resizeColumnsToContents()
 
     def update_search_placeholder(self, text):
@@ -542,6 +542,15 @@ class CentralWidgetActivite(CentralWidget):
         nouvelle_activite = NouvelleActivite(self.database)
         nouvelle_activite.accepted.connect(self.update_list)
         nouvelle_activite.exec()
+
+    def afficher_activite(self, index):
+        """
+        Ouvre le dialog pour modifier une categorie d'activite
+        :param index: Index de la ligne du tableau
+        """
+        id_activite = self.table_widget.item(index.row(), 0).text()
+        afficher_activite = AfficherActivite(self.database, id_activite)
+        afficher_activite.exec()
 
 
 class CentralWidgetLieux(CentralWidget):

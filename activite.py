@@ -5,7 +5,7 @@ import os
 from datetime import date, timedelta, datetime
 
 # PyQt import
-from PyQt5.QtCore import QDate
+from PyQt5.QtCore import QDate, QTime
 from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 from PyQt5 import uic
 
@@ -197,3 +197,70 @@ class NouvelleActivite(Form):
                     return # Empêche la fermeture du dialog
             QSqlDatabase(self.database).commit()
         self.accept()
+
+class AfficherActivite(Form):
+    """Dialog pour l'affichage des informations sur une activité"""
+    def __init__(self, database, id_activite):
+        super(AfficherActivite, self).__init__()
+        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'afficher_activite.ui')
+        uic.loadUi(ui, self)
+
+        # Instance variable definition
+        self.database = database
+        self.id_activite = id_activite
+
+        # Afficher les informations sur l'activite
+        self.afficher_informations()
+
+        # Affichage des dates
+        self.ded_date.setMinimumDate(QDate().currentDate())
+        self.ded_limite.setMinimumDate(QDate().currentDate())
+
+        # Slots
+        self.btn_fermer.clicked.connect(self.reject)
+
+    def afficher_informations(self):
+        """Afficher les informations sur l'activite lieu"""
+        # Obtenir les informations de la base de donnees
+        query = QSqlQuery(self.database)
+        query.prepare("SELECT "
+                        "categorie_activite.nom, "
+                        "lieu.nom, "
+                        "activite.date, "
+                        "activite.heure_debut, "
+                        "activite.heure_fin, "
+                        "activite.date_limite_inscription "
+                      "FROM activite "
+                      "LEFT JOIN categorie_activite "
+                        "ON activite.id_categorie_activite = categorie_activite.id_categorie_activite "
+                      "LEFT JOIN lieu ON "
+                        "categorie_activite.id_lieu = lieu.id_lieu "
+                      "WHERE (activite.id_activite = :id_activite)")
+        query.bindValue(':id_activite', self.id_activite)
+        query.exec_()
+
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
+
+        # Afficher les informations
+        query.first()
+
+        self.txt_nom.setText(str(query.value(0)))
+        self.txt_lieu.setText(str(query.value(1)))
+        self.ded_date.setDate(QDate().fromJulianDay(int(query.value(2))))
+        self.ted_heure_debut.setTime(QTime().fromMSecsSinceStartOfDay(int(query.value(3))))
+        self.ted_heure_fin.setTime(QTime().fromMSecsSinceStartOfDay(int(query.value(4))))
+        self.ded_limite.setDate(QDate().fromJulianDay(int(query.value(5))))
+
+    def modifier_activite(self):
+        """Modifier une activite"""
+
+    def annuler_activite(self):
+        """Annuler une activite"""
+        query = QSqlQuery(self.database)
+        query.prepare("UPDATE activite "
+                      "SET "
+                        "status = FALSE "
+                      "WHERE "
+                        "id_activite = :id_activite")
+        query.bindValue(':id_activite', self.id_activite)
