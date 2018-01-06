@@ -88,7 +88,6 @@ class Facture(Form):
         :param search: Texte pour la recherche
         :param table: Tableau dans lequel les données sont affichées
         """
-
         # Fetch data from database
         query = QSqlQuery()
         sql = "SELECT categorie_activite.nom, categorie_activite.prix_membre, categorie_activite.prix_non_membre, "\
@@ -104,83 +103,35 @@ class Facture(Form):
         sql = sql + "LIMIT 100"
         query.exec_(sql)
 
-        table.setRowCount(0)
-        while query.next():
-            table.insertRow(table.rowCount())
-            r = table.rowCount() - 1
+        table.setRowCount(0) 
+        while query.next(): 
+            table.insertRow(table.rowCount()) 
+            r = table.rowCount() - 1 
+ 
+            table.setItem(r, 0, QTableWidgetItem(str(query.value(6)))) 
+            table.setItem(r, 1, QTableWidgetItem(str(query.value(0)))) 
+ 
+            if actif: 
+                prix = "{0:.2f}$".format(query.value(1)) 
+            else: 
+                prix = "{0:.2f}$".format(query.value(2)) 
+            table.setItem(r, 2, QTableWidgetItem(prix)) 
+ 
+            date_activite = QDate.fromJulianDay(query.value(3)).toString('dd MMM yyyy') 
+            table.setItem(r, 3, QTableWidgetItem(date_activite)) 
+ 
+            heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(4)).toString('hh:mm') 
+            heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(5)).toString('hh:mm') 
+            heure = heure_debut + " à " + heure_fin 
+            table.setItem(r, 4, QTableWidgetItem(heure)) 
 
-            table.setItem(r, 0, QTableWidgetItem(str(query.value(6))))
-            table.setItem(r, 1, QTableWidgetItem(str(query.value(0))))
-
-            if actif:
-                prix = "{0:.2f}$".format(query.value(1))
-            else:
-                prix = "{0:.2f}$".format(query.value(2))
-            table.setItem(r, 2, QTableWidgetItem(prix))
-
-            date_activite = QDate.fromJulianDay(query.value(3)).toString('dd MMM yyyy')
-            table.setItem(r, 3, QTableWidgetItem(date_activite))
-
-            heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(4)).toString('hh:mm')
-            heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(5)).toString('hh:mm')
-            heure = heure_debut + " à " + heure_fin
-            table.setItem(r, 4, QTableWidgetItem(heure))
-
-    def ajouter_article(self, de_table, a_table, quantite, total):
-        """
-        Ajouter un article à la commande
-        :param de_table: Table à partir de laquelle l'article est ajoute
-        :param a_table: Table dans lequel l'article est ajoute
-        :param quantite: Quantite de l'article a ajouter
-        """
-        de_row = de_table.currentRow()
-        if de_row != -1:
-            # Préparation du tableau
-            a_table.insertRow(self.tbl_article.rowCount())
-            r = a_table.rowCount() - 1
-
-            # Ajout de l'article
-            self.tbl_article.setItem(r, 0, self.tbl_activite.item(de_row, 0).clone())
-            self.tbl_article.setItem(r, 1, self.tbl_activite.item(de_row, 1).clone())
-            self.tbl_article.setItem(r, 2, self.tbl_activite.item(de_row, 2).clone())
-            self.tbl_article.setItem(r, 3, self.tbl_activite.item(de_row, 3).clone())
-            self.tbl_article.setItem(r, 4, self.tbl_activite.item(de_row, 4).clone())
-            self.tbl_article.setItem(r, 5, QTableWidgetItem(quantite))
-
-            # Calcul du total
-            if quantite == "(1)":
-                return self.calculer_total(total, "-" + de_table.item(de_row, 2).text())
-            else:
-                return self.calculer_total(total, de_table.item(de_row, 2).text())
-        else:
-            Error.DataError.aucun_article_selectionne()
-
-    def calculer_total(self, total, montant):
-        """
-        Changer le montant du total
-        :param montant: Montant de l'article
-        """
-        montant = float(montant[:-1])
-        if total != "":
-            total = float(total[:-1])
-            total = total + montant
-            return "{0:.2f}$".format(total)
-        else:
-            return "{0:.2f}$".format(montant)
-
-    def afficher_inscriptions(self, table, actif):
-        """
-        Afficher les inscriptions associetes au compte
-        :param table: Tableau dans lequel les informations sont ajoutées
-        """
-
-        # Effacer les elements existants
-        table.setRowCount(0)
-
+    def inscription(self, actif):
+        """Obtenir les inscriptions associetes au compte"""
         # Fetch inscriptions from database
         query = QSqlQuery()
         query.prepare("SELECT inscription.id_inscription, categorie_activite.nom, categorie_activite.prix_membre, "
-                      "categorie_activite.prix_non_membre, activite.date, activite.heure_debut, activite.heure_fin "
+                      "categorie_activite.prix_non_membre, activite.date, activite.heure_debut, activite.heure_fin, "
+                      "activite.id_activite FROM inscription " 
                       "FROM inscription "
                       "LEFT JOIN activite ON inscription.id_activite = activite.id_activite "
                       "LEFT JOIN categorie_activite ON activite.id_categorie_activite = categorie_activite.id_categorie_activite "
@@ -190,27 +141,28 @@ class Facture(Form):
         query.bindValue(':status', True)
         query.exec_()
 
-        # Afficher la liste des activites dans le panier
+        # Préparer les données de la requete
+        resultat = []
         while query.next():
-            table.insertRow(table.rowCount())
-            r = table.rowCount() - 1
-
-            table.setItem(r, 0, QTableWidgetItem(str(query.value(0))))
-            table.setItem(r, 1, QTableWidgetItem(str(query.value(1))))
+            inscription = {}
+            inscription["id"] = str(query.value(0))
+            inscription["nom"] = str(query.value(1))
 
             if actif:
                 prix = "{0:.2f}$".format(query.value(2))
             else:
                 prix = "{0:.2f}$".format(query.value(3))
-            table.setItem(r, 2, QTableWidgetItem(prix))
+            inscription["prix"] = prix
 
-            date_activite = QDate.fromJulianDay(query.value(4)).toString('dd MMM yyyy')
-            table.setItem(r, 3, QTableWidgetItem(date_activite))
+            inscription["date"] = QDate.fromJulianDay(query.value(4)).toString('dd MMM yyyy')
 
             heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(5)).toString('hh:mm')
             heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(6)).toString('hh:mm')
             heure = heure_debut + " à " + heure_fin
-            table.setItem(r, 4, QTableWidgetItem(heure))
+            inscription["heure"] = heure
+            inscription["id_activite"] = str(query.value(7))
+            resultat.append(inscription)
+        return resultat
 
 class Facturation(Facture):
     """Dialog pour la création de nouvelle facture"""
@@ -244,8 +196,69 @@ class Facturation(Facture):
         self.btn_remove.clicked.connect(self.retirer_activite)
         self.btn_enregistrer.clicked.connect(self.process)
 
+    def afficher_inscriptions(self):
+        """Afficher les inscriptions liees au compte"""
+        # Effacer les elements existants
+        self.tbl_inscription.setRowCount(0)
+
+        """Afficher les inscriptions"""
+        resultat = self.inscription(self.chk_actif.isChecked())
+
+        for inscription in resultat:
+            self.tbl_inscription.insertRow(self.tbl_inscription.rowCount())
+            r = self.tbl_inscription.rowCount() - 1
+
+            self.tbl_inscription.setItem(r, 0, QTableWidgetItem(inscription["id"]))
+            self.tbl_inscription.setItem(r, 1, QTableWidgetItem(inscription["nom"]))
+            self.tbl_inscription.setItem(r, 2, QTableWidgetItem(inscription["prix"]))
+            self.tbl_inscription.setItem(r, 3, QTableWidgetItem(inscription["date"]))
+            self.tbl_inscription.setItem(r, 4, QTableWidgetItem(inscription["heure"]))
+
+    def ajouter_article(self, table, quantite):
+        """
+        Ajouter un article à la commande
+        :param table: Table à partir de laquelle l'article est ajoute
+        :param quantite: Quantite de l'article a ajouter
+        """
+        row = table.currentRow()
+
+        if row != -1:
+            # Préparation du tableau
+            self.tbl_article.insertRow(self.tbl_article.rowCount())
+            r = self.tbl_article.rowCount() - 1
+
+            # Ajout de l'article
+            self.tbl_article.setItem(r, 0, table.item(row, 0).clone())
+            self.tbl_article.setItem(r, 1, table.item(row, 1).clone())
+            self.tbl_article.setItem(r, 2, table.item(row, 2).clone())
+            self.tbl_article.setItem(r, 3, table.item(row, 3).clone())
+            self.tbl_article.setItem(r, 4, table.item(row, 4).clone())
+            self.tbl_article.setItem(r, 5, QTableWidgetItem(quantite))
+
+            # Calcul du total
+            if quantite == "(1)":
+                self.afficher_total("-" + table.item(row, 2).text())
+            else:
+                self.afficher_total(table.item(row, 2).text())
+        else:
+            Error.DataError.aucun_article_selectionne()
+
+    def afficher_total(self, montant):
+        """
+        Changer le montant du total
+        :param montant: Montant de l'article
+        """
+        total = self.txt_total.text()
+        montant = float(montant[:-1])
+        if total != "":
+            total = float(total[:-1])
+            total = total + montant
+            self.txt_total.setText("{0:.2f}$".format(total))
+        else:
+            self.txt_total.setText("{0:.2f}$".format(montant))
+
     def activer_facturation(self):
-        """Permettre l'ajout d'activite"""
+        """Permettre l'ajout d'activite lorsqu'un compte est ouvert"""
         self.btn_ajouter_activite.setEnabled(True)
         self.btn_rembourser.setEnabled(True)
         self.btn_ajouter_inscription.setEnabled(True)
@@ -276,33 +289,23 @@ class Facturation(Facture):
     def ajout_activite(self):
         """Ajouter une activite à la facture"""
         # Prépration des paramètres
-        de_table = self.tbl_activite
-        a_table = self.tbl_article
+        table = self.tbl_activite
         if self.sender() == self.btn_ajouter_activite:
             quantite = "1"
         else:
             quantite = "(1)"
-        total = self.txt_total.text()
 
         # Ajout de l'article
-        total = self.ajouter_article(de_table, a_table, quantite, total)
-
-        # Affichage du total
-        self.txt_total.setText(total)
+        self.ajouter_article(table, quantite)
 
     def ajout_inscription(self):
         """Ajouter une inscription a la facture"""
         # Prépration des paramètres
-        de_table = self.tbl_inscription
-        a_table = self.tbl_article
+        table = self.tbl_inscription
         quantite = "1"
-        total = self.txt_total.text()
 
         # Ajout de l'article
-        total = self.ajouter_article(de_table, a_table, quantite, total)
-
-        # Affichage du total
-        self.txt_total.setText(total)
+        self.ajouter_article(table, quantite)
 
     def retirer_activite(self):
         """Retirer une activite du panier"""
@@ -311,12 +314,6 @@ class Facturation(Facture):
             self.tbl_article.removeRow(row)
         else:
             Error.DataError.aucun_article_selectionne()
-
-    def afficher_inscriptions(self):
-        """Afficher les inscriptions associetes au compte"""
-        actif = self.chk_actif.isChecked()
-        table = self.tbl_inscription
-        super().afficher_inscriptions(table, actif)
 
     def process(self):
         """Traitement des donnees pour la base de données"""
@@ -361,16 +358,12 @@ class Facturation(Facture):
         else:
             self.txt_facture.setText("1")
 
-class Inscription(Form):
+class Inscription(Facture):
     """Dialog pour la création de nouvelle inscriptions"""
     def __init__(self, database):
-        super(Inscription, self).__init__()
+        super(Inscription, self).__init__(database)
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'inscription.ui')
         uic.loadUi(ui, self)
-
-        # Instance variable definition
-        self.database = database
-        self.id_participante = None
 
         # Validator
         self.txt_numero.setValidator(self.phone_validator())
@@ -389,122 +382,38 @@ class Inscription(Form):
         self.txt_numero.cursorPositionChanged.connect(self.set_parsed_phone_number)
         self.txt_numero.returnPressed.connect(self.afficher_information_participante)
         self.txt_activite.textChanged.connect(self.afficher_liste_activite)
-        self.btn_ajouter.clicked.connect(self.ajouter_activite)
+        self.btn_ajouter.clicked.connect(self.ajout_activite)
         self.btn_enregistrer.clicked.connect(self.process)
         self.btn_remove.clicked.connect(self.retirer_activite)
 
+    def activer_facturation(self):
+        """Permettre l'ajout d'activite lorsqu'un compte est ouvert"""
+        self.btn_ajouter.setEnabled(True) 
+        self.btn_remove.setEnabled(True) 
+        self.afficher_inscriptions() 
+        self.txt_activite.setText("") 
+
     def afficher_information_participante(self):
-        """
-        Afficher les informations sur la participante
-        """
+        """Afficher les informations sur la participante"""
+        informations = self.information_participante(self.txt_numero.text())
 
-        if len(self.txt_numero.text()) == 12:
+        # S'il existe dans informations
+        if informations:
+            # Afficher les informations du membre
+            self.txt_nom.setText(informations["nom"])
+            self.txt_ville.setText(informations["ville"])
 
-            # Preparation du numero de telephone
-            phone_number = int(self.check_phone_number(self.txt_numero.text()))
-
-            query = QSqlQuery()
-            query.prepare("SELECT participante.id_participante, participante.prenom, participante.nom, "
-                          "participante.ville, membre.actif FROM participante "
-                          "LEFT JOIN membre ON participante.id_participante = membre.id_participante "
-                          "WHERE (participante.telephone_1 = :phone) OR (participante.telephone_2 = :phone)")
-            query.bindValue(':phone', phone_number)
-            query.exec_()
-
-            if query.first():
-                # Afficher les informations du membre
-                self.id_participante = int(query.value(0))
-
-                nom = str(query.value(1)) + " " + str(query.value(2))
-                self.txt_nom.setText(nom)
-
-                self.txt_ville.setText(str(query.value(3)))
-
-                if query.value(4):
-                    self.chk_actif.setChecked(True)
-
-                # Permettre l'ajout d'activite
-                self.btn_ajouter.setEnabled(True)
-                self.btn_remove.setEnabled(True)
-                self.afficher_inscriptions()
-                self.txt_activite.setText("")
-            else:
-                # Indiquer à l'utilisateur qu'il n'existe pas de compte avec ce numero
-                msgbox = QMessageBox()
-                msgbox.setWindowTitle("Aucune compte")
-                msgbox.setText("Aucune compte")
-                msgbox.setInformativeText("Il n'existe aucun compte à ce numéro de téléphone. Vérifiez que le "
-                                          "numéro est entré correctement.")
-                msgbox.setIcon(QMessageBox.Warning)
-                msgbox.setStandardButtons(QMessageBox.Ok)
-                msgbox.setDefaultButton(QMessageBox.Ok)
-                msgbox.exec()
-
-        # Indiquer que le numéro est invalide
-        else:
-            msgbox = QMessageBox()
-            msgbox.setWindowTitle("Numéro de téléphone invalide")
-            msgbox.setText("Numéro de téléphone invalide")
-            msgbox.setInformativeText("Veuillez entrer un numéro de téléphone valide")
-            msgbox.setIcon(QMessageBox.Warning)
-            msgbox.setStandardButtons(QMessageBox.Ok)
-            msgbox.setDefaultButton(QMessageBox.Ok)
-            msgbox.exec()
-
-    def set_parsed_phone_number(self, old, new):
-        """
-        Parsing phone number
-        :param old: Old cursor position
-        :param new: New cursor position
-        """
-        phone_number = self.phone_number_parsing(old, new, self.sender().text())
-        self.sender().setText(phone_number)
+            if informations["actif"]:
+                self.chk_actif.setChecked(True)
 
     def afficher_liste_activite(self):
-        """
-        Afficher la liste des activite
-        """
+        """Afficher la liste des activite"""
+        search = self.txt_activite.text()
+        actif = self.chk_actif.isChecked()
+        table = self.tbl_activite
+        super().afficher_liste_activite(search, actif, table)
 
-        # Fetch data from database
-        query = QSqlQuery()
-        sql = "SELECT categorie_activite.nom, categorie_activite.prix_membre, categorie_activite.prix_non_membre, "\
-              "activite.date, activite.heure_debut, activite.heure_fin, activite.id_activite "\
-              "FROM activite "\
-              "INNER JOIN categorie_activite ON activite.id_categorie_activite = categorie_activite.id_categorie_activite " \
-              "WHERE activite.date_limite_inscription >= {} ".format(int(QDate.currentDate().toJulianDay()))
-
-        # Recherche par nom d'activite
-        if self.txt_activite.text() != "":
-            sql = sql + "WHERE categorie_activite.nom LIKE '%{}%' ".format(self.txt_activite.text())
-
-        sql = sql + "LIMIT 100"
-        query.exec_(sql)
-
-        self.tbl_activite.setRowCount(0)
-        while query.next():
-            self.tbl_activite.insertRow(self.tbl_activite.rowCount())
-            r = self.tbl_activite.rowCount() - 1
-
-            self.tbl_activite.setItem(r, 0, QTableWidgetItem(str(query.value(6))))
-            self.tbl_activite.setItem(r, 1, QTableWidgetItem(str(query.value(0))))
-
-            if self.chk_actif.isChecked():
-                prix = "{0:.2f}$".format(query.value(1))
-            else:
-                prix = "{0:.2f}$".format(query.value(2))
-            self.tbl_activite.setItem(r, 2, QTableWidgetItem(prix))
-
-            date_activite = QDate.fromJulianDay(query.value(3)).toString('dd MMM yyyy')
-            self.tbl_activite.setItem(r, 3, QTableWidgetItem(date_activite))
-
-            heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(4)).toString('hh:mm')
-            heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(5)).toString('hh:mm')
-            heure = heure_debut + " à " + heure_fin
-            self.tbl_activite.setItem(r, 4, QTableWidgetItem(heure))
-
-        self.tbl_activite.resizeColumnsToContents()
-
-    def ajouter_activite(self):
+    def ajout_activite(self):
         """
         Ajouter une activite au panier
         """
@@ -514,7 +423,7 @@ class Inscription(Form):
             r = self.tbl_panier.rowCount() - 1
 
             self.tbl_panier.setItem(r, 0, self.tbl_activite.item(activite_row, 0).clone())
-            self.tbl_panier.setItem(r, 1, QTableWidgetItem("1"))
+            self.tbl_panier.setItem(r, 2, QTableWidgetItem("1"))
             self.tbl_panier.setItem(r, 3, self.tbl_activite.item(activite_row, 1).clone())
             self.tbl_panier.setItem(r, 4, self.tbl_activite.item(activite_row, 2).clone())
             self.tbl_panier.setItem(r, 5, self.tbl_activite.item(activite_row, 3).clone())
@@ -522,14 +431,7 @@ class Inscription(Form):
 
             self.tbl_panier.resizeColumnsToContents()
         else:
-            msgbox = QMessageBox()
-            msgbox.setWindowTitle("Aucune activité sélectionnée")
-            msgbox.setText("Aucune activité sélectionnée")
-            msgbox.setInformativeText("Veuillez sélectionner une activité à ajouter.")
-            msgbox.setIcon(QMessageBox.Information)
-            msgbox.setStandardButtons(QMessageBox.Ok)
-            msgbox.setDefaultButton(QMessageBox.Ok)
-            msgbox.exec()
+            Error.DataError.aucun_article_selectionne()
 
     def retirer_activite(self):
         """
@@ -543,14 +445,7 @@ class Inscription(Form):
             else:
                 self.tbl_panier.removeRow(row)
         else:
-            msgbox = QMessageBox()
-            msgbox.setWindowTitle("Aucune activité sélectionnée")
-            msgbox.setText("Aucune activité sélectionnée")
-            msgbox.setInformativeText("Veuillez sélectionner une activité à retirer.")
-            msgbox.setIcon(QMessageBox.Information)
-            msgbox.setStandardButtons(QMessageBox.Ok)
-            msgbox.setDefaultButton(QMessageBox.Ok)
-            msgbox.exec()
+            Error.DataError.aucun_article_selectionne()
 
     def process(self):
         """
@@ -579,48 +474,23 @@ class Inscription(Form):
                 query.exec_()
 
         self.accept()
-
+    
     def afficher_inscriptions(self):
-        """
-        Afficher les inscriptions associetes au compte
-        """
-
+        """Afficher les inscriptions liees au compte"""
         # Effacer les elements existants
         self.tbl_panier.setRowCount(0)
 
-        # Fetch inscriptions from database
-        query = QSqlQuery()
-        query.prepare("SELECT inscription.id_inscription, categorie_activite.nom, categorie_activite.prix_membre, "
-                      "categorie_activite.prix_non_membre, activite.date, activite.heure_debut, activite.heure_fin, "
-                      "activite.id_activite FROM inscription "
-                      "LEFT JOIN activite ON inscription.id_activite = activite.id_activite "
-                      "LEFT JOIN categorie_activite ON activite.id_categorie_activite = categorie_activite.id_categorie_activite "
-                      "WHERE (inscription.id_participante = :id_participante) AND (activite.date >= :current_date) AND (inscription.status = :status)")
-        query.bindValue(':id_participante', self.id_participante)
-        query.bindValue(':current_date', QDate.currentDate().toJulianDay())
-        query.bindValue(':status', True)
-        query.exec_()
+        """Afficher les inscriptions"""
+        resultat = self.inscription(self.chk_actif.isChecked())
 
-        # Afficher la liste des activites dans le panier
-        while query.next():
+        for inscription in resultat:
             self.tbl_panier.insertRow(self.tbl_panier.rowCount())
             r = self.tbl_panier.rowCount() - 1
 
-            self.tbl_panier.setItem(r, 0, QTableWidgetItem(str(query.value(7))))
-            self.tbl_panier.setItem(r, 1, QTableWidgetItem(str(query.value(0))))
-            self.tbl_panier.setItem(r, 2, QTableWidgetItem(True))
-            self.tbl_panier.setItem(r, 3, QTableWidgetItem(str(query.value(1))))
-
-            if self.chk_actif.isChecked():
-                prix = "{0:.2f}$".format(query.value(2))
-            else:
-                prix = "{0:.2f}$".format(query.value(3))
-            self.tbl_panier.setItem(r, 4, QTableWidgetItem(prix))
-
-            date_activite = QDate.fromJulianDay(query.value(4)).toString('dd MMM yyyy')
-            self.tbl_panier.setItem(r, 5, QTableWidgetItem(date_activite))
-
-            heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(5)).toString('hh:mm')
-            heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(6)).toString('hh:mm')
-            heure = heure_debut + " à " + heure_fin
-            self.tbl_panier.setItem(r, 6, QTableWidgetItem(heure))
+            self.tbl_panier.setItem(r, 0, QTableWidgetItem(inscription["id_activite"])) 
+            self.tbl_panier.setItem(r, 1, QTableWidgetItem(inscription["id"]))
+            self.tbl_panier.setItem(r, 2, QTableWidgetItem(True)) 
+            self.tbl_panier.setItem(r, 3, QTableWidgetItem(inscription["nom"]))
+            self.tbl_panier.setItem(r, 4, QTableWidgetItem(inscription["prix"]))
+            self.tbl_panier.setItem(r, 5, QTableWidgetItem(inscription["date"]))
+            self.tbl_panier.setItem(r, 6, QTableWidgetItem(inscription["heure"]))
