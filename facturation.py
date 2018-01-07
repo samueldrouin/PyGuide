@@ -18,11 +18,6 @@ import Selection
 
 class Facture(Form):
     """Fonctions nécessaires pour tous les types de facture"""
-    # Constante definition
-    STATUS_INSCRIPTION_ANNULEE = 0
-    STATUS_INSCRIPTION = 1
-    STATUS_FACTURE = 2
-    STATUS_REMBOURSE = 3
 
     def __init__(self, database):
         super(Facture, self).__init__()

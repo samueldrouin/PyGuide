@@ -8,6 +8,11 @@ from PyQt5.QtGui import QRegExpValidator
 
 class Form(QDialog):
     """Classe de base des dialogs"""
+    # Constante definition
+    STATUS_INSCRIPTION_ANNULEE = 0
+    STATUS_INSCRIPTION = 1
+    STATUS_FACTURE = 2
+    STATUS_REMBOURSE = 3
 
     @staticmethod
     def address_validator():

@@ -13,7 +13,6 @@ from PyQt5 import uic
 from inscription_membre import NouvelleInscription, RenouvelerInscription
 from form import Form
 from Script import Error
-import facturation
 
 
 class Participante(Form):
@@ -447,7 +446,7 @@ class ModifierParticipante(Participante):
                       "ORDER BY categorie_activite.nom ASC, activite.date ASC")
         query.bindValue(':id_participante', self.participante_id)
         query.bindValue(':current_date', QDate.currentDate().toJulianDay())
-        query.bindValue(':status', facturation.Facture.STATUS_INSCRIPTION)
+        query.bindValue(':status', self.STATUS_INSCRIPTION)
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
