@@ -211,7 +211,7 @@ class Facture(Form):
                       "ORDER BY categorie_activite.nom ASC, activite.date ASC")
         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
         query.bindValue(':current_date', QDate.currentDate().toJulianDay())
-        query.bindValue(':status', True)
+        query.bindValue(':status', self.STATUS_INSCRIPTION)
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
@@ -646,7 +646,8 @@ class Facturation(Facture):
                           "(:id_facture, :prix, :description)")
             query.bindValue(':id_facture', id_facture)
             query.bindValue(':prix', prix)
-            query.bindValue(':description', str(self.tbl_article.item(row, 1).text()))
+            description = str(self.tbl_article.item(row, 1).text()) + "(" + str(self.tbl_article.item(row, 3).text()) + ")"
+            query.bindValue(':description', description)
             query.exec_()
 
             # Affichage d'un message d'erreur si la requete echoue

@@ -4,8 +4,8 @@
 import os
 
 # PyQt import
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtCore import QDate
+from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem
+from PyQt5.QtCore import QDate, QTime, QDateTime
 from PyQt5.QtSql import QSqlQuery
 from PyQt5 import uic
 
@@ -13,6 +13,7 @@ from PyQt5 import uic
 from inscription_membre import NouvelleInscription, RenouvelerInscription
 from form import Form
 from Script import Error
+import facturation
 
 
 class Participante(Form):
@@ -297,6 +298,12 @@ class NouvelleParticipante(Participante):
         self.setWindowTitle("Nouvelle participante")
         self.lbl_title.setText("Nouvelle participante")
 
+        # Cacher les transactions pour une nouvelle participante
+        self.lbl_transaction.setHidden(True)
+        self.tbl_transaction.setHidden(True)
+        self.lbl_inscription.setHidden(True)
+        self.tbl_inscription.setHidden(True)
+
     def process_data(self, prepared_data):
         # Insert data
         query = QSqlQuery(self.database)
@@ -381,9 +388,86 @@ class ModifierParticipante(Participante):
 
         # Afficher les informations de la participante
         self.show_participante_informations()
+        self.afficher_transaction()
+        self.afficher_inscription()
 
         # Affiche les informations du membre s'il y en a
         self.show_member_informations()
+
+    def afficher_transaction(self):
+        """Afficher les transaction pour la participante"""
+        # Obtenir la liste des transactions 
+        query = QSqlQuery(self.database)
+        query.prepare("SELECT "
+                        "facture.date, "
+                        "article.description, "
+                        "article.prix "
+                      "FROM facture "
+                      "INNER JOIN article ON article.id_facture = facture.id_facture "
+                      "WHERE facture.id_participante = :id_participante")
+        query.bindValue(':id_participante', self.participante_id)
+        query.exec_()
+
+        # Affichage d'un message d'erreur si la requete echoue
+        if Error.DatabaseError.sql_error_handler(query.lastError()):
+            return # Ne pas continuer avec des informations incompletes
+
+        while(query.next()):
+            # Préparation du tableau
+            self.tbl_transaction.insertRow(self.tbl_transaction.rowCount())
+            r = self.tbl_transaction.rowCount() - 1
+
+            self.tbl_transaction.setItem(r, 0, QTableWidgetItem(str(query.value(1))))
+
+            prix = "{0:.2f}$".format(query.value(2))
+            self.tbl_transaction.setItem(r, 1, QTableWidgetItem(prix))
+
+            date = QDateTime().fromString(query.value(0), 'yyyy-MM-dd hh:mm:ss').date().toString('dd MMM yyyy')
+            self.tbl_transaction.setItem(r, 2, QTableWidgetItem(date))
+
+    def afficher_inscription(self):
+        """Afficher les inscription pour la participante"""
+        # Obtenir la liste des transactions 
+        query = QSqlQuery()
+        query.prepare("SELECT "
+                        "categorie_activite.nom, "
+                        "activite.date, "
+                        "activite.heure_debut, "
+                        "activite.heure_fin "
+                      "FROM inscription "
+                      "LEFT JOIN activite "
+                        "ON inscription.id_activite = activite.id_activite "
+                      "LEFT JOIN categorie_activite "
+                        "ON activite.id_categorie_activite = categorie_activite.id_categorie_activite "
+                      "WHERE "
+                        "(inscription.id_participante = :id_participante) "
+                        "AND (activite.date >= :current_date) "
+                        "AND (inscription.status = :status) "
+                        "AND (activite.status = 1)"
+                      "ORDER BY categorie_activite.nom ASC, activite.date ASC")
+        query.bindValue(':id_participante', self.participante_id)
+        query.bindValue(':current_date', QDate.currentDate().toJulianDay())
+        query.bindValue(':status', facturation.Facture.STATUS_INSCRIPTION)
+        query.exec_()
+
+        # Affichage d'un message d'erreur si la requete echoue
+        if Error.DatabaseError.sql_error_handler(query.lastError()):
+            return # Ne pas continuer avec des informations incompletes
+
+        while(query.next()):
+            # Préparation du tableau
+            self.tbl_inscription.insertRow(self.tbl_inscription.rowCount())
+            r = self.tbl_inscription.rowCount() - 1
+
+            self.tbl_inscription.setItem(r, 0, QTableWidgetItem(str(query.value(0))))
+
+            date = QDate().fromJulianDay(int(query.value(1))).toString('dd MMM yyyy')
+            self.tbl_inscription.setItem(r, 1, QTableWidgetItem(date))
+
+            heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(2)).toString('hh:mm')
+            heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(3)).toString('hh:mm')
+            heure = heure_debut + " à " + heure_fin
+            self.tbl_inscription.setItem(r, 2, QTableWidgetItem(heure))
 
     def show_participante_informations(self):
         """
