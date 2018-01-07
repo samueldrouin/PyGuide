@@ -211,29 +211,45 @@ class NouvelleInscription(InscriptionMembre):
             QSqlDatabase(self.database).rollback() # Annuler la transaction
             return # Empecher la fermeture du dialog
 
-        # Enregistre la commande
+        # Ouvre une facture
         query = QSqlQuery(self.database)
-        query.prepare("INSERT INTO inscription_membre "
-                        "(id_membre, "
-                        "date, "
-                        "article, "
-                        "prix, "
-                        "numero_recu) "
+        query.prepare("INSERT INTO facture "
+                        "("
+                          "numero_recu, "
+                          "id_participante, "
+                          "total "
+                        ")"
                       "VALUES "
-                        "((SELECT last_insert_rowid()), "
-                        "(SELECT date('now')), "
-                        ":article, "
-                        ":prix, "
-                        ":numero_recu)")
-        query.bindValue(':article', self.tbl_commande.item(0, 0).text())
-        query.bindValue(':prix', self.tbl_commande.item(0, 1).text())
+                        "("
+                          ":numero_recu, "
+                          ":id_participante, "
+                          ":total "
+                        ")")
         query.bindValue(':numero_recu', self.check_string(self.txt_recu.text()))
-        query.exec_()
+        query.bindValue(':id_participante', self.id_participante)
+        query.bindValue(':total', self.tbl_commande.item(0, 1).text())
 
         # Affichage d'un message d'erreur si la requete echoue
         if Error.DatabaseError.sql_error_handler(query.lastError()):
             QSqlDatabase(self.database).rollback() # Annuler la transaction
             return# Empecher la fermeture du dialog
+
+        # Ajout des articles à la facture
+        query = QSqlQuery(self.database)
+        query.prepare("INSERT INTO article "
+                        "("
+                          "id_facture, "
+                          "prix, "
+                          "description, "
+                        ")"
+                      "VALUES "
+                        "("
+                          "(SELECT last_insert_rowid()), "
+                          ":prix, "
+                          ":description, "
+                        ")")
+        query.bindValue(':prix', self.tbl_commande.item(0, 1).text())
+        query.bindValue(':description', self.tbl_commande.item(0, 0).text())
 
         #Termine la transation
         QSqlDatabase(self.database).commit()
