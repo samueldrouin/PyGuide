@@ -322,6 +322,11 @@
          </column>
          <column>
           <property name="text">
+           <string>FULL</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
            <string>Nom</string>
           </property>
          </column>

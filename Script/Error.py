@@ -187,6 +187,8 @@ class DatabaseError(object):
 class DataError(object):
     """Message d'erreur pour les donnees"""
     # Définition des messages d'erreur
+    ERREUR_DONNEE = "Donnée invalide"
+
     NUMERO_TELEPHONE_INVALIDE = "Numéro de téléphone invalide"
     NUMERO_TELEPHONE_INEXISTANT_INFORMATION = "Il n'existe aucun compte à ce numéro de téléphone. Vérifiez que le " \
                                               "numéro est entré correctement."
@@ -196,11 +198,14 @@ class DataError(object):
     AUCUN_ARTICLE = "Aucune activité sélectionnée"
     AUCUN_ARTICLE_INFORMATION = "Veuillez sélectionner une activité à ajouter."
 
+    ACTIVITE_COMPLETE = "Activité complète"
+    ACTIVITE_COMPLETE_INFORMATION = "La participante sera mise sur la liste d'attente."
+
     @classmethod
     def numero_telephone_inexistant(self):
         """Indiquer à l'utilisateur qu'il n'existe pas de compte avec ce numero"""
         msgbox = QMessageBox()
-        msgbox.setWindowTitle(self.AUCUN_COMPTE)
+        msgbox.setWindowTitle(self.ERREUR_DONNEE)
         msgbox.setText(self.AUCUN_COMPTE)
         msgbox.setInformativeText(self.NUMERO_TELEPHONE_INEXISTANT_INFORMATION)
         msgbox.setIcon(QMessageBox.Information)
@@ -212,7 +217,7 @@ class DataError(object):
     def numero_telephone_invalide(self):
         """Indique à l'utilisateur que le numero de telephone est invalide"""
         msgbox = QMessageBox()
-        msgbox.setWindowTitle(self.NUMERO_TELEPHONE_INVALIDE)
+        msgbox.setWindowTitle(self.ERREUR_DONNEE)
         msgbox.setText(self.NUMERO_TELEPHONE_INVALIDE)
         msgbox.setInformativeText(self.NUMERO_TELEPHONE_INVALIDE_INFORMATION)
         msgbox.setIcon(QMessageBox.Information)
@@ -224,10 +229,25 @@ class DataError(object):
     def aucun_article_selectionne(self):
         """Indique à l'utilisateur qu'aucun article n'est sélectionné"""
         msgbox = QMessageBox()
-        msgbox.setWindowTitle(self.AUCUN_ARTICLE)
+        msgbox.setWindowTitle(self.ERREUR_DONNEE)
         msgbox.setText(self.AUCUN_ARTICLE)
         msgbox.setInformativeText(self.AUCUN_ARTICLE_INFORMATION)
         msgbox.setIcon(QMessageBox.Information)
         msgbox.setStandardButtons(QMessageBox.Ok)
         msgbox.setDefaultButton(QMessageBox.Ok)
         msgbox.exec()
+
+    @classmethod
+    def activite_complete(self):
+        """
+        Indique a l'utilisateur que l'activité sélectionnée est complète
+        :return: Sélection de l'utilisateur
+        """
+        msgbox = QMessageBox()
+        msgbox.setWindowTitle(self.ERREUR_DONNEE)
+        msgbox.setText(self.ACTIVITE_COMPLETE)
+        msgbox.setInformativeText(self.ACTIVITE_COMPLETE_INFORMATION)
+        msgbox.setIcon(QMessageBox.Information)
+        msgbox.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
+        msgbox.setDefaultButton(QMessageBox.Yes)
+        return msgbox.exec()
