@@ -18,11 +18,11 @@ import Selection
 class Facture(Form):
     """Fonctions nécessaires pour tous les types de facture"""
     def __init__(self, database):
-        return super(Facture, self).__init__()
-   
+        super(Facture, self).__init__()
+
         # Instance variable definition
-        self.database = database
-        self.id_participante = None
+        self.DATABASE = database
+        self.ID_PARTICIPANTE = None
 
     def set_parsed_phone_number(self, old, new):
         """
@@ -69,9 +69,8 @@ class Facture(Form):
             while query.next():
                 informations = {}
                 informations["index"] = int(query.value(0))
-                self.id_participante = int(query.value(0))
+                self.ID_PARTICIPANTE = int(query.value(0))
 
-                
                 nom = str(query.value(1)) + " " + str(query.value(2))
                 informations["nom"] = nom
 
@@ -80,7 +79,7 @@ class Facture(Form):
                 resultat.append(informations)
 
             # La requête ne contient aucune information
-            if len(resultat) == 0:
+            if not resultat:
                 Error.DataError.numero_telephone_inexistant()
             # La requête contient plusieurs comptes
             elif len(resultat) != 1:
@@ -136,27 +135,27 @@ class Facture(Form):
         # Affichage d'un message d'erreur si la requete echoue
         Error.DatabaseError.sql_error_handler(query.lastError())
 
-        table.setRowCount(0) 
-        while query.next(): 
-            table.insertRow(table.rowCount()) 
-            r = table.rowCount() - 1 
- 
-            table.setItem(r, 0, QTableWidgetItem(str(query.value(6)))) 
-            table.setItem(r, 1, QTableWidgetItem(str(query.value(0)))) 
- 
-            if actif: 
-                prix = "{0:.2f}$".format(query.value(1)) 
-            else: 
-                prix = "{0:.2f}$".format(query.value(2)) 
-            table.setItem(r, 2, QTableWidgetItem(prix)) 
- 
-            date_activite = QDate.fromJulianDay(query.value(3)).toString('dd MMM yyyy') 
-            table.setItem(r, 3, QTableWidgetItem(date_activite)) 
- 
-            heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(4)).toString('hh:mm') 
-            heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(5)).toString('hh:mm') 
-            heure = heure_debut + " à " + heure_fin 
-            table.setItem(r, 4, QTableWidgetItem(heure)) 
+        table.setRowCount(0)
+        while query.next():
+            table.insertRow(table.rowCount())
+            r = table.rowCount() - 1
+
+            table.setItem(r, 0, QTableWidgetItem(str(query.value(6))))
+            table.setItem(r, 1, QTableWidgetItem(str(query.value(0))))
+
+            if actif:
+                prix = "{0:.2f}$".format(query.value(1))
+            else:
+                prix = "{0:.2f}$".format(query.value(2))
+            table.setItem(r, 2, QTableWidgetItem(prix))
+
+            date_activite = QDate.fromJulianDay(query.value(3)).toString('dd MMM yyyy')
+            table.setItem(r, 3, QTableWidgetItem(date_activite))
+
+            heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(4)).toString('hh:mm')
+            heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(5)).toString('hh:mm')
+            heure = heure_debut + " à " + heure_fin
+            table.setItem(r, 4, QTableWidgetItem(heure))
 
     def inscription(self, actif):
         """Obtenir les inscriptions associetes au compte"""
@@ -181,7 +180,7 @@ class Facture(Form):
                         "AND (activite.date >= :current_date) "
                         "AND (inscription.status = :status) "
                       "ORDER BY categorie_activite.nom ASC, activite.date ASC")
-        query.bindValue(':id_participante', self.id_participante)
+        query.bindValue(':id_participante', self.ID_PARTICIPANTE)
         query.bindValue(':current_date', QDate.currentDate().toJulianDay())
         query.bindValue(':status', True)
         query.exec_()
@@ -211,6 +210,7 @@ class Facture(Form):
             inscription["id_activite"] = str(query.value(7))
             resultat.append(inscription)
         return resultat
+
 
 class Facturation(Facture):
     """Dialog pour la création de nouvelle facture"""
@@ -249,7 +249,6 @@ class Facturation(Facture):
         # Effacer les elements existants
         self.tbl_inscription.setRowCount(0)
 
-        """Afficher les inscriptions"""
         resultat = self.inscription(self.chk_actif.isChecked())
 
         for inscription in resultat:
@@ -365,48 +364,91 @@ class Facturation(Facture):
 
     def process(self):
         """Traitement des donnees pour la base de données"""
-        for row in range(self.tbl_article.rowCount()):
-            # Commencer une transaction
-            QSqlDatabase(self.database).transaction()
+        # Commencer une transaction
+        self.DATABASE.transaction()
 
-            # Ajouter une facture
-            query = QSqlQuery()
-            query.prepare("INSERT INTO facture "
-                            "(numero_recu, id_participante) "
-                          "VALUES "
-                            "(:numero_recu, :id_participante)")
-            query.bindValue(':numero_recu', self.check_string(self.txt_recu.text()))
-            query.bindValue(':id_participante', self.id_participante)
+        # Affichage d'un message d'erreur si la requete echoue
+        if Error.DatabaseError.sql_error_handler(self.DATABASE.lastError()):
+            return # Empêche la fermeture du dialog
+
+        # Ajouter une facture
+        query = QSqlQuery()
+        query.prepare("INSERT INTO facture "
+                        "(numero_recu, id_participante) "
+                      "VALUES "
+                        "(:numero_recu, :id_participante)")
+        query.bindValue(':numero_recu', self.check_string(self.txt_recu.text()))
+        query.bindValue(':id_participante', self.ID_PARTICIPANTE)
+        query.exec_()
+
+        # Affichage d'un message d'erreur si la requete echoue
+        if Error.DatabaseError.sql_error_handler(query.lastError()):
+            self.DATABASE.rollback() # Annuler la transaction
+            return # Empêche la fermeture du dialog
+
+        # Obtenir le numero de de la facture
+        query = QSqlQuery(self.DATABASE)
+        query.exec("SELECT last_insert_rowid()")
+
+        # Affichage d'un message d'erreur si la requete echoue
+        if Error.DatabaseError.sql_error_handler(query.lastError()):
+            self.DATABASE.rollback() # Annuler la transaction
+            return # Empêche la fermeture du dialog
+
+        query.first()
+        id_facture = int(query.value(0))
+
+        for row in range(self.tbl_article.rowCount()):
+            # Ajouter les inscriptions
+            query = QSqlQuery(self.DATABASE)
+            query.prepare("UPDATE inscription "
+                          "SET "
+                            "status = :status, "
+                            "id_facture = :id_facture "
+                          "WHERE "
+                            "(SELECT id_inscription "
+                              "FROM inscription "
+                              "WHERE (id_participante = :id_participante) "
+                              "AND (id_activite = :id_activite))")
+            query.bindValue(':id_participante', self.ID_PARTICIPANTE)
+            query.bindValue(':id_activite', self.tbl_article.item(row, 0).text())
+            query.bindValue(':status', True)
+            query.bindValue(':id_facture', id_facture)
             query.exec_()
 
             # Affichage d'un message d'erreur si la requete echoue
             if Error.DatabaseError.sql_error_handler(query.lastError()):
-                QSqlDatabase(self.database).rollback() # Annuler la transaction
+                self.DATABASE.rollback() # Annuler la transaction
                 return # Empêche la fermeture du dialog
 
-            # Ajouter les inscriptions
             query = QSqlQuery()
-            query.prepare("INSERT OR REPLACE INTO inscription "
+            query.prepare("INSERT OR IGNORE INTO inscription "
                             "(id_inscription, id_participante, id_activite, status, id_facture) "
                           "VALUES "
                             "((SELECT id_inscription "
                               "FROM inscription "
                               "WHERE (id_participante = :id_participante) "
                               "AND (id_activite = :id_activite)), "
-                            ":id_participante, :id_activite, :status, "
-                            "(SELECT last_insert_rowid()))")
-            query.bindValue(':id_participante', self.id_participante)
+                            ":id_participante, :id_activite, :status, :id_facture)")
+            query.bindValue(':id_participante', self.ID_PARTICIPANTE)
             query.bindValue(':id_activite', self.tbl_article.item(row, 0).text())
             query.bindValue(':status', True)
+            query.bindValue(':id_facture', id_facture)
             query.exec_()
 
             # Affichage d'un message d'erreur si la requete echoue
             if Error.DatabaseError.sql_error_handler(query.lastError()):
-                QSqlDatabase(self.database).rollback() # Annuler la transaction
+                self.DATABASE.rollback() # Annuler la transaction
                 return # Empêche la fermeture du dialog
 
-            # Termer la transaction
-            QSqlDatabase(self.database).commit()
+        # Terminer la transaction
+        self.DATABASE.commit()
+
+        # Affichage d'un message d'erreur si la requete echoue
+        if Error.DatabaseError.sql_error_handler(self.DATABASE.lastError()):
+            self.DATABASE.rollback() # Annuler la transaction
+            return # Empêche la fermeture du dialog
+
         self.accept()
 
     def get_numero_facture(self):
@@ -439,7 +481,6 @@ class Inscription(Facture):
         self.tbl_activite.setColumnHidden(0, True)
         self.tbl_panier.setColumnHidden(0, True)
         self.tbl_panier.setColumnHidden(1, True)
-        self.tbl_panier.setColumnHidden(2, True)
 
         # Afficher la liste des activite
         self.afficher_liste_activite()
@@ -455,10 +496,10 @@ class Inscription(Facture):
 
     def activer_facturation(self):
         """Permettre l'ajout d'activite lorsqu'un compte est ouvert"""
-        self.btn_ajouter.setEnabled(True) 
-        self.btn_remove.setEnabled(True) 
-        self.afficher_inscriptions() 
-        self.txt_activite.setText("") 
+        self.btn_ajouter.setEnabled(True)
+        self.btn_remove.setEnabled(True)
+        self.afficher_inscriptions()
+        self.txt_activite.setText("")
 
     def afficher_information_participante(self):
         """Afficher les informations sur la participante"""
@@ -490,23 +531,21 @@ class Inscription(Facture):
             r = self.tbl_panier.rowCount() - 1
 
             self.tbl_panier.setItem(r, 0, self.tbl_activite.item(activite_row, 0).clone())
-            self.tbl_panier.setItem(r, 2, QTableWidgetItem("1"))
-            self.tbl_panier.setItem(r, 3, self.tbl_activite.item(activite_row, 1).clone())
-            self.tbl_panier.setItem(r, 4, self.tbl_activite.item(activite_row, 2).clone())
-            self.tbl_panier.setItem(r, 5, self.tbl_activite.item(activite_row, 3).clone())
-            self.tbl_panier.setItem(r, 6, self.tbl_activite.item(activite_row, 4).clone())
+            self.tbl_panier.setItem(r, 1, QTableWidgetItem("1"))
+            self.tbl_panier.setItem(r, 2, self.tbl_activite.item(activite_row, 1).clone())
+            self.tbl_panier.setItem(r, 3, self.tbl_activite.item(activite_row, 2).clone())
+            self.tbl_panier.setItem(r, 4, self.tbl_activite.item(activite_row, 3).clone())
+            self.tbl_panier.setItem(r, 5, self.tbl_activite.item(activite_row, 4).clone())
 
             self.tbl_panier.resizeColumnsToContents()
         else:
             Error.DataError.aucun_article_selectionne()
 
     def retirer_activite(self):
-        """
-        Retirer une activite du panier
-        """
+        """Retirer une activite du panier"""
         row = self.tbl_panier.currentRow()
         if row != -1:
-            if self.tbl_panier.item(row, 1) != "0":
+            if self.tbl_panier.item(row, 1) == "1":
                 self.tbl_panier.setItem(row, 1, QTableWidgetItem("-1"))
                 self.tbl_panier.setRowHidden(row, True)
             else:
@@ -515,62 +554,100 @@ class Inscription(Facture):
             Error.DataError.aucun_article_selectionne()
 
     def process(self):
-        """
-        Traitement des donnees pour la base de données
-        """
+        """Traitement des donnees pour la base de données"""
+        # Commencer une transaction
+        self.DATABASE.transaction()
+
+        # Affichage d'un message d'erreur si la requete echoue
+        if Error.DatabaseError.sql_error_handler(self.DATABASE.lastError()):
+            return # Empêche la fermeture du dialog
+
         for row in range(self.tbl_panier.rowCount()):
             # Ajouter une inscription
             if int(self.tbl_panier.item(row, 1).text()) == 1:
                 query = QSqlQuery()
-                query.prepare("INSERT OR REPLACE INTO inscription "
-                                "(id_inscription, id_participante, id_activite, status) "
-                              "VALUES "
-                                "((SELECT id_inscription "
-                                  "FROM inscription "
-                                  "WHERE (id_participante = :id_participante) "
-                                "AND (id_activite = :id_activite)), "
-                                ":id_participante, :id_activite, :status)")
-                query.bindValue(':id_participante', self.id_participante)
+                query.prepare("UPDATE inscription "
+                              "SET "
+                                "status = :status "
+                              "WHERE "
+                                "(SELECT id_inscription "
+                                 "FROM inscription "
+                                 "WHERE (id_participante = :id_participante) "
+                                 "AND (id_activite = :id_activite))")
+                query.bindValue(':id_participante', self.ID_PARTICIPANTE)
                 query.bindValue(':id_activite', self.tbl_panier.item(row, 0).text())
                 query.bindValue(':status', True)
                 query.exec_()
 
                 # Affichage d'un message d'erreur si la requete echoue
                 if Error.DatabaseError.sql_error_handler(query.lastError()):
+                    self.DATABASE.rollback() # Annuler la transaction
+                    return # Empêche la fermeture du dialog
+
+                query = QSqlQuery()
+                query.prepare("INSERT OR IGNORE INTO inscription "
+                                "(id_inscription, id_participante, id_activite, status) "
+                              "VALUES "
+                                "((SELECT id_inscription "
+                                  "FROM inscription "
+                                  "WHERE (id_participante = :id_participante) "
+                                  "AND (id_activite = :id_activite)), "
+                                ":id_participante, :id_activite, :status)")
+                query.bindValue(':id_participante', self.ID_PARTICIPANTE)
+                query.bindValue(':id_activite', self.tbl_panier.item(row, 0).text())
+                query.bindValue(':status', True)
+                query.exec_()
+
+                # Affichage d'un message d'erreur si la requete echoue
+                if Error.DatabaseError.sql_error_handler(query.lastError()):
+                    self.DATABASE.rollback() # Annuler la transaction
                     return # Empêche la fermeture du dialog
 
             # Effacer une inscription
             elif int(self.tbl_panier.item(row, 1).text()) == -1:
                 query = QSqlQuery()
                 query.prepare("UPDATE inscription "
-                              "SET status = :status "
-                              "WHERE id_inscription = :id_inscription ")
+                              "SET "
+                                "status = :status "
+                              "WHERE "
+                                "(SELECT id_inscription "
+                                 "FROM inscription "
+                                 "WHERE (id_participante = :id_participante) "
+                                 "AND (id_activite = :id_activite))")
+                query.bindValue(':id_participante', self.ID_PARTICIPANTE)
+                query.bindValue(':id_activite', self.tbl_panier.item(row, 0).text())
                 query.bindValue(':status', False)
-                query.bindValue(':id_inscription', self.tbl_panier.item(row, 2).text())
                 query.exec_()
 
-                # Affichage d'un message d'erreur si la requete echoue
+                #Affichage d'un message d'erreur si la requete echoue
                 if Error.DatabaseError.sql_error_handler(query.lastError()):
+                    self.DATABASE.rollback() # Annuler la transaction
                     return # Empêche la fermeture du dialog
 
+        # Terminer la transaction
+        self.DATABASE.commit()
+
+        # Affichage d'un message d'erreur si la requete echoue
+        if Error.DatabaseError.sql_error_handler(self.DATABASE.lastError()):
+            self.DATABASE.rollback() # Annuler la transaction
+            return # Empêche la fermeture du dialog
+
         self.accept()
-    
+
     def afficher_inscriptions(self):
         """Afficher les inscriptions liees au compte"""
         # Effacer les elements existants
         self.tbl_panier.setRowCount(0)
 
-        """Afficher les inscriptions"""
         resultat = self.inscription(self.chk_actif.isChecked())
 
         for inscription in resultat:
             self.tbl_panier.insertRow(self.tbl_panier.rowCount())
             r = self.tbl_panier.rowCount() - 1
 
-            self.tbl_panier.setItem(r, 0, QTableWidgetItem(inscription["id_activite"])) 
-            self.tbl_panier.setItem(r, 1, QTableWidgetItem(inscription["id"]))
-            self.tbl_panier.setItem(r, 2, QTableWidgetItem(True)) 
-            self.tbl_panier.setItem(r, 3, QTableWidgetItem(inscription["nom"]))
-            self.tbl_panier.setItem(r, 4, QTableWidgetItem(inscription["prix"]))
-            self.tbl_panier.setItem(r, 5, QTableWidgetItem(inscription["date"]))
-            self.tbl_panier.setItem(r, 6, QTableWidgetItem(inscription["heure"]))
+            self.tbl_panier.setItem(r, 0, QTableWidgetItem(inscription["id_activite"]))
+            self.tbl_panier.setItem(r, 1, QTableWidgetItem("0"))
+            self.tbl_panier.setItem(r, 2, QTableWidgetItem(inscription["nom"]))
+            self.tbl_panier.setItem(r, 3, QTableWidgetItem(inscription["prix"]))
+            self.tbl_panier.setItem(r, 4, QTableWidgetItem(inscription["date"]))
+            self.tbl_panier.setItem(r, 5, QTableWidgetItem(inscription["heure"]))

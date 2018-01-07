@@ -108,21 +108,21 @@ class DatabaseError(object):
             msgbox.setInformativeText(self.ERREUR_STATEMENT_INFORMATION)
             msgbox.setDetailedText(err.text())
             msgbox.exec()
-            return False
+            return True
 
         elif err.type() == QSqlError.TransactionError:
             msgbox.setText(self.ERREUR_TRANSACTION)
             msgbox.setInformativeText(self.ERREUR_TRANSACTION_INFORMATION)
             msgbox.setDetailedText(err.text())
             msgbox.exec()
-            return False
+            return True
 
         elif err.type() == QSqlError.ConnectionError:
             msgbox.setText(self.ERREUR_CONNECTION)
             msgbox.setInformativeText(self.ERREUR_CONNECTION_INFORMATION)
             msgbox.setDetailedText(err.text())
             msgbox.exec()
-            return False
+            return True
         elif err.type() == QSqlError.UnknownError:
             # Informations sur l'erreur
             if err.nativeErrorCode() != "":
@@ -180,8 +180,8 @@ class DatabaseError(object):
                     msgbox.setInformativeText(self.ERREUR_UNHANDELED_INFORMATION)
             msgbox.exec()
 
-            return False
-        return True
+            return True
+        return False
 
 
 class DataError(object):
