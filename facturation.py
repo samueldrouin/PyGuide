@@ -18,6 +18,12 @@ import Selection
 
 class Facture(Form):
     """Fonctions nécessaires pour tous les types de facture"""
+    # Constante definition
+    STATUS_INSCRIPTION_ANNULEE = 0
+    STATUS_INSCRIPTION = 1
+    STATUS_FACTURE = 2
+    STATUS_REMBOURSE = 3
+
     def __init__(self, database):
         super(Facture, self).__init__()
 
@@ -404,7 +410,7 @@ class Facturation(Facture):
             self.tbl_inscription.insertRow(self.tbl_inscription.rowCount())
             r = self.tbl_inscription.rowCount() - 1
 
-            self.tbl_inscription.setItem(r, 0, QTableWidgetItem(inscription["id"]))
+            self.tbl_inscription.setItem(r, 0, QTableWidgetItem(inscription["id_activite"]))
             self.tbl_inscription.setItem(r, 1, QTableWidgetItem(inscription["nom"]))
             self.tbl_inscription.setItem(r, 2, QTableWidgetItem(inscription["prix"]))
             self.tbl_inscription.setItem(r, 3, QTableWidgetItem(inscription["date"]))
@@ -457,17 +463,67 @@ class Facturation(Facture):
         """Ajouter une activite à la facture"""
         row = self.tbl_activite.currentRow()
 
+        # Vérifier si l'activité à deja ete facturée
+        query = QSqlQuery()
+        query.prepare("SELECT COUNT(id_inscription) "
+                      "FROM inscription "
+                      "WHERE "
+                        "(status = :status) AND "
+                        "(id_activite = :id_activite) AND "
+                        "(id_participante = :id_participante)")
+        query.bindValue(':status', self.STATUS_FACTURE)
+        query.bindValue(':id_activite' , self.tbl_activite.item(row, 0).text())
+        query.bindValue(':id_participante', self.ID_PARTICIPANTE)
+        query.exec_()
+
+        # Affiche un message en cas d'erreur dans la requete
+        if Error.DatabaseError.sql_error_handler(query.lastError()):
+            return # Empeche de continuer la fonction avec des donnees incompletes
+
+        query.first()
+        count = int(query.value(0))
+
         # Valeur de la quantité
         if self.sender() == self.btn_ajouter_activite:
             quantite = "1"
+
+            # Si l'activite a deja ete facturee
+            if count:
+                msgbox = QMessageBox()
+                msgbox.setWindowTitle("Facturation impossible")
+                msgbox.setText("Facturation impossible")
+                msgbox.setInformativeText("Impossible de facturer une activité qui à déjà été facturée")
+                msgbox.setIcon(QMessageBox.Information)
+                msgbox.setStandardButtons(QMessageBox.Ok)
+                msgbox.setDefaultButton(QMessageBox.Ok)
+                msgbox.exec()
+                return
 
             # Avertissement si l'activité est complète
             if int(self.tbl_activite.item(row, 1).text()):
                 resultat = Error.DataError.activite_complete()
                 if resultat == QMessageBox.No:
                     return # Ne pas ajouter l'article
+
+            # Retirer l'activité de la liste d'inscription si elle y est
+            id_activite = self.tbl_activite.item(row, 0).text()
+            for r in range(self.tbl_inscription.rowCount()):
+                if self.tbl_inscription.item(r, 0).text() == id_activite:
+                    self.tbl_inscription.setRowHidden(r, True)
         else:
             quantite = "(1)"
+
+            # Si l'activite n'a jamais ete facturee
+            if not count:
+                msgbox = QMessageBox()
+                msgbox.setWindowTitle("Remboursement impossible")
+                msgbox.setText("Remboursement impossible")
+                msgbox.setInformativeText("Impossible de rembourser une activité qui n'a jamais été facturée")
+                msgbox.setIcon(QMessageBox.Information)
+                msgbox.setStandardButtons(QMessageBox.Ok)
+                msgbox.setDefaultButton(QMessageBox.Ok)
+                msgbox.exec()
+                return
 
         if row != -1:
             # Préparation du tableau
@@ -482,39 +538,19 @@ class Facturation(Facture):
             self.tbl_article.setItem(r, 4, self.tbl_activite.item(row, 5).clone())
             self.tbl_article.setItem(r, 5, QTableWidgetItem(quantite))
 
-            # Calcul du total
+            self.afficher_total(self.tbl_activite.item(row, 3).text())
+
+            # Remettre le texte en noir
+            for c in range(0, 6):
+                self.tbl_article.item(r, c).setForeground(QBrush(QColor(0, 0, 0)))
+
+            # Traitement de la liste d'attente
             if quantite == "(1)":
                 self.afficher_total("-" + self.tbl_activite.item(row, 3).text())
 
                 # Vérifier s'il y a une liste d'attente sur l'activité
                 if int(self.tbl_activite.item(row, 1).text()):
-                    # Vérifier si la participante possède une inscription active sur cet élément
-                    query = QSqlQuery(self.DATABASE)
-                    query.prepare("SELECT COUNT(id_inscription) FROM inscription "
-                                  "WHERE "
-                                    "(id_participante = :id_participante) AND "
-                                    "(id_activite = :id_activite) AND "
-                                    "(status = 1)")
-                    query.bindValue(':id_participante', self.ID_PARTICIPANTE)
-                    query.bindValue(':id_activite', self.tbl_activite.item(row, 0).text())
-                    query.exec_()
-
-                    # Affiche un message en cas d'erreur dans la requete
-                    if Error.DatabaseError.sql_error_handler(query.lastError()):
-                        return # Empeche de continuer la fonction avec des donnees incompletes
-
-                    query.first()
-                    count = query.value(0)
-
-                    # Remettre le texte en noir
-                    for c in range(0, 6):
-                        self.tbl_article.item(r, c).setForeground(QBrush(QColor(0, 0, 0)))
-
-                    if count:
-                        self.liberation_liste_attente(int(self.tbl_activite.item(row, 0).text()))
-                    
-            else:
-                self.afficher_total(self.tbl_activite.item(row, 3).text())
+                    self.liberation_liste_attente(int(self.tbl_activite.item(row, 0).text()))
 
         else:
             Error.DataError.aucun_article_selectionne()
@@ -548,6 +584,13 @@ class Facturation(Facture):
         """Retirer une activite du panier"""
         row = self.tbl_article.currentRow()
         if row != -1:
+            # Afficher l'activité de la liste d'inscription si elle y est
+            id_activite = self.tbl_article.item(row, 0).text()
+            for r in range(self.tbl_inscription.rowCount()):
+                if self.tbl_inscription.item(r, 0).text() == id_activite:
+                    self.tbl_inscription.setRowHidden(r, False)
+
+            # Effacer l'article de la facture 
             self.tbl_article.removeRow(row)
         else:
             Error.DataError.aucun_article_selectionne()
@@ -591,24 +634,35 @@ class Facturation(Facture):
 
         # Ajouter les articles à la facture
         for row in range(self.tbl_article.rowCount()):
+            # Prix de l'article
+            if self.tbl_article.item(row, 5) == "1":
+                prix = float(self.tbl_article.item(row, 2))
+            else:
+                prix = float("-" + str(self.tbl_article.item(row, 2).text()[:-1]))
             query = QSqlQuery(self.DATABASE)
             query.prepare("INSERT INTO article "
-                          "(id_facture, prix, descriptions) "
+                          "(id_facture, prix, description) "
                           "VALUES " 
-                          "(:id_facture, :prix, :descriptions)")
+                          "(:id_facture, :prix, :description)")
             query.bindValue(':id_facture', id_facture)
-            query.bindValue(':prix', float(self.tbl_article.item(row, 2)))
-            query.bindValue(':descriptions', str(self.tbl_article.item(row, 1)))
+            query.bindValue(':prix', prix)
+            query.bindValue(':description', str(self.tbl_article.item(row, 1).text()))
+            query.exec_()
+
+            # Affichage d'un message d'erreur si la requete echoue
+            if Error.DatabaseError.sql_error_handler(query.lastError()):
+                self.DATABASE.rollback() # Annuler la transaction
+                return # Empêche la fermeture du dialog
 
         # Gestion des inscriptions
         for row in range(self.tbl_article.rowCount()):
-            if self.tbl_article.item(row, 5) == "1":
+            if self.tbl_article.item(row, 5).text() == "1":
                 # Ajouter les inscriptions
 
                 # Essayer d'ajouter une nouvelle inscription
                 query = QSqlQuery()
                 query.prepare("INSERT INTO inscription "
-                                "(id_inscription, id_participante, id_activite, status, id_facture) "
+                                "(id_inscription, id_participante, id_activite, status) "
                             "VALUES "
                                 "((SELECT id_inscription "
                                 "FROM inscription "
@@ -617,7 +671,7 @@ class Facturation(Facture):
                                 ":id_participante, :id_activite, :status)")
                 query.bindValue(':id_participante', self.ID_PARTICIPANTE)
                 query.bindValue(':id_activite', self.tbl_article.item(row, 0).text())
-                query.bindValue(':status', True)
+                query.bindValue(':status', self.STATUS_FACTURE)
                 query.exec_()
 
                 # Vérifier s'il y a violation de la contraint de la primary key
@@ -653,7 +707,7 @@ class Facturation(Facture):
                                         "AND (id_activite = :id_activite))")
                         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
                         query.bindValue(':id_activite', self.tbl_article.item(row, 0).text())
-                        query.bindValue(':status', True)
+                        query.bindValue(':status', self.STATUS_FACTURE)
                         query.exec_()
 
                         # Affichage d'un message d'erreur si la requete echoue
@@ -663,7 +717,7 @@ class Facturation(Facture):
                     else:
                         query = QSqlQuery()
                         query.prepare("INSERT OR IGNORE INTO inscription "
-                                        "(id_inscription, id_participante, id_activite, status, id_facture) "
+                                        "(id_inscription, id_participante, id_activite, status) "
                                     "VALUES "
                                         "((SELECT id_inscription "
                                         "FROM inscription "
@@ -672,7 +726,7 @@ class Facturation(Facture):
                                         ":id_participante, :id_activite, :status)")
                         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
                         query.bindValue(':id_activite', self.tbl_article.item(row, 0).text())
-                        query.bindValue(':status', True)
+                        query.bindValue(':status', self.STATUS_FACTURE)
                         query.exec_()
 
                         # Affichage d'un message d'erreur si la requete echoue
@@ -698,8 +752,8 @@ class Facturation(Facture):
                                   "AND (id_activite = :id_activite)), "
                                 ":id_participante, :id_activite, :status)")
                 query.bindValue(':id_participante', self.ID_PARTICIPANTE)
-                query.bindValue(':id_activite', self.tbl_panier.item(row, 0).text())
-                query.bindValue(':status', False)
+                query.bindValue(':id_activite', self.tbl_article.item(row, 0).text())
+                query.bindValue(':status', self.STATUS_REMBOURSE)
                 query.exec_()
 
                 #Affichage d'un message d'erreur si la requete echoue
@@ -873,7 +927,7 @@ class Inscription(Facture):
                                 ":id_participante, :id_activite, :status)")
                 query.bindValue(':id_participante', self.ID_PARTICIPANTE)
                 query.bindValue(':id_activite', self.tbl_panier.item(row, 0).text())
-                query.bindValue(':status', True)
+                query.bindValue(':status', self.STATUS_INSCRIPTION)
                 query.exec_()
 
                 # Vérifier s'il y a violation de la contraint de la primary key
@@ -910,7 +964,7 @@ class Inscription(Facture):
                                         "AND (id_activite = :id_activite))")
                         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
                         query.bindValue(':id_activite', self.tbl_panier.item(row, 0).text())
-                        query.bindValue(':status', True)
+                        query.bindValue(':status', self.STATUS_INSCRIPTION)
                         query.exec_()
 
                         # Affichage d'un message d'erreur si la requete echoue
@@ -929,7 +983,7 @@ class Inscription(Facture):
                                         ":id_participante, :id_activite, :status)")
                         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
                         query.bindValue(':id_activite', self.tbl_panier.item(row, 0).text())
-                        query.bindValue(':status', True)
+                        query.bindValue(':status', self.STATUS_INSCRIPTION)
                         query.exec_()
 
                         # Affichage d'un message d'erreur si la requete echoue
@@ -957,7 +1011,7 @@ class Inscription(Facture):
                                 ":id_participante, :id_activite, :status)")
                 query.bindValue(':id_participante', self.ID_PARTICIPANTE)
                 query.bindValue(':id_activite', self.tbl_panier.item(row, 0).text())
-                query.bindValue(':status', False)
+                query.bindValue(':status', self.STATUS_INSCRIPTION_ANNULEE)
                 query.exec_()
 
                 #Affichage d'un message d'erreur si la requete echoue
