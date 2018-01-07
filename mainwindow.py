@@ -467,13 +467,14 @@ class CentralWidgetActivite(CentralWidget):
             sql = sql + "AND activite.date >= " + \
                         str(self.top_widget.ded_start.date().toJulianDay()) + \
                         " AND activite.date <= " + \
-                        str(self.top_widget.ded_end.date().toJulianDay()) + " "
+                        str(self.top_widget.ded_end.date().toJulianDay()) + " " + \
+                        " AND activite.status = 1 "
         else:
             sql = sql + "WHERE activite.date >= " + \
                         str(self.top_widget.ded_start.date().toJulianDay()) + \
                         " AND activite.date <= " + \
-                        str(self.top_widget.ded_end.date().toJulianDay()) + " "
-
+                        str(self.top_widget.ded_end.date().toJulianDay()) + " " + \
+                        " AND activite.status = 1 "
 
         # Ajouter les options de tri
         if self.top_widget.cbx_sort.currentText() == "Nom de l'activité":
@@ -550,6 +551,7 @@ class CentralWidgetActivite(CentralWidget):
         """
         id_activite = self.table_widget.item(index.row(), 0).text()
         afficher_activite = AfficherActivite(self.database, id_activite)
+        afficher_activite.accepted.connect(self.update_list)
         afficher_activite.exec()
 
 

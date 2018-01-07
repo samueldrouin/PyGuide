@@ -124,7 +124,7 @@ class Facture(Form):
               "FROM activite " \
               "INNER JOIN categorie_activite "\
                 "ON activite.id_categorie_activite = categorie_activite.id_categorie_activite " \
-              "WHERE activite.date_limite_inscription >= {} ".format(int(QDate.currentDate().toJulianDay()))
+              "WHERE activite.date_limite_inscription >= {} AND activite.status = 1 ".format(int(QDate.currentDate().toJulianDay()))
 
         # Recherche par nom d'activite
         if search != "":

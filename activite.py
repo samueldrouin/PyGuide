@@ -5,6 +5,7 @@ import os
 from datetime import date, timedelta, datetime
 
 # PyQt import
+from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QDate, QTime
 from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 from PyQt5 import uic
@@ -217,7 +218,9 @@ class AfficherActivite(Form):
         self.ded_limite.setMinimumDate(QDate().currentDate())
 
         # Slots
-        self.btn_fermer.clicked.connect(self.reject)
+        self.btn_fermer.clicked.connect(self.accept)
+        self.btn_annuler.clicked.connect(self.annuler_activite)
+        self.btn_modifier.clicked.connect(self.modifier_activite)
 
     def afficher_informations(self):
         """Afficher les informations sur l'activite lieu"""
@@ -254,13 +257,48 @@ class AfficherActivite(Form):
 
     def modifier_activite(self):
         """Modifier une activite"""
-
-    def annuler_activite(self):
-        """Annuler une activite"""
         query = QSqlQuery(self.database)
         query.prepare("UPDATE activite "
                       "SET "
-                        "status = FALSE "
+                        "date = :date, "
+                        "heure_debut = :heure_debut, "
+                        "heure_fin = :heure_fin, "
+                        "date_limite_inscription = :date_limite_inscription "
                       "WHERE "
                         "id_activite = :id_activite")
+        query.bindValue(':date', self.ded_date.date().toJulianDay())
+        query.bindValue(':heure_debut', self.ted_heure_debut.time().msecsSinceStartOfDay())
+        query.bindValue(':heure_fin', self.ted_heure_fin.time().msecsSinceStartOfDay())
+        query.bindValue(':date_limite_inscription', self.ded_limite.date().toJulianDay())
         query.bindValue(':id_activite', self.id_activite)
+        query.exec_()
+
+        Error.DatabaseError.sql_error_handler(query.lastError())
+
+    def annuler_activite(self):
+        """Annuler une activite"""
+
+        # Affiche un message pour confirmer l'annulation
+        msgbox = QMessageBox()
+        msgbox.setWindowTitle("Annulation d'une activité")
+        msgbox.setText("Annulation d'une activité")
+        msgbox.setInformativeText("Êtes-vous sur de vouloir continuer à annuler cette activité ?")
+        msgbox.setIcon(QMessageBox.Information)
+        msgbox.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
+        msgbox.setDefaultButton(QMessageBox.No)
+        
+        # L'annulation est confirmée
+        if msgbox.exec() == QMessageBox.Yes:
+            query = QSqlQuery(self.database)
+            query.prepare("UPDATE activite "
+                          "SET "
+                            "status = :status "
+                          "WHERE "
+                            "id_activite = :id_activite")
+            query.bindValue(':status', False)
+            query.bindValue(':id_activite', self.id_activite)
+            query.exec_()
+
+            Error.DatabaseError.sql_error_handler(query.lastError())
+
+            self.accept()
