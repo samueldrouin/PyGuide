@@ -22,8 +22,8 @@ class InscriptionMembre(Form):
         uic.loadUi(ui, self)
 
         # Instance variable definition
-        self.id_participante = None
-        self.database = database
+        self.ID_PARTICIPANTE = None
+        self.DATABASE = database
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
@@ -135,7 +135,7 @@ class NouvelleInscription(InscriptionMembre):
         super(NouvelleInscription, self).__init__(database)
 
         # Instance variable definition
-        self.id_participante = id_participante
+        self.ID_PARTICIPANTE = id_participante
 
         # Affichage de l'interface
         self.txt_nom.setText(nom)
@@ -167,10 +167,10 @@ class NouvelleInscription(InscriptionMembre):
         Enregistre le status de membre lorsque l'inscritpion est completee
         """
         # Ouvre une transation
-        QSqlDatabase(self.database).transaction()
+        QSqlDatabase(self.DATABASE).transaction()
 
         # Active le membre
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("INSERT INTO membre "
                         "(actif, "
                         "id_participante, "
@@ -184,7 +184,7 @@ class NouvelleInscription(InscriptionMembre):
                         ":honoraire, "
                         ":renouvellement)")
         query.bindValue(':actif', True)
-        query.bindValue(':id_participante', int(self.id_participante))
+        query.bindValue(':id_participante', int(self.ID_PARTICIPANTE))
         query.bindValue(':numero_membre', self.txt_numero_membre.text())
 
         # Determiner si le membre est honoraire
@@ -208,11 +208,11 @@ class NouvelleInscription(InscriptionMembre):
 
         # Affichage d'un message d'erreur si la requete echoue
         if Error.DatabaseError.sql_error_handler(query.lastError()):
-            QSqlDatabase(self.database).rollback() # Annuler la transaction
+            QSqlDatabase(self.DATABASE).rollback() # Annuler la transaction
             return # Empecher la fermeture du dialog
 
         # Ouvre une facture
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("INSERT INTO facture "
                         "("
                           "numero_recu, "
@@ -226,16 +226,16 @@ class NouvelleInscription(InscriptionMembre):
                           ":total "
                         ")")
         query.bindValue(':numero_recu', self.check_string(self.txt_recu.text()))
-        query.bindValue(':id_participante', self.id_participante)
+        query.bindValue(':id_participante', self.ID_PARTICIPANTE)
         query.bindValue(':total', self.tbl_commande.item(0, 1).text())
 
         # Affichage d'un message d'erreur si la requete echoue
         if Error.DatabaseError.sql_error_handler(query.lastError()):
-            QSqlDatabase(self.database).rollback() # Annuler la transaction
+            QSqlDatabase(self.DATABASE).rollback() # Annuler la transaction
             return# Empecher la fermeture du dialog
 
         # Ajout des articles à la facture
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("INSERT INTO article "
                         "("
                           "id_facture, "
@@ -252,7 +252,7 @@ class NouvelleInscription(InscriptionMembre):
         query.bindValue(':description', self.tbl_commande.item(0, 0).text())
 
         #Termine la transation
-        QSqlDatabase(self.database).commit()
+        QSqlDatabase(self.DATABASE).commit()
 
         self.accept()
 
@@ -263,7 +263,7 @@ class RenouvelerInscription(InscriptionMembre):
         super(RenouvelerInscription, self).__init__(database)
 
         # Instance variable definition
-        self.id_participante = id_participante
+        self.ID_PARTICIPANTE = id_participante
 
         # Modifier les labels
         self.lbl_titre.setText("Renouveler une inscription")
@@ -281,13 +281,13 @@ class RenouvelerInscription(InscriptionMembre):
         """
         Determiner le numero de membre
         """
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("SELECT "
                         "numero_membre "
                       "FROM "
                         "membre "
                       "WHERE id_participante = :id_participante")
-        query.bindValue(':id_participante', self.id_participante)
+        query.bindValue(':id_participante', self.ID_PARTICIPANTE)
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
@@ -301,9 +301,9 @@ class RenouvelerInscription(InscriptionMembre):
         Enregistre le status de membre lorsque l'inscription est completee
         """
         # Ouvre une transation
-        QSqlDatabase(self.database).transaction()
+        QSqlDatabase(self.DATABASE).transaction()
         # Active le membre
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("UPDATE membre "
                       "SET membre_honoraire = :honoraire, date_renouvellement = :renouvellement "
                       "WHERE id_participante = :id_participante")
@@ -328,17 +328,17 @@ class RenouvelerInscription(InscriptionMembre):
             date = QDate(year, 9, 1).toJulianDay()
             query.bindValue(':renouvellement', date)
 
-        query.bindValue(':id_participante', int(self.id_participante))
+        query.bindValue(':id_participante', int(self.ID_PARTICIPANTE))
 
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
         if Error.DatabaseError.sql_error_handler(query.lastError()):
-            QSqlDatabase(self.database).rollback() # Annuler la transaction
+            QSqlDatabase(self.DATABASE).rollback() # Annuler la transaction
             return # Empecher la fermeture du dialog
 
         # Enregistre la commande
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("INSERT INTO inscription_membre "
                         "(id_membre, "
                         "date, "
@@ -353,7 +353,7 @@ class RenouvelerInscription(InscriptionMembre):
                         ":article, "
                         ":prix, "
                         ":numero_recu)")
-        query.bindValue(':id_participante', self.id_participante)
+        query.bindValue(':id_participante', self.ID_PARTICIPANTE)
         query.bindValue(':article', self.tbl_commande.item(0, 0).text())
         query.bindValue(':prix', self.tbl_commande.item(0, 1).text())
         query.bindValue(':numero_recu', self.check_string(self.txt_recu.text()))
@@ -361,9 +361,9 @@ class RenouvelerInscription(InscriptionMembre):
 
         # Affichage d'un message d'erreur si la requete echoue
         if Error.DatabaseError.sql_error_handler(query.lastError()):
-            QSqlDatabase(self.database).rollback() # Annuler la transaction
+            QSqlDatabase(self.DATABASE).rollback() # Annuler la transaction
             return # Empecher la fermeture du dialog
         #Termine la transation
-        QSqlDatabase(self.database).commit()
+        QSqlDatabase(self.DATABASE).commit()
 
         self.accept()

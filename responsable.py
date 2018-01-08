@@ -20,7 +20,7 @@ class Responsable(Form):
         uic.loadUi(ui, self)
 
         # Instance variable definition
-        self.database = database
+        self.DATABASE = database
 
         # Validator
         self.txt_prenom.setValidator(self.name_validator())
@@ -60,7 +60,7 @@ class NouveauResponsable(Responsable):
         """
         Ajouter le nouveau responsable a la base de donnees
         """
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("INSERT INTO responsable "
                         "(prenom, nom) "
                       "VALUES "
@@ -92,7 +92,7 @@ class ModifierResponsable(Responsable):
         Afficher les informations sur le type d'activite
         """
         # Obtenir les informations de la base de donnees
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("SELECT "
                         "prenom, "
                         "nom "
@@ -115,7 +115,7 @@ class ModifierResponsable(Responsable):
         """
         Modifier le responsable dans la base de donnees
         """
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("UPDATE responsable "
                       "SET "
                         "prenom = :prenom, "

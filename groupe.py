@@ -22,7 +22,7 @@ class Groupe(Form):
         uic.loadUi(ui, self)
 
         # Instance variable definition
-        self.database = database
+        self.DATABASE = database
 
         # Table widget parameters
         self.tbl_activite.setColumnHidden(0, True)
@@ -41,7 +41,7 @@ class Groupe(Form):
         """
         activite_row = self.tbl_activite.currentRow()
         if activite_row != -1:
-            query = QSqlQuery(self.database)
+            query = QSqlQuery(self.DATABASE)
             query.prepare("INSERT OR REPLACE INTO groupe "
                             "(id_groupe, "
                             "id_activite, "

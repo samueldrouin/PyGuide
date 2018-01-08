@@ -20,7 +20,7 @@ class CategorieActivite(Form):
         uic.loadUi(ui, self)
 
         # Instance variable definition
-        self.database = database
+        self.DATABASE = database
 
         # Validator
         self.txt_nom.setValidator(self.address_validator())
@@ -39,7 +39,7 @@ class CategorieActivite(Form):
         Afficher la liste des responsables dans le combobox
         """
         # Fetch data from database
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.exec_("SELECT "
                       "id_responsable, "
                       "prenom, "
@@ -62,7 +62,7 @@ class CategorieActivite(Form):
         """
 
         # Fetch data from database
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.exec_("SELECT "
                       "id_type_activite, "
                       "nom "
@@ -83,7 +83,7 @@ class CategorieActivite(Form):
         """
 
         # Fetch data from database
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.exec_("SELECT "
                       "id_lieu, "
                       "nom "
@@ -131,7 +131,7 @@ class NouvelleCategorieActivite(CategorieActivite):
         """
         Traitement des donnees dans la base de donnee
         """
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("INSERT INTO categorie_activite "
                         "(nom, "
                         "prix_membre, "
@@ -172,7 +172,7 @@ class ModifierCategorieActivite(CategorieActivite):
         super(ModifierCategorieActivite, self).__init__(database)
 
         # Instance variable definition
-        self.id_categorie_activite = id_categorie_activite
+        self.ID_CATEGORIE_ACTIVITE = id_categorie_activite
 
         # Interface graphique
         self.setWindowTitle("Modifier une catégorie d'activité")
@@ -185,7 +185,7 @@ class ModifierCategorieActivite(CategorieActivite):
         Afficher les informations sur le lieu
         """
         # Obtenir les informations de la base de donnees
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("SELECT "
                         "nom, "
                         "prix_membre, "
@@ -197,7 +197,7 @@ class ModifierCategorieActivite(CategorieActivite):
                         "id_lieu "
                       "FROM categorie_activite "
                       "WHERE (id_categorie_activite = :id_categorie_activite)")
-        query.bindValue(':id_categorie_activite', self.id_categorie_activite)
+        query.bindValue(':id_categorie_activite', self.ID_CATEGORIE_ACTIVITE)
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
@@ -222,7 +222,7 @@ class ModifierCategorieActivite(CategorieActivite):
         """
         Traitement des donnees dans la base de donnee
         """
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("UPDATE categorie_activite "
                       "SET "
                         "nom = :nom, "
@@ -245,7 +245,7 @@ class ModifierCategorieActivite(CategorieActivite):
         query.bindValue(':id_type_activite',
                         self.cbx_type_activite.itemData(self.cbx_type_activite.currentIndex()))
         query.bindValue(':id_lieu', self.cbx_lieu.itemData(self.cbx_lieu.currentIndex()))
-        query.bindValue(':id_categorie_activite', self.id_categorie_activite)
+        query.bindValue(':id_categorie_activite', self.ID_CATEGORIE_ACTIVITE)
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue

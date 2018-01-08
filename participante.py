@@ -23,8 +23,8 @@ class Participante(Form):
         uic.loadUi(ui, self)
 
         # Instance variable definition
-        self.participante_id = None
-        self.database = database
+        self.ID_PARTICIPANTE = None
+        self.DATABASE = database
 
         # Validator
         self.txt_prenom.setValidator(self.name_validator())
@@ -195,8 +195,8 @@ class Participante(Form):
             phone = self.txt_telephone1.text()
 
             # Ouverture de la fenetre d'inscription
-            inscription_membre = RenouvelerInscription(nom, phone, self.participante_id,
-                                                       self.database)
+            inscription_membre = RenouvelerInscription(nom, phone, self.ID_PARTICIPANTE,
+                                                       self.DATABASE)
             inscription_membre.accepted.connect(self.show_member_informations)
             inscription_membre.exec()
 
@@ -211,8 +211,8 @@ class Participante(Form):
             phone = self.txt_telephone1.text()
 
             # Ouverture de la fenetre d'inscription
-            inscription_membre = NouvelleInscription(nom, phone, self.participante_id,
-                                                     self.database)
+            inscription_membre = NouvelleInscription(nom, phone, self.ID_PARTICIPANTE,
+                                                     self.DATABASE)
             inscription_membre.accepted.connect(self.show_member_informations)
             inscription_membre.rejected.connect(self.inscription_annulee)
             inscription_membre.exec()
@@ -247,7 +247,7 @@ class Participante(Form):
         """
         Afficher les informations sur le membre
         """
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("SELECT "
                         "actif, "
                         "numero_membre, "
@@ -257,7 +257,7 @@ class Participante(Form):
                         "membre "
                       "WHERE "
                         "id_participante = :id_participante")
-        query.bindValue(':id_participante', int(self.participante_id))
+        query.bindValue(':id_participante', int(self.ID_PARTICIPANTE))
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
@@ -305,7 +305,7 @@ class NouvelleParticipante(Participante):
 
     def process_data(self, prepared_data):
         # Insert data
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("INSERT INTO participante "
                         "(appellation, "
                         "prenom, "
@@ -367,7 +367,7 @@ class NouvelleParticipante(Participante):
                 query.exec_("SELECT last_insert_rowid()")
                 Error.DatabaseError.sql_error_handler(query.lastError())
                 query.first()
-                self.participante_id = query.value(0)
+                self.ID_PARTICIPANTE = query.value(0)
 
 
 class ModifierParticipante(Participante):
@@ -376,7 +376,7 @@ class ModifierParticipante(Participante):
         super(ModifierParticipante, self).__init__(database)
 
         # Instance variable definition
-        self.participante_id = participante_id
+        self.ID_PARTICIPANTE = participante_id
 
         # Titre de la fenetre
         self.setWindowTitle("Modifier une participante")
@@ -396,7 +396,7 @@ class ModifierParticipante(Participante):
     def afficher_transaction(self):
         """Afficher les transaction pour la participante"""
         # Obtenir la liste des transactions 
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("SELECT "
                         "facture.date, "
                         "article.description, "
@@ -404,7 +404,7 @@ class ModifierParticipante(Participante):
                       "FROM facture "
                       "INNER JOIN article ON article.id_facture = facture.id_facture "
                       "WHERE facture.id_participante = :id_participante")
-        query.bindValue(':id_participante', self.participante_id)
+        query.bindValue(':id_participante', self.ID_PARTICIPANTE)
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
@@ -444,7 +444,7 @@ class ModifierParticipante(Participante):
                         "AND (inscription.status = :status) "
                         "AND (activite.status = 1)"
                       "ORDER BY categorie_activite.nom ASC, activite.date ASC")
-        query.bindValue(':id_participante', self.participante_id)
+        query.bindValue(':id_participante', self.ID_PARTICIPANTE)
         query.bindValue(':current_date', QDate.currentDate().toJulianDay())
         query.bindValue(':status', self.STATUS_INSCRIPTION)
         query.exec_()
@@ -474,7 +474,7 @@ class ModifierParticipante(Participante):
         """
 
         # Get informations from database
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("SELECT "
                         "appellation, "
                         "prenom, "
@@ -496,7 +496,7 @@ class ModifierParticipante(Participante):
                         "participante "
                       "WHERE "
                         "id_participante = :idparticipante")
-        query.bindValue(':idparticipante', int(self.participante_id))
+        query.bindValue(':idparticipante', int(self.ID_PARTICIPANTE))
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
@@ -540,7 +540,7 @@ class ModifierParticipante(Participante):
         self.show_member_informations()
 
     def process_data(self, prepared_data):
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("UPDATE participante "
                       "SET "
                         "appellation = :appelation, "
@@ -577,7 +577,7 @@ class ModifierParticipante(Participante):
         query.bindValue(':anneenaissance', prepared_data['Annee Naissance'])
         query.bindValue(':personnenourries', prepared_data['Personne nourries'])
         query.bindValue(':consentementphoto', prepared_data['Consentement photo'])
-        query.bindValue(':id_participante', int(self.participante_id))
+        query.bindValue(':id_participante', int(self.ID_PARTICIPANTE))
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue

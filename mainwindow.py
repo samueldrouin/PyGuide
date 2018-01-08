@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
         uic.loadUi(ui, self)
 
         # Connection à la base de données
-        self.database = self.check_database_status()
+        self.DATABASE = self.check_database_status()
 
         # Charger l'interface graphique
         self.set_participantes_central_widget()
@@ -118,28 +118,28 @@ class MainWindow(QMainWindow):
         """
         Ouvre une fenetre pour une nouvelle inscription
         """
-        inscription = Inscription(self.database)
+        inscription = Inscription(self.DATABASE)
         inscription.exec()
 
     def facturation(self):
         """
         Ouvre une fenetre pour une nouvelle facture
         """
-        facturation = Facturation(self.database)
+        facturation = Facturation(self.DATABASE)
         facturation.exec()
 
     def consultation_responsables(self):
         """
         Ouvre la fenetre de consultation des responsables
         """
-        consultation = Consultation(2, self.database)
+        consultation = Consultation(2, self.DATABASE)
         consultation.exec()
 
     def consultation_type_activite(self):
         """
         Ouvrir la fenetre de consultation des types d'activite
         """
-        consultation = Consultation(1, self.database)
+        consultation = Consultation(1, self.DATABASE)
         consultation.exec()
 
     def reglage(self):
@@ -153,7 +153,7 @@ class MainWindow(QMainWindow):
         """
         Ouvre la fenetre des reglages
         """
-        groupe = Groupe(self.database)
+        groupe = Groupe(self.DATABASE)
         groupe.exec()
 
     @staticmethod
@@ -171,28 +171,28 @@ class MainWindow(QMainWindow):
         """
         Affichage de la liste des participantes et des options de tri
         """
-        central_widget = CentralWidgetParticipantes(self.database)
+        central_widget = CentralWidgetParticipantes(self.DATABASE)
         self.setCentralWidget(central_widget)
 
     def set_activite_central_widget(self):
         """
         Affichage de la liste des activites et des options de tri
         """
-        central_widget = CentralWidgetActivite(self.database)
+        central_widget = CentralWidgetActivite(self.DATABASE)
         self.setCentralWidget(central_widget)
 
     def set_categorie_activite_central_widget(self):
         """
         Affichage de la liste des type d'activite et des options de tri
         """
-        central_widget = CentralWidgetCategorieActivite(self.database)
+        central_widget = CentralWidgetCategorieActivite(self.DATABASE)
         self.setCentralWidget(central_widget)
 
     def set_lieux_central_widget(self):
         """
         Affichage des lieux et des options de tri
         """
-        central_widget = CentralWidgetLieux(self.database)
+        central_widget = CentralWidgetLieux(self.DATABASE)
         self.setCentralWidget(central_widget)
 
 class CentralWidget(QWidget):
@@ -232,7 +232,7 @@ class CentralWidgetParticipantes(CentralWidget):
         self.layout.addWidget(self.table_widget)
 
         # Instance variable definition
-        self.database = database
+        self.DATABASE = database
 
         # Table widget parameters
         self.table_widget.setColumnCount(6)
@@ -272,7 +272,7 @@ class CentralWidgetParticipantes(CentralWidget):
         :param index: Index de la colonne
         """
         participante_id = self.table_widget.item(index.row(), 0).text()
-        modifier_participante = ModifierParticipante(participante_id, self.database)
+        modifier_participante = ModifierParticipante(participante_id, self.DATABASE)
         modifier_participante.accepted.connect(self.update_list)
         modifier_participante.exec()
 
@@ -280,7 +280,7 @@ class CentralWidgetParticipantes(CentralWidget):
         """
         Ouvrir le dialog pour creer une nouvelle participante
         """
-        nouvelle_participante = NouvelleParticipante(self.database)
+        nouvelle_participante = NouvelleParticipante(self.DATABASE)
         nouvelle_participante.accepted.connect(self.update_list)
         nouvelle_participante.exec()
 
@@ -289,7 +289,7 @@ class CentralWidgetParticipantes(CentralWidget):
         Update participante list in table widget
         """
         # Fetch data from database
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         if self.top_widget.chk_membre.isChecked():
             sql = "SELECT "\
                     "participante.id_participante, "\
@@ -402,7 +402,7 @@ class CentralWidgetActivite(CentralWidget):
         self.layout.addWidget(self.table_widget)
 
         # Instance variable definition
-        self.database = database
+        self.DATABASE = database
 
         # Table widget parameters
         self.table_widget.setColumnCount(7)
@@ -438,7 +438,7 @@ class CentralWidgetActivite(CentralWidget):
         Affichage de la liste des activites
         """
         # Fetch data from database
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
 
         sql = "SELECT "\
                 "activite.id_activite, "\
@@ -540,7 +540,7 @@ class CentralWidgetActivite(CentralWidget):
         Ouvrir le dialog pour creer une nouvelle activite
         :return:
         """
-        nouvelle_activite = NouvelleActivite(self.database)
+        nouvelle_activite = NouvelleActivite(self.DATABASE)
         nouvelle_activite.accepted.connect(self.update_list)
         nouvelle_activite.exec()
 
@@ -550,7 +550,7 @@ class CentralWidgetActivite(CentralWidget):
         :param index: Index de la ligne du tableau
         """
         id_activite = self.table_widget.item(index.row(), 0).text()
-        afficher_activite = AfficherActivite(self.database, id_activite)
+        afficher_activite = AfficherActivite(self.DATABASE, id_activite)
         afficher_activite.accepted.connect(self.update_list)
         afficher_activite.exec()
 
@@ -574,7 +574,7 @@ class CentralWidgetLieux(CentralWidget):
         self.layout.addWidget(self.table_widget)
 
         # Instance variable definition
-        self.database = database
+        self.DATABASE = database
 
         # Table widget parameters
         self.table_widget.setColumnCount(5)
@@ -610,7 +610,7 @@ class CentralWidgetLieux(CentralWidget):
         """
         Ouvrir le dialog pour créer un nouveau lieu
         """
-        lieu = NouveauLieu(self.database)
+        lieu = NouveauLieu(self.DATABASE)
         lieu.accepted.connect(self.update_list)
         lieu.exec()
 
@@ -620,7 +620,7 @@ class CentralWidgetLieux(CentralWidget):
         :param index: Index de la colonne
         """
         id_lieu = self.table_widget.item(index.row(), 0).text()
-        modifier_lieu = ModifierLieu(id_lieu, self.database)
+        modifier_lieu = ModifierLieu(id_lieu, self.DATABASE)
         modifier_lieu.accepted.connect(self.update_list)
         modifier_lieu.exec()
 
@@ -629,7 +629,7 @@ class CentralWidgetLieux(CentralWidget):
         Affichage de la liste des lieux
         """
         # Fetch data from database
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         sql = "SELECT "\
                 "id_lieu, "\
                 "nom, "\
@@ -690,7 +690,7 @@ class CentralWidgetCategorieActivite(CentralWidget):
         super(CentralWidgetCategorieActivite, self).__init__()
 
         # Instance variable definition
-        self.database = database
+        self.DATABASE = database
 
         # GUI setup
         self.top_widget = QWidget()
@@ -728,7 +728,7 @@ class CentralWidgetCategorieActivite(CentralWidget):
         """
         Affichage de la liste des categories d'activite
         """
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
 
         sql = "SELECT "\
                 "categorie_activite.id_categorie_activite, "\
@@ -822,7 +822,7 @@ class CentralWidgetCategorieActivite(CentralWidget):
         Ouvrir le dialog pour créer une nouvelle categorie d'activite
         :return:
         """
-        categorie_activite = NouvelleCategorieActivite(self.database)
+        categorie_activite = NouvelleCategorieActivite(self.DATABASE)
         categorie_activite.accepted.connect(self.update_list)
         categorie_activite.exec()
 
@@ -833,6 +833,6 @@ class CentralWidgetCategorieActivite(CentralWidget):
         """
         id_categorie_activite = self.table_widget.item(index.row(), 0).text()
         modifier_categorie_activite = ModifierCategorieActivite(id_categorie_activite, 
-                                                                self.database)
+                                                                self.DATABASE)
         modifier_categorie_activite.accepted.connect(self.update_list)
         modifier_categorie_activite.exec()

@@ -20,7 +20,7 @@ class Lieu(Form):
         uic.loadUi(ui, self)
 
         # Instance variable definition
-        self.database = database
+        self.DATABASE = database
 
         # Validator
         self.txt_nom.setValidator(self.address_validator())
@@ -77,7 +77,7 @@ class NouveauLieu(Lieu):
         """
         Traitement des donnees dans la base de donnee
         """
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("INSERT INTO lieu (nom, adresse_1, adresse_2, ville, province, code_postal) "
                       "VALUES (:nom, :adresse_1, :adresse_2, :ville, :province, :code_postal)")
         query.bindValue(':nom', self.check_string(self.txt_nom.text()))
@@ -112,7 +112,7 @@ class ModifierLieu(Lieu):
         Afficher les informations sur le lieu
         """
         # Obtenir les informations de la base de donnees
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("SELECT "
                         "nom, "
                         "adresse_1, "
@@ -143,7 +143,7 @@ class ModifierLieu(Lieu):
         """
         Traitement des donnees dans la base de donnee
         """
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("UPDATE "
                         "lieu "
                       "SET "

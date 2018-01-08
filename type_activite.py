@@ -20,7 +20,7 @@ class TypeActivite(Form):
         uic.loadUi(ui, self)
 
         # Instance variable definition
-        self.database = database
+        self.DATABASE = database
 
         # Validator
         self.txt_nom.setValidator(self.name_validator())
@@ -59,7 +59,7 @@ class NouveauTypeActivite(TypeActivite):
         """
         Ajouter le nouveau type d'activite a la base de donnees
         """
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("INSERT INTO type_activite "
                         "(nom) "
                       "VALUES "
@@ -88,7 +88,7 @@ class ModifierTypeActivite(TypeActivite):
     def show_informations(self):
         """Afficher les informations sur le type d'activite"""
         # Obtenir les informations de la base de donnees
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("SELECT "
                         "nom "
                       "FROM "
@@ -107,7 +107,7 @@ class ModifierTypeActivite(TypeActivite):
 
     def process(self):
         """Modifier le type d'activite dans la base de donnees"""
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("UPDATE type_activite "
                       "SET "
                         "nom=:nom "

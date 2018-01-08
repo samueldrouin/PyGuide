@@ -28,7 +28,7 @@ class NouvelleActivite(Form):
         uic.loadUi(ui, self)
 
         # Instance variable definition
-        self.database = database
+        self.DATABASE= database
 
         # Afficher les dates et heure par defaut
         current_date = QDate.currentDate()
@@ -213,8 +213,8 @@ class AfficherActivite(Form):
         uic.loadUi(ui, self)
 
         # Instance variable definition
-        self.database = database
-        self.id_activite = id_activite
+        self.DATABASE= database
+        self.ID_ACTIVITE = id_activite
 
         # Afficher les informations sur l'activite
         self.afficher_informations()
@@ -294,7 +294,7 @@ class AfficherActivite(Form):
                       "INNER JOIN participante ON participante.id_participante = inscription.id_participante "
                       "LEFT JOIN membre ON membre.id_participante = inscription.id_participante "
                       "WHERE (inscription.id_activite = :id_activite) AND ((inscription.status = :inscription) OR (inscription.status = :facture))")
-        query.bindValue(':id_activite', self.id_activite)
+        query.bindValue(':id_activite', self.ID_ACTIVITE)
         query.bindValue(':inscription', self.STATUS_INSCRIPTION)
         query.bindValue(':facture', self.STATUS_FACTURE)
         query.exec_()
@@ -350,7 +350,7 @@ class AfficherActivite(Form):
                       "LEFT JOIN responsable ON "
                          "responsable.id_responsable = categorie_activite.id_responsable "
                       "WHERE (activite.id_activite = :id_activite)")
-        query.bindValue(':id_activite', self.id_activite)
+        query.bindValue(':id_activite', self.ID_ACTIVITE)
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
@@ -384,7 +384,7 @@ class AfficherActivite(Form):
         query.bindValue(':heure_debut', self.ted_heure_debut.time().msecsSinceStartOfDay())
         query.bindValue(':heure_fin', self.ted_heure_fin.time().msecsSinceStartOfDay())
         query.bindValue(':date_limite_inscription', self.ded_limite.date().toJulianDay())
-        query.bindValue(':id_activite', self.id_activite)
+        query.bindValue(':id_activite', self.ID_ACTIVITE)
         query.exec_()
 
         Error.DatabaseError.sql_error_handler(query.lastError())
@@ -410,7 +410,7 @@ class AfficherActivite(Form):
                           "WHERE "
                             "id_activite = :id_activite")
             query.bindValue(':status', False)
-            query.bindValue(':id_activite', self.id_activite)
+            query.bindValue(':id_activite', self.ID_ACTIVITE)
             query.exec_()
 
             Error.DatabaseError.sql_error_handler(query.lastError())

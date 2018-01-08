@@ -26,12 +26,12 @@ class Consultation(QDialog):
             1 : Type d'activite
             2 : Responsables
         """
-        # Instance variable definition
-        self.database = database
-
         super(Consultation, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'consultation.ui')
         uic.loadUi(ui, self)
+
+        # Instance variable definition
+        self.DATABASE = database
 
         # Slots
         self.btn_close.clicked.connect(self.close) # Close windows on "Close" button clicked
@@ -79,7 +79,7 @@ class Consultation(QDialog):
         self.tbl_resultat.setRowCount(0)
 
         # Obtenir la liste des responsables de la base de donnees
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
 
         sql = "SELECT * FROM responsable "
         if self.txt_search.text() != "":
@@ -104,7 +104,7 @@ class Consultation(QDialog):
         """
         Ouvre une fenetre pour creer un nouveau responsable
         """
-        responsable = NouveauResponsable(self.database)
+        responsable = NouveauResponsable(self.DATABASE)
         responsable.accepted.connect(self.update_liste_responsables)
         responsable.exec()
 
@@ -114,7 +114,7 @@ class Consultation(QDialog):
         :param index: Index de la ligne
         """
         id_responsable = self.tbl_resultat.item(index.row(), 0).text()
-        modifier_participante = ModifierResponsable(self.database, id_responsable)
+        modifier_participante = ModifierResponsable(self.DATABASE, id_responsable)
         modifier_participante.accepted.connect(self.update_liste_responsables)
         modifier_participante.exec()
 
@@ -129,7 +129,7 @@ class Consultation(QDialog):
         self.tbl_resultat.setRowCount(0)
 
         # Obtenir la liste des types d'activite de la base de donnees
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
 
         sql = "SELECT * FROM type_activite "
 
@@ -152,7 +152,7 @@ class Consultation(QDialog):
         """
         Ouvre une fenetre pour ajouter un nouveau type d'activite
         """
-        nouveau_type_activite = NouveauTypeActivite(self.database)
+        nouveau_type_activite = NouveauTypeActivite(self.DATABASE)
         nouveau_type_activite.accepted.connect(self.update_liste_type_activite)
         nouveau_type_activite.exec()
 
@@ -162,6 +162,6 @@ class Consultation(QDialog):
         :param index: Index de la ligne
         """
         id_type_activite = self.tbl_resultat.item(index.row(), 0).text()
-        modifier_participante = ModifierTypeActivite(self.database, id_type_activite)
+        modifier_participante = ModifierTypeActivite(self.DATABASE, id_type_activite)
         modifier_participante.accepted.connect(self.update_liste_type_activite)
         modifier_participante.exec()
