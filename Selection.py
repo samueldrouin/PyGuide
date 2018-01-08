@@ -29,7 +29,7 @@ class Selection(Form):
         Obtenir la valeur de l'index selectionne
         :return: Nombre de l'index
         """
-        return int(self.table_widget.item(self.table_widget.currentRow(), 0).text())
+        return int(self.table_widget.item(self.table_widget.currentRow()-1, 0).text())
 
     def afficher_liste(self, lst):
         """

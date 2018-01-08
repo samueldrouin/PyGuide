@@ -289,7 +289,7 @@ class Facture(Form):
 
         # Obtenir les informations sur l'activite
         query = QSqlQuery(self.DATABASE)
-        query.prepare("SELECT categorie_activite.nom, categorie_activite.participante_maximum "
+        query.prepare("SELECT categorie_activite.nom, categorie_activite.participante_maximum, activite.date "
                       "FROM activite "
                       "LEFT JOIN categorie_activite ON categorie_activite.id_categorie_activite = activite.id_categorie_activite "
                       "WHERE activite.id_activite = :id_activite")
@@ -304,12 +304,13 @@ class Facture(Form):
         query.first()
         nom_activite = str(query.value(0))
         maximum = int(query.value(1))
+        date = QDate().fromJulianDay(query.value(2))
 
         # Continuer seulement s'il y a des participante sur la liste d'attente
         if nombre_participante <= maximum:
             return
 
-        text = "Une place pour {} sera libérée dans l'activitée {} lorsque vous enregistrez ces inscriptions.".format(lst[maximum], nom_activite)
+        text = "Une place pour {} sera libérée dans l'activitée {} du {} lorsque vous enregistrerez ces inscriptions.".format(lst[maximum], nom_activite, date.toString('dd MMM yyyy'))
         msgbox.setInformativeText(text)
         msgbox.setIcon(QMessageBox.Information)
         msgbox.setStandardButtons(QMessageBox.Ok)
