@@ -13,7 +13,7 @@ from PyQt5 import uic
 # Project import
 from form import Form
 from Script import Error
-import selection
+import Selection
 
 
 class Facture(Form):
