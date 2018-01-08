@@ -3,12 +3,18 @@
 # Python import
 import os
 from datetime import date, timedelta, datetime
+import tempfile
+import uuid
 
 # PyQt import
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtCore import QDate, QTime
+from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem
+from PyQt5.QtCore import QDate, QTime, Qt
 from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 from PyQt5 import uic
+
+# PyLaTeX import
+from pylatex import Document, Command, PageStyle, simple_page_number, MiniPage, LineBreak, MediumText, LargeText, Head, LongTabu
+from pylatex.utils import bold
 
 # Project import
 from form import Form
@@ -212,6 +218,7 @@ class AfficherActivite(Form):
 
         # Afficher les informations sur l'activite
         self.afficher_informations()
+        self.afficher_inscription()
 
         # Affichage des dates
         self.ded_date.setMinimumDate(QDate().currentDate())
@@ -221,6 +228,106 @@ class AfficherActivite(Form):
         self.btn_fermer.clicked.connect(self.accept)
         self.btn_annuler.clicked.connect(self.annuler_activite)
         self.btn_modifier.clicked.connect(self.modifier_activite)
+        self.btn_liste.clicked.connect(self.liste_presence)
+    
+    def liste_presence(self):
+        """Afficher la liste des présences"""
+        geometry_options = {"margin": "1in"}
+        doc = Document(page_numbers=True, geometry_options=geometry_options)
+
+        # Document header
+        header = PageStyle("header")
+        # Left header
+        with header.create(Head("L")):
+            header.append("Liste de présences")
+        # Right header
+        with header.create(Head("R")):
+            header.append("Centre femmes du Haut-Richelieu")
+
+        doc.preamble.append(header)
+        doc.change_document_style("header")
+
+        # Titre du document
+        with doc.create(MiniPage(align='c')):
+            doc.append(LargeText(bold("Liste de présences")))
+            doc.append(LineBreak())
+            doc.append(MediumText("{}".format(self.txt_nom.text())))
+            doc.append(LineBreak())
+            doc.append(MediumText("{}".format(self.ded_date.date().toString('dd MMMM yyyy'))))
+
+        # Generer le tableau
+        with doc.create(LongTabu("X[l] X[l]")) as data_table:
+            header_row1 = ["Nom de la participante", "Signature"]
+            data_table.add_row(header_row1, mapper=[bold])
+            data_table.add_hline()
+            data_table.end_table_header()
+            for r in range(self.tbl_inscriptions.rowCount()):
+                data_table.add_empty_row()
+                row = [self.tbl_inscriptions.item(r, 0).text(), ""]
+                data_table.add_row(row)
+                data_table.add_empty_row()
+                data_table.add_empty_row()
+                data_table.add_hline()
+
+        temp_dir = tempfile.mkdtemp()
+        file = str(uuid.uuid4())
+        filename = os.path.join(temp_dir, file)
+
+        doc.generate_pdf(filename, compiler="pdflatex")
+
+        file_ext = file + ".pdf"
+        filename_ext = os.path.join(temp_dir, file_ext)
+        os.startfile(os.path.normpath(filename_ext))
+
+    def afficher_inscription(self):
+        """Afficher la liste des inscriptions"""
+        # Obtenir les informations dans la base de donnees
+        query = QSqlQuery(self.database)
+        query.prepare("SELECT "
+                          "participante.prenom, "
+                          "participante.nom, "
+                          "participante.telephone_1, "
+                          "participante.poste_telephone_1, "
+                          "inscription.status, "
+                          "membre.actif "
+                      "FROM inscription "
+                      "INNER JOIN participante ON participante.id_participante = inscription.id_participante "
+                      "LEFT JOIN membre ON membre.id_participante = inscription.id_participante "
+                      "WHERE (inscription.id_activite = :id_activite) AND ((inscription.status = :inscription) OR (inscription.status = :facture))")
+        query.bindValue(':id_activite', self.id_activite)
+        query.bindValue(':inscription', self.STATUS_INSCRIPTION)
+        query.bindValue(':facture', self.STATUS_FACTURE)
+        query.exec_()
+
+        # Affichage d'un message d'erreur si la requete echoue
+        Error.DatabaseError.sql_error_handler(query.lastError())
+
+        while query.next():
+            # Préparation du tableau
+            self.tbl_inscriptions.insertRow(self.tbl_inscriptions.rowCount())
+            r = self.tbl_inscriptions.rowCount() - 1
+
+            # Affichage des donnees
+            nom = str(query.value(0)) + " " + str(query.value(1))
+            self.tbl_inscriptions.setItem(r, 0, QTableWidgetItem(nom))
+
+            phone_number_string = str(query.value(2))
+            phone_number = phone_number_string[:3] + " " + phone_number_string[3:6] + "-" + phone_number_string[6:]
+            if query.value(6) == "":
+                phone_number = phone_number + " p. " + str(query.value(3))
+            self.tbl_inscriptions.setItem(r, 1, QTableWidgetItem(phone_number))
+
+            if int(query.value(4)) == self.STATUS_FACTURE:
+                item = QTableWidgetItem()
+                item.setCheckState(Qt.Checked)
+                item.setText("")
+                self.tbl_inscriptions.setItem(r, 3, item)
+
+            if str(query.value(5)) == "1":
+                item = QTableWidgetItem()
+                item.setCheckState(Qt.Checked)
+                item.setText("")
+                self.tbl_inscriptions.setItem(r, 2, item)
 
     def afficher_informations(self):
         """Afficher les informations sur l'activite lieu"""
@@ -232,12 +339,16 @@ class AfficherActivite(Form):
                         "activite.date, "
                         "activite.heure_debut, "
                         "activite.heure_fin, "
-                        "activite.date_limite_inscription "
+                        "activite.date_limite_inscription, "
+                        "responsable.prenom, "
+                        "responsable.nom "
                       "FROM activite "
                       "LEFT JOIN categorie_activite "
                         "ON activite.id_categorie_activite = categorie_activite.id_categorie_activite "
                       "LEFT JOIN lieu ON "
                         "categorie_activite.id_lieu = lieu.id_lieu "
+                      "LEFT JOIN responsable ON "
+                         "responsable.id_responsable = categorie_activite.id_responsable "
                       "WHERE (activite.id_activite = :id_activite)")
         query.bindValue(':id_activite', self.id_activite)
         query.exec_()
@@ -254,6 +365,9 @@ class AfficherActivite(Form):
         self.ted_heure_debut.setTime(QTime().fromMSecsSinceStartOfDay(int(query.value(3))))
         self.ted_heure_fin.setTime(QTime().fromMSecsSinceStartOfDay(int(query.value(4))))
         self.ded_limite.setDate(QDate().fromJulianDay(int(query.value(5))))
+
+        nom = str(query.value(6)) + " " + str(query.value(7))
+        self.txt_responsable.setText(nom)
 
     def modifier_activite(self):
         """Modifier une activite"""
