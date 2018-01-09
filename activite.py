@@ -8,7 +8,7 @@ import uuid
 
 # PyQt import
 from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem
-from PyQt5.QtCore import QDate, QTime, Qt
+from PyQt5.QtCore import QDate, QTime, Qt, QDateTime
 from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 from PyQt5 import uic
 
@@ -223,12 +223,47 @@ class AfficherActivite(Form):
         # Affichage des dates
         self.ded_date.setMinimumDate(QDate().currentDate())
         self.ded_limite.setMinimumDate(QDate().currentDate())
+        
+        # Parametres du table widget
+        self.tbl_inscriptions.setColumnHidden(0, True)
 
         # Slots
         self.btn_fermer.clicked.connect(self.accept)
         self.btn_annuler.clicked.connect(self.annuler_activite)
         self.btn_modifier.clicked.connect(self.modifier_activite)
         self.btn_liste.clicked.connect(self.liste_presence)
+        self.btn_presence.clicked.connect(self.enregistrer_presences)
+
+    def enregistrer_presences(self):
+        """Enregistrer la liste des présences"""
+        for row in range(self.tbl_inscriptions.rowCount()):
+            # Entrer la personne comme présente
+            print(self.tbl_inscriptions.item(row, 5).checkState())
+            if self.tbl_inscriptions.item(row, 5).checkState() == Qt.Checked:
+                query = QSqlQuery(self.DATABASE)
+                query.prepare("UPDATE inscription "
+                              "SET "
+                                "present = 1 "
+                              "WHERE id_inscription = :id_inscription")
+                query.bindValue(':id_inscription', self.tbl_inscriptions.item(row, 0).text())
+                query.exec_()
+
+                # Affichage d'un message d'erreur si la requete echoue
+                if Error.DatabaseError.sql_error_handler(query.lastError()):
+                    return # Ne pas continuer si la requete échoue
+            # Entrer la personne comme abscente
+            else:
+                query = QSqlQuery(self.DATABASE)
+                query.prepare("UPDATE inscription "
+                              "SET "
+                                "present = 0 "
+                              "WHERE id_inscription = :id_inscription")
+                query.bindValue(':id_inscription', self.tbl_inscriptions.item(row, 0).text())
+                query.exec_()
+
+                # Affichage d'un message d'erreur si la requete echoue
+                if Error.DatabaseError.sql_error_handler(query.lastError()):
+                    return # Ne pas continuer si la requete échoue
     
     def liste_presence(self):
         """Afficher la liste des présences"""
@@ -263,7 +298,7 @@ class AfficherActivite(Form):
             data_table.end_table_header()
             for r in range(self.tbl_inscriptions.rowCount()):
                 data_table.add_empty_row()
-                row = [self.tbl_inscriptions.item(r, 0).text(), ""]
+                row = [self.tbl_inscriptions.item(r, 1).text(), ""]
                 data_table.add_row(row)
                 data_table.add_empty_row()
                 data_table.add_empty_row()
@@ -284,12 +319,14 @@ class AfficherActivite(Form):
         # Obtenir les informations dans la base de donnees
         query = QSqlQuery(self.DATABASE)
         query.prepare("SELECT "
+                          "inscription.id_inscription, "
                           "participante.prenom, "
                           "participante.nom, "
                           "participante.telephone_1, "
                           "participante.poste_telephone_1, "
                           "inscription.status, "
-                          "membre.actif "
+                          "membre.actif, "
+                          "inscription.present "
                       "FROM inscription "
                       "INNER JOIN participante ON participante.id_participante = inscription.id_participante "
                       "LEFT JOIN membre ON membre.id_participante = inscription.id_participante "
@@ -308,26 +345,55 @@ class AfficherActivite(Form):
             r = self.tbl_inscriptions.rowCount() - 1
 
             # Affichage des donnees
-            nom = str(query.value(0)) + " " + str(query.value(1))
-            self.tbl_inscriptions.setItem(r, 0, QTableWidgetItem(nom))
+            self.tbl_inscriptions.setItem(r, 0, QTableWidgetItem(str(query.value(0))))
 
-            phone_number_string = str(query.value(2))
+            nom = str(query.value(1)) + " " + str(query.value(2))
+            self.tbl_inscriptions.setItem(r, 1, QTableWidgetItem(nom))
+
+            phone_number_string = str(query.value(3))
             phone_number = phone_number_string[:3] + " " + phone_number_string[3:6] + "-" + phone_number_string[6:]
-            if query.value(6) == "":
-                phone_number = phone_number + " p. " + str(query.value(3))
-            self.tbl_inscriptions.setItem(r, 1, QTableWidgetItem(phone_number))
+            print(query.value(4))
+            if query.value(4) == " ":
+                phone_number = phone_number + " p. " + str(query.value(4))
+            self.tbl_inscriptions.setItem(r, 2, QTableWidgetItem(phone_number))
 
-            if int(query.value(4)) == self.STATUS_FACTURE:
+            if int(query.value(5)) == self.STATUS_FACTURE:
                 item = QTableWidgetItem()
                 item.setCheckState(Qt.Checked)
+                item.setFlags(item.flags() ^ Qt.ItemIsUserCheckable)
+                item.setText("")
+                self.tbl_inscriptions.setItem(r, 4, item)
+
+            if str(query.value(6)) == "1":
+                item = QTableWidgetItem()
+                item.setCheckState(Qt.Checked)
+                item.setFlags(item.flags() ^ Qt.ItemIsUserCheckable)
                 item.setText("")
                 self.tbl_inscriptions.setItem(r, 3, item)
 
-            if str(query.value(5)) == "1":
+            if str(query.value(7)) == "1":
                 item = QTableWidgetItem()
                 item.setCheckState(Qt.Checked)
+                item.setFlags(item.flags() ^ Qt.ItemIsUserCheckable)
                 item.setText("")
-                self.tbl_inscriptions.setItem(r, 2, item)
+                self.tbl_inscriptions.setItem(r, 5, item)
+            elif str(query.value(7)) == "0":
+                item = QTableWidgetItem()
+                item.setCheckState(Qt.Unchecked)
+                item.setFlags(item.flags() ^ Qt.ItemIsUserCheckable)
+                item.setText("")
+                self.tbl_inscriptions.setItem(r, 5, item)
+            else:
+                # Afficher les boutons de présence si l'activité est passée seulement
+                date = self.ded_date.date()
+                time = self.ted_heure_fin.time()
+
+                datetime = QDateTime(date, time)
+                if datetime <= QDateTime.currentDateTime():
+                    item = QTableWidgetItem()
+                    item.setCheckState(Qt.Unchecked)
+                    item.setText("")
+                    self.tbl_inscriptions.setItem(r, 5, item)
 
     def afficher_informations(self):
         """Afficher les informations sur l'activite lieu"""
@@ -368,6 +434,15 @@ class AfficherActivite(Form):
 
         nom = str(query.value(6)) + " " + str(query.value(7))
         self.txt_responsable.setText(nom)
+
+        # Disabled le bouton de présence si l'activité n'est pas passée
+        date = self.ded_date.date()
+        time = self.ted_heure_fin.time()
+
+        datetime = QDateTime(date, time)
+
+        if datetime >= QDateTime.currentDateTime():
+            self.btn_presence.setEnabled(False)
 
     def modifier_activite(self):
         """Modifier une activite"""

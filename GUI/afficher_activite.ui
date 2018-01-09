@@ -303,7 +303,7 @@
        <item>
         <widget class="QTableWidget" name="tbl_inscriptions">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -413,6 +413,11 @@
          </property>
          <column>
           <property name="text">
+           <string>ID_INSCRIPTION</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
            <string>Nom</string>
           </property>
          </column>
@@ -429,6 +434,11 @@
          <column>
           <property name="text">
            <string>Payé</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Présente</string>
           </property>
          </column>
         </widget>
