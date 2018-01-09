@@ -13,7 +13,7 @@ from PyQt5 import uic
 # Project import
 from form import Form
 from Script import Error
-import Selection
+import selection
 
 
 class Facture(Form):
@@ -105,7 +105,7 @@ class Facture(Form):
         """
         pass
 
-    def afficher_liste_activite(self, search, actif, table):
+    def afficher_liste_activite(self, search, actif, table, annule=False):
         """
         Afficher la liste des activite
         :param search: Texte pour la recherche
@@ -130,7 +130,13 @@ class Facture(Form):
               "FROM activite " \
               "INNER JOIN categorie_activite "\
                 "ON activite.id_categorie_activite = categorie_activite.id_categorie_activite " \
-              "WHERE activite.date_limite_inscription >= {} AND activite.status = 1 ".format(int(QDate.currentDate().toJulianDay()))
+              "WHERE activite.date_limite_inscription >= {} ".format(int(QDate.currentDate().toJulianDay()))
+        
+        # Afficher les activités qui ne sont pas annulées
+        if not annule:
+            sql = sql + "AND activite.status = 1 "
+        else:
+            sql = sql + "AND activite.status = 0 "
 
         # Recherche par nom d'activite
         if search != "":
@@ -349,6 +355,15 @@ class Facturation(Facture):
         self.btn_rembourser.clicked.connect(self.ajout_activite)
         self.btn_remove.clicked.connect(self.retirer_activite)
         self.btn_enregistrer.clicked.connect(self.process)
+        self.chk_annule.toggled.connect(self.afficher_annule)
+
+    def afficher_annule(self, checked):
+        """Afficher les activités annulées seulement"""
+        if checked:
+            self.btn_ajouter_activite.setEnabled(False)
+        else:
+            self.btn_ajouter_activite.setEnabled(True)
+        self.afficher_liste_activite()
 
     def afficher_inscriptions(self):
         """Afficher les inscriptions liees au compte"""
@@ -434,6 +449,8 @@ class Facturation(Facture):
         self.btn_remove.setEnabled(True)
         self.afficher_inscriptions()
         self.txt_activite.setText("")
+        self.chk_annule.setEnabled(True)
+        self.chk_annule.setChecked(False)
 
     def afficher_information_participante(self):
         """Afficher les informations sur la participante"""
@@ -453,7 +470,7 @@ class Facturation(Facture):
         search = self.txt_activite.text()
         actif = self.chk_actif.isChecked()
         table = self.tbl_activite
-        super().afficher_liste_activite(search, actif, table)
+        super().afficher_liste_activite(search, actif, table, annule=self.chk_annule.isChecked())
 
     def ajout_activite(self):
         """Ajouter une activite à la facture"""

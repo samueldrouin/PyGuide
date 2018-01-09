@@ -80,7 +80,7 @@ class NouvelleActivite(Form):
         Afficher la liste des categories d'activite dans le combobox
         """
         # Fetch data from database
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.exec_("SELECT "
                       "id_categorie_activite, nom "
                     "FROM "
@@ -113,7 +113,7 @@ class NouvelleActivite(Form):
         Traitement des donnees dans la base de donnee
         """
         if self.rbt_unique.isChecked():
-            query = QSqlQuery(self.database)
+            query = QSqlQuery(self.DATABASE)
             query.prepare("INSERT INTO activite "
                             "(id_categorie_activite, "
                             "date, "
@@ -170,9 +170,9 @@ class NouvelleActivite(Form):
 
             # Ajouter les informations a la base de donnees
             
-            QSqlDatabase(self.database).transaction()
+            QSqlDatabase(self.DATABASE).transaction()
             for date_activite in liste_date:
-                query = QSqlQuery(self.database)
+                query = QSqlQuery(self.DATABASE)
                 query.prepare("INSERT INTO activite "
                                 "(id_categorie_activite, "
                                 "date, "
@@ -200,9 +200,9 @@ class NouvelleActivite(Form):
 
                 # Affichage d'un message d'erreur si la requete echoue
                 if Error.DatabaseError.sql_error_handler(query.lastError()):
-                    QSqlDatabase(self.database).rollback() # Annuler la transaction
+                    QSqlDatabase(self.DATABASE).rollback() # Annuler la transaction
                     return # Empêche la fermeture du dialog
-            QSqlDatabase(self.database).commit()
+            QSqlDatabase(self.DATABASE).commit()
         self.accept()
 
 class AfficherActivite(Form):
@@ -282,7 +282,7 @@ class AfficherActivite(Form):
     def afficher_inscription(self):
         """Afficher la liste des inscriptions"""
         # Obtenir les informations dans la base de donnees
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("SELECT "
                           "participante.prenom, "
                           "participante.nom, "
@@ -332,7 +332,7 @@ class AfficherActivite(Form):
     def afficher_informations(self):
         """Afficher les informations sur l'activite lieu"""
         # Obtenir les informations de la base de donnees
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("SELECT "
                         "categorie_activite.nom, "
                         "lieu.nom, "
@@ -371,7 +371,7 @@ class AfficherActivite(Form):
 
     def modifier_activite(self):
         """Modifier une activite"""
-        query = QSqlQuery(self.database)
+        query = QSqlQuery(self.DATABASE)
         query.prepare("UPDATE activite "
                       "SET "
                         "date = :date, "
@@ -403,7 +403,7 @@ class AfficherActivite(Form):
         
         # L'annulation est confirmée
         if msgbox.exec() == QMessageBox.Yes:
-            query = QSqlQuery(self.database)
+            query = QSqlQuery(self.DATABASE)
             query.prepare("UPDATE activite "
                           "SET "
                             "status = :status "
