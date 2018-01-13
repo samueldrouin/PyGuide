@@ -34,7 +34,7 @@
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuGestion">
@@ -50,6 +50,7 @@
     <property name="title">
      <string>Statistiques</string>
     </property>
+    <addaction name="act_statistiques"/>
    </widget>
    <widget class="QMenu" name="menuAide">
     <property name="title">
@@ -187,6 +188,11 @@
    </property>
    <property name="text">
     <string>Groupe</string>
+   </property>
+  </action>
+  <action name="act_statistiques">
+   <property name="text">
+    <string>Statistiques</string>
    </property>
   </action>
  </widget>
