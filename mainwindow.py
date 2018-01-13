@@ -243,7 +243,7 @@ class CentralWidgetParticipantes(CentralWidget):
         self.table_widget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.table_widget.setSelectionMode(QAbstractItemView.NoSelection)
         self.table_widget.setAlternatingRowColors(True)
-        self.table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table_widget.horizontalHeader().setStretchLastSection(True)
 
         # Slots
         self.top_widget.btn_add.clicked.connect(self.nouvelle_participante)
@@ -412,7 +412,7 @@ class CentralWidgetActivite(CentralWidget):
         self.table_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table_widget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.table_widget.setAlternatingRowColors(True)
-        self.table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table_widget.horizontalHeader().setStretchLastSection(True)
 
         # Affichage de la date par defaut
         self.top_widget.ded_start.setDate(QDate.currentDate())
@@ -584,7 +584,7 @@ class CentralWidgetLieux(CentralWidget):
         self.table_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table_widget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.table_widget.setAlternatingRowColors(True)
-        self.table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table_widget.horizontalHeader().setStretchLastSection(True)
 
         # Slots
         self.top_widget.btn_add.clicked.connect(self.nouveau_lieu)
@@ -710,7 +710,7 @@ class CentralWidgetCategorieActivite(CentralWidget):
         self.table_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table_widget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.table_widget.setAlternatingRowColors(True)
-        self.table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table_widget.horizontalHeader().setStretchLastSection(True)
 
         # Slots
         self.top_widget.btn_add.clicked.connect(self.nouvelle_categorie_activite)
