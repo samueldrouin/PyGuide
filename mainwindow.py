@@ -413,6 +413,7 @@ class CentralWidgetActivite(CentralWidget):
         self.table_widget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.table_widget.setAlternatingRowColors(True)
         self.table_widget.horizontalHeader().setStretchLastSection(True)
+        self.table_widget.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
 
         # Affichage de la date par defaut
         self.top_widget.ded_start.setDate(QDate.currentDate())
@@ -793,8 +794,8 @@ class CentralWidgetCategorieActivite(CentralWidget):
             self.table_widget.setItem(r, 0, QTableWidgetItem(str(query.value(0))))
             self.table_widget.setItem(r, 1, QTableWidgetItem(str(query.value(1))))
 
-            prix = "Prix membre {0:.2f}: ".format(query.value(2)) + "$" + "\n" \
-                   + "Prix non membre : {0:.2f}".format(query.value(3)) + "$"
+            prix = "Membre {0:.2f}".format(query.value(2)) + "$" + "\n" \
+                   + "Régulier : {0:.2f}".format(query.value(3)) + "$"
             self.table_widget.setItem(r, 2, QTableWidgetItem(prix))
 
             participante = str(query.value(4)) + " - " + str(query.value(5))
