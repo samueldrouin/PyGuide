@@ -40,6 +40,7 @@ class Statistiques(Form):
         self.DATABASE = database
         self.liste_table = ["", "Activité", "Article", "Catégorie d'activité", "Facture", "Groupe", 
                    "Inscription", "Lieu", "Membre", "Participante", "Responsable", "Type d'activité"]
+        self.liste_tri = [""]
 
         # Afficher la premier ligne
         self.ajouter_ligne_champ()
@@ -48,7 +49,7 @@ class Statistiques(Form):
         self.btn_annuler.clicked.connect(self.reject)
 
     def ajouter_ligne_champ(self):
-        """Ajouter une ligne au tableau"""
+        """Ajouter une ligne au tableau des champs"""
         self.tbl_champs.insertRow(self.tbl_champs.rowCount())
         r = self.tbl_champs.rowCount() - 1
 
@@ -83,12 +84,9 @@ class Statistiques(Form):
         contrainte_mapper.mapped[int].connect(self.colonne_selectionnee)
 
     def colonne_selectionnee(self, row):
-        """Ajouter une colonne si la derniere colonne est selectionnee"""
-        r = self.tbl_champs.rowCount() - 1
-        if row == r:
-            if self.tbl_champs.cellWidget(r, 1).currentText() != "":
-                if self.tbl_champs.cellWidget(r, 2).currentText() != "":
-                    self.ajouter_ligne_champ()
+        """Afficher les options de tri pour la colonne"""
+        if self.tbl_champs.cellWidget(row, 1).currentText() != "":
+            self.ajouter_ligne_champ()
     
     def creer_liste_table(self, row):
         """Créer la liste des tables à afficher"""
@@ -122,10 +120,6 @@ class Statistiques(Form):
         Afficher les informations relative à la table sélectionnée
         dans les combobox colonne et contraintes
         """
-        # Créer la liste des tables disponibles
-        if row == 0:
-            self.creer_liste_table(row)
-
         # Effacer le contenu existant
         self.tbl_champs.cellWidget(row, 1).clear()
         self.tbl_champs.cellWidget(row, 2).clear()
@@ -136,99 +130,130 @@ class Statistiques(Form):
         # Afficher les champs pour la colonne et le constrainte
         if table == "Activité":
             self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_ACTIVITE)
-            self.afficher_contraintes(row)
         elif table == "Article":
             self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_ARTICLE)
-            self.afficher_contraintes(row)
         elif table == "Catégorie d'activité":
             self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_CATEGORIE_ACTIVITE)
-            self.afficher_contraintes(row)
         elif table == "Facture":
             self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_FACTURE)
-            self.afficher_contraintes(row)
         elif table == "Groupe":
             self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_GROUPE)
-            self.afficher_contraintes(row)
         elif table == "Inscription":
             self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_INSCRIPTION)
-            self.afficher_contraintes(row)
         elif table == "Lieu":
             self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_LIEU)
-            self.afficher_contraintes(row)
         elif table == "Membre":
             self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_MEMBRE)
-            self.afficher_contraintes(row)
         elif table == "Participante":
             self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_PARTICIPANTE)
-            self.afficher_contraintes(row)
         elif table == "Responsable":
             self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_RESPONSABLE)
-            self.afficher_contraintes(row)
         elif table == "Type d'activité":
             self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_TYPE_ACTIVITE)
+
+        # Créer la liste des tables disponibles
+        if row == 0:
+            self.creer_liste_table(row)
+        else:
             self.afficher_contraintes(row)
 
     def afficher_contraintes(self, row):
         """Afficher les contraintes dans le combobox"""
+        r = row - 1
         if self.verifier_nombre_table():
-            self.tbl_champs.cellWidget(row, 2).addItems(self.LISTE_CONTRAINTE_MEME_TABLE)
+            self.tbl_champs.cellWidget(r, 2).addItems(self.LISTE_CONTRAINTE_MEME_TABLE)
         else:
-            self.tbl_champs.cellWidget(row, 2).addItems(self.LISTE_CONTRAINTE_AUTRE_TABLE)
+            self.tbl_champs.cellWidget(r, 2).addItems(self.LISTE_CONTRAINTE_AUTRE_TABLE)
         
     def verifier_nombre_table(self):
         """Vérifie le nombre de table présentes dans le tableau"""
         lastText = self.tbl_champs.cellWidget(0, 0).currentText()
-        for r in range(self.tbl_champs.rowCount()-1):
-            for c in range(self.tbl_champs.columnCount()-1):
-                currentText = self.tbl_champs.cellWidget(r, c).currentText()
-                if lastText != currentText:
-                    return False
+        for row in range(self.tbl_champs.rowCount()):
+            currentText = self.tbl_champs.cellWidget(row, 0).currentText()
+            if lastText != currentText:
+                return False
         return True
 
-    def afficher_option_tri(self):
+    def ajouter_ligne_tri(self):
+        """Ajouter une ligne au tableau du tri"""
+        self.tbl_tri.insertRow(self.tbl_tri.rowCount())
+        r = self.tbl_tri.rowCount() - 1
+
+        # ComboBox Table
+        cbx_table = QComboBox()
+        cbx_table.addItems(self.liste_tri)
+        self.tbl_tri.setCellWidget(r, 0, cbx_table)
+
+        # Combobox colonne vide
+        cbx_colonne = QComboBox()
+        cbx_colonne.addItem("")
+        self.tbl_tri.setCellWidget(r, 1, cbx_colonne)
+
+        # ComboBox contrainte vide
+        cbx_operateur = QComboBox()
+        cbx_operateur.addItem("")
+        self.tbl_tri.setCellWidget(r, 2, cbx_operateur)
+
+        # ComboBox contrainte vide
+        cbx_contrainte = QComboBox()
+        cbx_contrainte.addItem("")
+        self.tbl_tri.setCellWidget(r, 3, cbx_contrainte)
+
+        if r < 0:
+            self.modifier_liste_tri_existante()
+
+    def creer_option_tri(self):
         """Afficher les options de tri"""
-        liste_table = []
         # Ajouter les éléments à la liste
         for r in range(self.tbl_champs.rowCount()-1):
-            for c in range(self.tbl_champs.columnCount()-1):
-                text = self.tbl_champs.cellWidget(r, c).currentText()
-                if text == "Activité":
-                    liste_table = set(liste_table).add("Activité")
-                    liste_table = set(liste_table).add("Catégorie d'activité")
-                    liste_table = set(liste_table).add("Type d'activité")
-                elif text == "Article":
-                    liste_table = set(liste_table).add("Article")
-                    liste_table = set(liste_table).add("Facture")
-                elif text == "Catégorie d'activité":
-                    liste_table = set(liste_table).add("Catégorie d'activité")
-                    liste_table = set(liste_table).add("Responsable")
-                    liste_table = set(liste_table).add("Type d'activité")
-                    liste_table = set(liste_table).add("Lieu")
-                elif text == "Facture":
-                    liste_table = set(liste_table).add("Facture")
-                    liste_table = set(liste_table).add("Participante")
-                    liste_table = set(liste_table).add("Membre")
-                elif text == "Groupe":
-                    liste_table = set(liste_table).add("Groupe")
-                    liste_table = set(liste_table).add("Activité")
-                    liste_table = set(liste_table).add("Catégorie d'activité")
-                    liste_table = set(liste_table).add("Type d'activité")
-                elif text == "Inscription":
-                    liste_table = set(liste_table).add("Inscription")
-                    liste_table = set(liste_table).add("Activité")
-                    liste_table = set(liste_table).add("Catégorie d'activité")
-                    liste_table = set(liste_table).add("Type d'activité")
-                    liste_table = set(liste_table).add("Participante")
-                    liste_table = set(liste_table).add("Membre")
-                elif text == "Lieu":
-                    liste_table = set(liste_table).add("Lieu")
-                elif text == "Membre":
-                    liste_table = set(liste_table).add("Participante")
-                    liste_table = set(liste_table).add("Membre")
-                elif text == "Participante":
-                    liste_table = set(liste_table).add("Participante")
-                elif text == "Responsable":
-                    liste_table = set(liste_table).add("Responsable")
-                elif text == "Type d'activité":
-                    liste_table = set(liste_table).add("Type d'activité")
-        sorted(liste_table)
+            text = self.tbl_champs.cellWidget(r, 0).currentText()
+            if text == "Activité":
+                self.liste_tri.append("Activité")
+                self.liste_tri.append("Catégorie d'activité")
+                self.liste_tri.append("Type d'activité")
+            elif text == "Article":
+                self.liste_tri.append("Article")
+                self.liste_tri.append("Facture")
+            elif text == "Catégorie d'activité":
+                self.liste_tri.append("Catégorie d'activité")
+                self.liste_tri.append("Responsable")
+                self.liste_tri.append("Type d'activité")
+                self.liste_tri.append("Lieu")
+            elif text == "Facture":
+                self.liste_tri.append("Facture")
+                self.liste_tri.append("Participante")
+                self.liste_tri.append("Membre")
+            elif text == "Groupe":
+                self.liste_tri.append("Groupe")
+                self.liste_tri.append("Activité")
+                self.liste_tri.append("Catégorie d'activité")
+                self.liste_tri.append("Type d'activité")
+            elif text == "Inscription":
+                self.liste_tri.append("Inscription")
+                self.liste_tri.append("Activité")
+                self.liste_tri.append("Catégorie d'activité")
+                self.liste_tri.append("Type d'activité")
+                self.liste_tri.append("Participante")
+                self.liste_tri.append("Membre")
+            elif text == "Lieu":
+                self.liste_tri.append("Lieu")
+            elif text == "Membre":
+                self.liste_tri.append("Participante")
+                self.liste_tri.append("Membre")
+            elif text == "Participante":
+                self.liste_tri.append("Participante")
+            elif text == "Responsable":
+                self.liste_tri.append("Responsable")
+            elif text == "Type d'activité":
+                self.liste_tri.append("Type d'activité")
+            continue
+        set(self.liste_tri)
+        sorted(self.liste_tri)
+
+    def modifier_liste_tri_existante(self):
+        """Modifier la liste dans les ComboBox existant"""
+        for r in range(self.tbl_tri.rowCount()-1):
+            current_text = self.tbl_tri.cellWidget(row, 0).currentText()
+            self.tbl_tri.cellWidget(row, 0).clear()
+            self.tbl_tri.cellWidget(row, 0).addItems(self.liste_table)
+            self.tbl_tri.cellWidget(row, 0).setCurrentText(current_text)
