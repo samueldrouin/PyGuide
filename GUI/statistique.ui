@@ -114,12 +114,18 @@
       </item>
       <item>
        <widget class="QTableWidget" name="tbl_champs">
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+        <attribute name="horizontalHeaderDefaultSectionSize">
+         <number>200</number>
+        </attribute>
         <attribute name="horizontalHeaderStretchLastSection">
          <bool>true</bool>
         </attribute>
         <column>
          <property name="text">
-          <string>New Column</string>
+          <string>Table</string>
          </property>
         </column>
         <column>
@@ -146,6 +152,21 @@
         <attribute name="horizontalHeaderStretchLastSection">
          <bool>true</bool>
         </attribute>
+        <column>
+         <property name="text">
+          <string>Table</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Colonne</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Valeur</string>
+         </property>
+        </column>
        </widget>
       </item>
      </layout>
