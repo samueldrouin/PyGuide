@@ -6,7 +6,7 @@ import os
 from PyQt5 import uic
 from PyQt5.QtWidgets import QComboBox
 from PyQt5.QtCore import QSignalMapper
-from PyQt5.QtSql import  QSqlDatabase
+from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 
 # Project import
 from form import Form
@@ -42,10 +42,12 @@ class Statistiques(Form):
         # Instance variable definition
         self.DATABASE = database
         self.DICT_TABLE = None
+        self.DICT_COLONNES = None
         self.liste_tri = [""] # Liste vide pour les tables du tri
 
         # Créer la liste des tables
         self.generer_liste_tables()
+        self.generer_liste_colonnes()
 
         # Afficher la premier ligne
         self.ajouter_ligne_champ()
@@ -296,6 +298,13 @@ class Statistiques(Form):
         sorted(liste_table_champs)
 
         return liste_table_champs
+
+    def generer_liste_colonnes(self):
+        """Générer la liste des colonnes pour toutes les tables dans la liste des tables"""
+        # Pour toute les entree du dictionnaire des tables
+        for key in self.DICT_TABLE.items():
+            
+            pass
 
     def generer_liste_tables(self):
         """
