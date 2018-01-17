@@ -163,10 +163,7 @@ class Participante(Form):
         poste2 = self.check_int(self.txt_poste2.text())
         fields['Poste 2'] = poste2
 
-        if self.sbx_annee_naissance.value() == 0:
-            annee_naissance = QDate(1, 1, 1).toString('yyyy-MM-dd')
-        else:
-            annee_naissance = QDate(self.sbx_annee_naissance.value(), 1, 1).toString('yyyy-MM-dd')
+        annee_naissance = self.check_int(self.sbx_annee_naissance.value())
         fields['Annee Naissance'] = annee_naissance
 
         personne_nourries = self.sbx_personnes_nourries.value()
@@ -529,7 +526,7 @@ class ModifierParticipante(Participante):
             self.txt_telephone2.setText(telephone2)
 
         self.txt_poste2.setText(str(query.value(12)))
-        self.sbx_annee_naissance.setValue(QDate.fromString(int(query.value(13)), 'yyyy-MM-dd').year())
+        self.sbx_annee_naissance.setValue(int(query.value(13)))
         self.sbx_personnes_nourries.setValue(int(query.value(14)))
 
         if int(query.value(15)):
