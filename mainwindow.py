@@ -22,7 +22,6 @@ from consultation import Consultation
 from facturation import Facturation, Inscription
 from groupe import Groupe
 from Script import Error
-from statistiques import Statistiques
 
 
 class MainWindow(QMainWindow):
@@ -38,9 +37,6 @@ class MainWindow(QMainWindow):
         # Charger l'interface graphique
         self.set_participantes_central_widget()
 
-        # Charger les statistiques
-        self.charger_statistiques()
-
         # Actions
         self.act_consult_participantes.triggered.connect(self.set_participantes_central_widget)
         self.act_consult_activites.triggered.connect(self.set_activite_central_widget)
@@ -54,23 +50,6 @@ class MainWindow(QMainWindow):
         self.act_inscription.triggered.connect(self.inscription)
         self.act_facturation.triggered.connect(self.facturation)
         self.act_groupe.triggered.connect(self.groupe)
-        self.act_statistiques.triggered.connect(self.statistiques)
-
-    def statistiques(self):
-        """Afficher la fenetre pour creer des statistiques"""
-        statistiques = Statistiques(self.DATABASE)
-        statistiques.exec()
-
-    def charger_statistiques(self):
-        """Charger la liste des statistiques enregistrées"""
-        self.creer_dossier_statistiques()
-
-    def creer_dossier_statistiques(self):
-        """Créer un dossier pour les statistiques s'il n'existe pas"""
-        home = pathlib.Path.home()
-        directory = os.path.join(home, "Documents", "GUIDE-CFR")
-        if not os.path.exists(directory):
-            os.makedirs(directory)
 
     def check_database_status(self):
         """
