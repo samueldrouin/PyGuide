@@ -129,8 +129,8 @@ class NouvelleActivite(Form):
             query.bindValue(':id_categorie_activite',
                             self.cbx_category_activite.itemData(self.cbx_category_activite.currentIndex()))
             query.bindValue(':date', self.ded_unique.date().toString('yyyy-MM-dd'))
-            query.bindValue(':heure_debut', self.tim_debut.time().msecsSinceStartOfDay())
-            query.bindValue(':heure_fin', self.tim_fin.time().msecsSinceStartOfDay())
+            query.bindValue(':heure_debut', self.tim_debut.time().toString('HH:mm'))
+            query.bindValue(':heure_fin', self.tim_fin.time().toString('HH:mm'))
 
             # Date limite inscription
             value_date = self.ded_unique.date().toString('yyyy-MM-dd') - self.sbx_fin_inscription.value()
@@ -189,8 +189,8 @@ class NouvelleActivite(Form):
                                 self.cbx_category_activite.itemData(self.cbx_category_activite.currentIndex()))
                 query.bindValue(':date_activite', QDate(date_activite.year, date_activite.month,
                                                         date_activite.day).toString('yyyy-MM-dd'))
-                query.bindValue(':heure_debut', self.tim_debut.time().msecsSinceStartOfDay())
-                query.bindValue(':heure_fin', self.tim_fin.time().msecsSinceStartOfDay())
+                query.bindValue(':heure_debut', self.tim_debut.time().toString('HH:mm'))
+                query.bindValue(':heure_fin', self.tim_fin.time().toString('HH:mm'))
 
                 # Date limite inscription
                 value_date = QDate(date_activite.year, date_activite.month,
@@ -455,8 +455,8 @@ class AfficherActivite(Form):
                       "WHERE "
                         "id_activite = :id_activite")
         query.bindValue(':date', self.ded_date.date().toString('yyyy-MM-dd'))
-        query.bindValue(':heure_debut', self.ted_heure_debut.time().msecsSinceStartOfDay())
-        query.bindValue(':heure_fin', self.ted_heure_fin.time().msecsSinceStartOfDay())
+        query.bindValue(':heure_debut', self.ted_heure_debut.time().toString('HH:mm'))
+        query.bindValue(':heure_fin', self.ted_heure_fin.time().toString('HH:mm'))
         query.bindValue(':date_limite_inscription', self.ded_limite.date().toString('yyyy-MM-dd'))
         query.bindValue(':id_activite', self.ID_ACTIVITE)
         query.exec_()
