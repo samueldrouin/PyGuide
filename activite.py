@@ -427,8 +427,8 @@ class AfficherActivite(Form):
         self.txt_nom.setText(str(query.value(0)))
         self.txt_lieu.setText(str(query.value(1)))
         self.ded_date.setDate(QDate().fromString(int(query.value(2)), 'yyyy-MM-dd'))
-        self.ted_heure_debut.setTime(QTime().fromMSecsSinceStartOfDay(int(query.value(3))))
-        self.ted_heure_fin.setTime(QTime().fromMSecsSinceStartOfDay(int(query.value(4))))
+        self.ted_heure_debut.setTime(QTime().fromString(int(query.value(3)), 'HH:mm'))
+        self.ted_heure_fin.setTime(QTime().fromString(int(query.value(4)), 'HH:mm'))
         self.ded_limite.setDate(QDate().fromString(int(query.value(5)), 'yyyy-MM-dd'))
 
         nom = str(query.value(6)) + " " + str(query.value(7))

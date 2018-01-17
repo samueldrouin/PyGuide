@@ -165,8 +165,8 @@ class Facture(Form):
             date_activite = QDate.fromString(query.value(3), 'yyyy-MM-dd').toString('dd MMM yyyy')
             table.setItem(r, 4, QTableWidgetItem(date_activite))
 
-            heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(4)).toString('hh:mm')
-            heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(5)).toString('hh:mm')
+            heure_debut = QTime.fromString(query.value(4), 'HH:mm').toString('hh:mm')
+            heure_fin = QTime.fromString(query.value(5), 'HH:mm').toString('hh:mm')
             heure = heure_debut + " à " + heure_fin
             table.setItem(r, 5, QTableWidgetItem(heure))
 
@@ -233,8 +233,8 @@ class Facture(Form):
 
             inscription["date"] = QDate.fromString(query.value(4), 'yyyy-MM-dd').toString('dd MMM yyyy')
 
-            heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(5)).toString('hh:mm')
-            heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(6)).toString('hh:mm')
+            heure_debut = QTime.fromString(query.value(5), 'HH:mm').toString('hh:mm')
+            heure_fin = QTime.fromString(query.value(6), 'HH:mm').toString('hh:mm')
             heure = heure_debut + " à " + heure_fin
             inscription["heure"] = heure
             inscription["id_activite"] = str(query.value(7))

@@ -517,8 +517,8 @@ class CentralWidgetActivite(CentralWidget):
             date_activite = QDate.fromString(query.value(1), 'yyyy-MM-dd').toString('dd MMM yyyy')
             self.table_widget.setItem(r, 4, QTableWidgetItem(date_activite))
 
-            heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(2)).toString('hh:mm')
-            heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(3)).toString('hh:mm')
+            heure_debut = QTime.fromString(query.value(2), 'HH:mm').toString('hh:mm')
+            heure_fin = QTime.fromString(query.value(3), 'HH:mm').toString('hh:mm')
             heure = heure_debut + " à " + heure_fin
             self.table_widget.setItem(r, 5, QTableWidgetItem(heure))
 
