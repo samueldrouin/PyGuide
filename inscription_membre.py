@@ -202,7 +202,7 @@ class NouvelleInscription(InscriptionMembre):
             year = year
             if month > 9:
                 year = year + 1
-            date = QDate(year, 9, 1).toJulianDay()
+            date = QDate(year, 9, 1).toString('yyyy-MM-dd')
             query.bindValue(':renouvellement', date)
         query.exec_()
 
@@ -325,7 +325,7 @@ class RenouvelerInscription(InscriptionMembre):
                 year = year + 2
             else:
                 year = year + 1
-            date = QDate(year, 9, 1).toJulianDay()
+            date = QDate(year, 9, 1).toString('yyyy-MM-dd')
             query.bindValue(':renouvellement', date)
 
         query.bindValue(':id_participante', int(self.ID_PARTICIPANTE))

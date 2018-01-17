@@ -128,12 +128,12 @@ class NouvelleActivite(Form):
                             ":date_limite_inscription)")
             query.bindValue(':id_categorie_activite',
                             self.cbx_category_activite.itemData(self.cbx_category_activite.currentIndex()))
-            query.bindValue(':date', self.ded_unique.date().toJulianDay())
+            query.bindValue(':date', self.ded_unique.date().toString('yyyy-MM-dd'))
             query.bindValue(':heure_debut', self.tim_debut.time().msecsSinceStartOfDay())
             query.bindValue(':heure_fin', self.tim_fin.time().msecsSinceStartOfDay())
 
             # Date limite inscription
-            value_date = self.ded_unique.date().toJulianDay() - self.sbx_fin_inscription.value()
+            value_date = self.ded_unique.date().toString('yyyy-MM-dd') - self.sbx_fin_inscription.value()
             query.bindValue(':date_limite_inscription', value_date)
 
             query.exec_()
@@ -188,13 +188,13 @@ class NouvelleActivite(Form):
                 query.bindValue(':id_categorie_activite',
                                 self.cbx_category_activite.itemData(self.cbx_category_activite.currentIndex()))
                 query.bindValue(':date_activite', QDate(date_activite.year, date_activite.month,
-                                                        date_activite.day).toJulianDay())
+                                                        date_activite.day).toString('yyyy-MM-dd'))
                 query.bindValue(':heure_debut', self.tim_debut.time().msecsSinceStartOfDay())
                 query.bindValue(':heure_fin', self.tim_fin.time().msecsSinceStartOfDay())
 
                 # Date limite inscription
                 value_date = QDate(date_activite.year, date_activite.month,
-                                   date_activite.day).toJulianDay() - self.sbx_fin_inscription.value()
+                                   date_activite.day).toString('yyyy-MM-dd') - self.sbx_fin_inscription.value()
                 query.bindValue(':date_limite_inscription', value_date)
                 query.exec_()
 
@@ -424,13 +424,12 @@ class AfficherActivite(Form):
 
         # Afficher les informations
         query.first()
-
         self.txt_nom.setText(str(query.value(0)))
         self.txt_lieu.setText(str(query.value(1)))
-        self.ded_date.setDate(QDate().fromJulianDay(int(query.value(2))))
+        self.ded_date.setDate(QDate().fromString(int(query.value(2)), 'yyyy-MM-dd'))
         self.ted_heure_debut.setTime(QTime().fromMSecsSinceStartOfDay(int(query.value(3))))
         self.ted_heure_fin.setTime(QTime().fromMSecsSinceStartOfDay(int(query.value(4))))
-        self.ded_limite.setDate(QDate().fromJulianDay(int(query.value(5))))
+        self.ded_limite.setDate(QDate().fromString(int(query.value(5)), 'yyyy-MM-dd'))
 
         nom = str(query.value(6)) + " " + str(query.value(7))
         self.txt_responsable.setText(nom)
@@ -455,10 +454,10 @@ class AfficherActivite(Form):
                         "date_limite_inscription = :date_limite_inscription "
                       "WHERE "
                         "id_activite = :id_activite")
-        query.bindValue(':date', self.ded_date.date().toJulianDay())
+        query.bindValue(':date', self.ded_date.date().toString('yyyy-MM-dd'))
         query.bindValue(':heure_debut', self.ted_heure_debut.time().msecsSinceStartOfDay())
         query.bindValue(':heure_fin', self.ted_heure_fin.time().msecsSinceStartOfDay())
-        query.bindValue(':date_limite_inscription', self.ded_limite.date().toJulianDay())
+        query.bindValue(':date_limite_inscription', self.ded_limite.date().toString('yyyy-MM-dd'))
         query.bindValue(':id_activite', self.ID_ACTIVITE)
         query.exec_()
 
