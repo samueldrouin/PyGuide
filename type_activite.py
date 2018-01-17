@@ -1,4 +1,14 @@
-"""Création et modification des types d'activité"""
+"""
+Module permettant le traitement des types d'activité
+
+Le module est responsable de l'ajout et de la modification des types d'activité dans la base de donnée. 
+
+Classes : 
+- TypeActivité : Base des dialog permettant la modification ou la création de type d'activité
+- NouveauTypeActivite : Specificité du dialog permettant la création de nouveau type d'activité dans la base de donnée
+- ModifierTypeActivite : Spécificité du dialog permettant la modificaton de type d'activité existant dans la base de donnée
+"""
+
 
 # Python import
 import os
@@ -13,7 +23,17 @@ from Script import Error
 
 
 class TypeActivite(Form):
-    """Dialog pour la création ou la modification de type d'activité"""
+    """
+    Base des dialog permettant la modification ou la création de type d'activité. 
+
+    Cette classe est responsable de l'affichage de l'interface et de la connection des slots à l'interface
+
+    Les sous classes doivent override la méthode process qui traite les données dans la base de donnée lorsque le dialog est accepté. 
+
+    Méthodes:
+    - check_fields: Vérifie que tout les champs nécessaires sont remplis
+    - process : Traitement de donnée dans la base de donnée. Doit être implantée dans les sous classes. 
+    """
     def __init__(self, database):
         super(TypeActivite, self).__init__()
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'type_activite.ui')
