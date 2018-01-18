@@ -163,10 +163,7 @@ class Participante(Form):
         poste2 = self.check_int(self.txt_poste2.text())
         fields['Poste 2'] = poste2
 
-        if self.sbx_annee_naissance.value() == 0:
-            annee_naissance = QDate(1, 1, 1).toJulianDay()
-        else:
-            annee_naissance = QDate(self.sbx_annee_naissance.value(), 1, 1).toJulianDay()
+        annee_naissance = self.check_int(self.sbx_annee_naissance.value())
         fields['Annee Naissance'] = annee_naissance
 
         personne_nourries = self.sbx_personnes_nourries.value()
@@ -279,7 +276,7 @@ class Participante(Form):
             self.chk_actif.setChecked(True)
             self.txt_numero_membre.setText(str(query.value(1)))
             self.chk_honoraire.setChecked(int(query.value(2)))
-            date = QDate.fromJulianDay(int(query.value(3)))
+            date = QDate.fromString(query.value(3), 'yyyy-MM-dd')
             self.ded_renouvellement.setDate(date)
 
             # Ne pas afficher la date de renouvellement pour un membre honoraire
@@ -446,7 +443,7 @@ class ModifierParticipante(Participante):
                         "AND (activite.status = 1)"
                       "ORDER BY categorie_activite.nom ASC, activite.date ASC")
         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
-        query.bindValue(':current_date', QDate.currentDate().toJulianDay())
+        query.bindValue(':current_date', QDate.currentDate().toString('yyyy-MM-dd'))
         query.bindValue(':status', self.STATUS_INSCRIPTION)
         query.exec_()
 
@@ -461,11 +458,11 @@ class ModifierParticipante(Participante):
 
             self.tbl_inscription.setItem(r, 0, QTableWidgetItem(str(query.value(0))))
 
-            date = QDate().fromJulianDay(int(query.value(1))).toString('dd MMM yyyy')
+            date = QDate().fromString(query.value(1), 'yyyy-MM-dd').toString('dd MMM yyyy')
             self.tbl_inscription.setItem(r, 1, QTableWidgetItem(date))
 
-            heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(2)).toString('hh:mm')
-            heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(3)).toString('hh:mm')
+            heure_debut = QTime.fromString(query.value(2), 'HH:mm').toString('hh:mm')
+            heure_fin = QTime.fromString(query.value(3), 'HH:mm').toString('hh:mm')
             heure = heure_debut + " à " + heure_fin
             self.tbl_inscription.setItem(r, 2, QTableWidgetItem(heure))
 
@@ -530,7 +527,7 @@ class ModifierParticipante(Participante):
             self.txt_telephone2.setText(telephone2)
 
         self.txt_poste2.setText(str(query.value(12)))
-        self.sbx_annee_naissance.setValue(QDate.fromJulianDay(int(query.value(13))).year())
+        self.sbx_annee_naissance.setValue(int(query.value(13)))
         self.sbx_personnes_nourries.setValue(int(query.value(14)))
 
         if int(query.value(15)):

@@ -466,15 +466,15 @@ class CentralWidgetActivite(CentralWidget):
                 sql = sql + "WHERE lieu.nom LIKE '%{}%' ".format(search)
 
             sql = sql + "AND activite.date >= " + \
-                        str(self.top_widget.ded_start.date().toJulianDay()) + \
+                        str(self.top_widget.ded_start.date().toString('yyyy-MM-dd')) + \
                         " AND activite.date <= " + \
-                        str(self.top_widget.ded_end.date().toJulianDay()) + " " + \
+                        str(self.top_widget.ded_end.date().toString('yyyy-MM-dd')) + " " + \
                         " AND activite.status = 1 "
         else:
             sql = sql + "WHERE activite.date >= " + \
-                        str(self.top_widget.ded_start.date().toJulianDay()) + \
+                        str(self.top_widget.ded_start.date().toString('yyyy-MM-dd')) + \
                         " AND activite.date <= " + \
-                        str(self.top_widget.ded_end.date().toJulianDay()) + " " + \
+                        str(self.top_widget.ded_end.date().toString('yyyy-MM-dd')) + " " + \
                         " AND activite.status = 1 "
 
         # Ajouter les options de tri
@@ -515,15 +515,15 @@ class CentralWidgetActivite(CentralWidget):
                    + "Régulier : {0:.2f}$".format(query.value(8))
             self.table_widget.setItem(r, 3, QTableWidgetItem(prix))
 
-            date_activite = QDate.fromJulianDay(query.value(1)).toString('dd MMM yyyy')
+            date_activite = QDate.fromString(query.value(1), 'yyyy-MM-dd').toString('dd MMM yyyy')
             self.table_widget.setItem(r, 4, QTableWidgetItem(date_activite))
 
-            heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(2)).toString('hh:mm')
-            heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(3)).toString('hh:mm')
+            heure_debut = QTime.fromString(query.value(2), 'HH:mm').toString('hh:mm')
+            heure_fin = QTime.fromString(query.value(3), 'HH:mm').toString('hh:mm')
             heure = heure_debut + " à " + heure_fin
             self.table_widget.setItem(r, 5, QTableWidgetItem(heure))
 
-            date_limite = QDate.fromJulianDay(query.value(4)).toString('dd MMM yyyy')
+            date_limite = QDate.fromString(query.value(4), 'yyyy-MM-dd').toString('dd MMM yyyy')
             self.table_widget.setItem(r, 6, QTableWidgetItem(date_limite))
 
         self.table_widget.resizeColumnsToContents()

@@ -112,7 +112,7 @@ class Groupe(Form):
               "FROM activite "\
               "INNER JOIN categorie_activite "\
                 "ON activite.id_categorie_activite = categorie_activite.id_categorie_activite " \
-              "WHERE activite.date_limite_inscription >= {} ".format(int(QDate.currentDate().toJulianDay()))
+              "WHERE activite.date_limite_inscription >= {} ".format(int(QDate.currentDate().toString('yyyy-MM-dd')))
 
         # Recherche par nom d'activite
         if self.txt_activite.text() != "":
@@ -132,11 +132,11 @@ class Groupe(Form):
             self.tbl_activite.setItem(r, 0, QTableWidgetItem(str(query.value(4))))
             self.tbl_activite.setItem(r, 1, QTableWidgetItem(str(query.value(0))))
 
-            date_activite = QDate.fromJulianDay(query.value(1)).toString('dd MMM yyyy')
+            date_activite = QDate.fromString(query.value(1), 'yyyy-MM-dd').toString('dd MMM yyyy')
             self.tbl_activite.setItem(r, 2, QTableWidgetItem(date_activite))
 
-            heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(2)).toString('hh:mm')
-            heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(3)).toString('hh:mm')
+            heure_debut = QTime.fromString(query.value(2), 'HH:mm').toString('hh:mm')
+            heure_fin = QTime.fromString(query.value(3), 'HH:mm').toString('hh:mm')
             heure = heure_debut + " à " + heure_fin
             self.tbl_activite.setItem(r, 3, QTableWidgetItem(heure))
 
