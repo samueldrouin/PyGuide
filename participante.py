@@ -302,6 +302,7 @@ class NouvelleParticipante(Participante):
         self.tbl_transaction.setHidden(True)
         self.lbl_inscription.setHidden(True)
         self.tbl_inscription.setHidden(True)
+        self.line.setHidden(True)
 
     def process_data(self, prepared_data):
         # Insert data
