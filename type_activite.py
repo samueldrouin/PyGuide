@@ -3,10 +3,10 @@ Module permettant le traitement des types d'activité
 
 Le module est responsable de l'ajout et de la modification des types d'activité dans la base de donnée. 
 
-Classes : 
-- TypeActivité : Base des dialog permettant la modification ou la création de type d'activité
-- NouveauTypeActivite : Specificité du dialog permettant la création de nouveau type d'activité dans la base de donnée
-- ModifierTypeActivite : Spécificité du dialog permettant la modificaton de type d'activité existant dans la base de donnée
+Classes
+    TypeActivité : Base des dialog permettant la modification ou la création de type d'activité
+    NouveauTypeActivite : Specificité du dialog permettant la création de nouveau type d'activité dans la base de donnée
+    ModifierTypeActivite : Spécificité du dialog permettant la modificaton de type d'activité existant dans la base de donnée
 """
 
 
@@ -25,14 +25,13 @@ from Script import Error
 class TypeActivite(Form):
     """
     Base des dialog permettant la modification ou la création de type d'activité. 
-
-    Cette classe est responsable de l'affichage de l'interface et de la connection des slots à l'interface
-
+    
+    Cette classe est responsable de l'affichage de l'interface et de la connection des slots à l'interface. 
     Les sous classes doivent override la méthode process qui traite les données dans la base de donnée lorsque le dialog est accepté. 
 
-    Méthodes:
-    - check_fields: Vérifie que tout les champs nécessaires sont remplis
-    - process : Traitement de donnée dans la base de donnée. Doit être implantée dans les sous classes. 
+    Méthodes
+        check_fields: Vérifie que tout les champs nécessaires sont remplis
+        process : Traitement de donnée dans la base de donnée. Doit être implantée dans les sous classes. 
     """
     def __init__(self, database):
         super(TypeActivite, self).__init__()
@@ -51,8 +50,10 @@ class TypeActivite(Form):
 
     def check_fields(self):
         """
-        Vérifie que tout les champs sont remplis
-        :return: True s'ils sont bien remplis
+        Vérifie que tout les champs nécessaires sont remplis
+
+        Return
+            True s'ils sont bien remplis
         """
         if self.txt_nom.text() != "":
             self.process()
@@ -62,13 +63,19 @@ class TypeActivite(Form):
     def process(self):
         """
         Traitement dans donnes dans la base de données
-        Implante dans les sous classes
+
+        La fonction doit être implante dans les sous classes
         """
         pass
 
 
 class NouveauTypeActivite(TypeActivite):
-    """Dialog pour la création de nouveau type d'activité"""
+    """
+    Specificité du dialog permettant la création de nouveau type d'activité dans la base de donnée
+    
+    Méthodes
+        process : Traitement de l'ajout du type d'activité dans la base de données
+    """
     def __init__(self, database):
         super(NouveauTypeActivite, self).__init__(database)
 
@@ -93,7 +100,13 @@ class NouveauTypeActivite(TypeActivite):
 
 
 class ModifierTypeActivite(TypeActivite):
-    """Dialog pour la modification de type d'activité"""
+    """
+    Spécificité du dialog permettant la modificaton de type d'activité existant dans la base de donnée
+    
+    Méthodes
+        show_informations : Affiche les informations sur le type d'activité
+        process : Modifier le type d'activite dans la base de donnees
+    """
     def __init__(self, database, id_type_activite):
         super(ModifierTypeActivite, self).__init__(database)
 
@@ -106,7 +119,9 @@ class ModifierTypeActivite(TypeActivite):
         self.show_informations()
 
     def show_informations(self):
-        """Afficher les informations sur le type d'activite"""
+        """
+        Afficher les informations sur le type d'activite
+        """
         # Obtenir les informations de la base de donnees
         query = QSqlQuery(self.DATABASE)
         query.prepare("SELECT "
@@ -126,7 +141,9 @@ class ModifierTypeActivite(TypeActivite):
         self.txt_nom.setText(query.value(0))
 
     def process(self):
-        """Modifier le type d'activite dans la base de donnees"""
+        """
+        Modifier le type d'activite dans la base de donnees
+        """
         query = QSqlQuery(self.DATABASE)
         query.prepare("UPDATE type_activite "
                       "SET "
