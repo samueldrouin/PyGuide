@@ -130,7 +130,7 @@ class Facture(Form):
               "FROM activite " \
               "INNER JOIN categorie_activite "\
                 "ON activite.id_categorie_activite = categorie_activite.id_categorie_activite " \
-              "WHERE activite.date_limite_inscription >= {} ".format(int(QDate.currentDate().toJulianDay()))
+              "WHERE activite.date_limite_inscription >= {} ".format(int(QDate.currentDate().toString('yyyy-MM-dd')))
         
         # Afficher les activités qui ne sont pas annulées
         if not annule:
@@ -162,11 +162,11 @@ class Facture(Form):
                 prix = "{0:.2f}$".format(query.value(2))
             table.setItem(r, 3, QTableWidgetItem(prix))
 
-            date_activite = QDate.fromJulianDay(query.value(3)).toString('dd MMM yyyy')
+            date_activite = QDate.fromString(query.value(3), 'yyyy-MM-dd').toString('dd MMM yyyy')
             table.setItem(r, 4, QTableWidgetItem(date_activite))
 
-            heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(4)).toString('hh:mm')
-            heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(5)).toString('hh:mm')
+            heure_debut = QTime.fromString(query.value(4), 'HH:mm').toString('hh:mm')
+            heure_fin = QTime.fromString(query.value(5), 'HH:mm').toString('hh:mm')
             heure = heure_debut + " à " + heure_fin
             table.setItem(r, 5, QTableWidgetItem(heure))
 
@@ -211,7 +211,7 @@ class Facture(Form):
                         "AND (activite.status = 1)"
                       "ORDER BY categorie_activite.nom ASC, activite.date ASC")
         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
-        query.bindValue(':current_date', QDate.currentDate().toJulianDay())
+        query.bindValue(':current_date', QDate.currentDate().toString('yyyy-MM-dd'))
         query.bindValue(':status', self.STATUS_INSCRIPTION)
         query.exec_()
 
@@ -231,10 +231,10 @@ class Facture(Form):
                 prix = "{0:.2f}$".format(query.value(3))
             inscription["prix"] = prix
 
-            inscription["date"] = QDate.fromJulianDay(query.value(4)).toString('dd MMM yyyy')
+            inscription["date"] = QDate.fromString(query.value(4), 'yyyy-MM-dd').toString('dd MMM yyyy')
 
-            heure_debut = QTime.fromMSecsSinceStartOfDay(query.value(5)).toString('hh:mm')
-            heure_fin = QTime.fromMSecsSinceStartOfDay(query.value(6)).toString('hh:mm')
+            heure_debut = QTime.fromString(query.value(5), 'HH:mm').toString('hh:mm')
+            heure_fin = QTime.fromString(query.value(6), 'HH:mm').toString('hh:mm')
             heure = heure_debut + " à " + heure_fin
             inscription["heure"] = heure
             inscription["id_activite"] = str(query.value(7))
@@ -310,7 +310,7 @@ class Facture(Form):
         query.first()
         nom_activite = str(query.value(0))
         maximum = int(query.value(1))
-        date = QDate().fromJulianDay(query.value(2))
+        date = QDate().fromString(query.value(2), 'yyyy-MM-dd')
 
         # Continuer seulement s'il y a des participante sur la liste d'attente
         if nombre_participante <= maximum:
