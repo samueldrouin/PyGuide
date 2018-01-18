@@ -276,7 +276,7 @@ class Participante(Form):
             self.chk_actif.setChecked(True)
             self.txt_numero_membre.setText(str(query.value(1)))
             self.chk_honoraire.setChecked(int(query.value(2)))
-            date = QDate.fromString(int(query.value(3)), 'yyyy-MM-dd')
+            date = QDate.fromString(query.value(3), 'yyyy-MM-dd')
             self.ded_renouvellement.setDate(date)
 
             # Ne pas afficher la date de renouvellement pour un membre honoraire
@@ -457,7 +457,7 @@ class ModifierParticipante(Participante):
 
             self.tbl_inscription.setItem(r, 0, QTableWidgetItem(str(query.value(0))))
 
-            date = QDate().fromString(int(query.value(1)), 'yyyy-MM-dd').toString('dd MMM yyyy')
+            date = QDate().fromString(query.value(1), 'yyyy-MM-dd').toString('dd MMM yyyy')
             self.tbl_inscription.setItem(r, 1, QTableWidgetItem(date))
 
             heure_debut = QTime.fromString(query.value(2), 'HH:mm').toString('hh:mm')
