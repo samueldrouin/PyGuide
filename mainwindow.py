@@ -20,6 +20,7 @@ from categorie_activite import NouvelleCategorieActivite, ModifierCategorieActiv
 from settings import Settings
 from consultation import Consultation
 from facturation import Facturation, Inscription
+from statistiques import Statistiques
 from groupe import Groupe
 from Script import Error
 
@@ -50,6 +51,7 @@ class MainWindow(QMainWindow):
         self.act_inscription.triggered.connect(self.inscription)
         self.act_facturation.triggered.connect(self.facturation)
         self.act_groupe.triggered.connect(self.groupe)
+        self.act_statistiques.triggered.connect(self.statistiques)
 
     def check_database_status(self):
         """
@@ -113,6 +115,11 @@ class MainWindow(QMainWindow):
                 self.close()
 
         return db
+
+    def statistiques(self):
+        """Ouvre la fenetre de statistiques"""
+        statistiques = Statistiques(self.DATABASE)
+        statistiques.exec()
 
     def inscription(self):
         """
