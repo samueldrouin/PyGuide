@@ -17,8 +17,9 @@ import os
 # PyQt import
 from PyQt5 import uic
 from PyQt5.QtWidgets import QComboBox
-from PyQt5.QtCore import QSignalMapper
+from PyQt5.QtCore import QSignalMapper, Qt
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
+from PyQt5.QtGui import QPalette
 
 # Project import
 from form import Form
@@ -38,6 +39,11 @@ class Statistiques(Form):
     Méthodes
         ajouter_ligne_champs : Ajoute une ligne à la table des champs
         creer_combo_box : Ajoute un ComboBox dans le tablea avec un mapping vers le numéro de ligne 
+        remplire_combobox : Ajoute la liste d'un dictionnaire à un combobox
+        colonne_champs_selectionnee : Affiche la ligne suivante dans la table des champs
+        table_champs_selectionnee : Afficher les informations relative à la table sélectionnée
+                                    dans les combobox colonne et contraintes
+        set_style : Ajout du style aux lignes du tableau
     """
     # Liste des colonnes
     LISTE_COLONNE_ACTIVITE = ["", "Date", "Heure début", "Heure fin", "Date limite d'inscription", "Status"]
@@ -250,47 +256,134 @@ class Statistiques(Form):
         cbx.activated.connect(mapper.map)
         table.setCellWidget(row, column, cbx)
         mapper.setMapping(self.tbl_champs, row)
-        if column == 0:
-            mapper.mapped[int].connect(method)
-        elif column == 1:
-            mapper.mapped[int].connect(method)
+        mapper.mapped[int].connect(method)
+
+    def remplire_combobox(self, cbx, dict):
+        """
+        Ajoute la liste du dictionnaire à un combobox
+
+        Le dictionnaire doit minimalement être sous la forme
+            dict = {'database_label' : {'nom' : 'Nom de la table'}
+        pour que cette fonction puisse être utilisée
+
+        Arguments :
+            cbx : ComboBox auquel les items doivent être ajoutés
+            dict : Dictionnaire contenant le nom ainsi que le label dans la base de donnée
+                   pour les items à ajouter
+        """
+        # Ajouter une ligne vide
+        cbx.addItem("")
+
+        # Ajouter une éléments du dictionnaire
+        for key, value in sorted(dict.items()):
+                cbx.addItem(value['nom'], key)
+
+    def set_style(self, table, row):
+        """
+        Ajout du style aux lignes du tableau
+
+        Arguments :
+            table : Tableau contenant la ligne
+            row : Ligne dont le style sera modifieé
+        """
+        if row % 2:
+            style = "QComboBox {\
+                        border: 0px solid gray;\
+                        background-color: #e9e7e3\
+                     } \
+                     QComboBox:disabled {\
+                        color: black;\
+                     }\
+                     QScrollBar:horizontal { \
+                        border: 2px solid grey; \
+                        background: #32CC99; \
+                        height: 15px; \
+                        margin: 0px 20px 0 20px; \
+                     }\
+                     QComboBox::drop-down {\
+                        border: 0px; \
+                     }\
+                     QComboBox::down-arrow {\
+                        image: url(Resources/DropDownArrow.png);\
+                        width: 10px;\
+                        height: 10px;\
+                     }"
+        else:
+            style = "QComboBox {\
+                        border: 0px solid gray;\
+                        background-color: #ffffff\
+                     } \
+                     QComboBox:disabled {\
+                        color: black;\
+                     }\
+                     QScrollBar:horizontal { \
+                        border: 2px solid grey; \
+                        background: #32CC99; \
+                        height: 15px; \
+                        margin: 0px 20px 0 20px; \
+                     }\
+                     QComboBox::drop-down {\
+                        border: 0px; \
+                     }\
+                     QComboBox::down-arrow {\
+                        image: url(Resources/DropDownArrow.png);\
+                        width: 10px;\
+                        height: 10px;\
+                     }"
+        for c in range(table.columnCount()):
+            self.tbl_champs.cellWidget(row, c).setStyleSheet(style)
 
     """
     Gestion de la table des champs
     """
 
     def ajouter_ligne_champ(self):
-        """Ajouter une ligne au tableau des champs"""
+        """
+        Ajouter une ligne au tableau des champs
+        
+        Cette fonction ne peut pas être utilisée pour des deux tables puisque toute les fonction à appeler sont différentes
+        """
 
         # Ajouter une ligne à la table
         self.tbl_champs.insertRow(self.tbl_champs.rowCount())
         r = self.tbl_champs.rowCount() - 1
 
         # ComboBox Table
-        self.creer_combo_box(self.tbl_champs, r, 0, self.table_selectionnee)
-        self.ajouter_table(self.tbl_champs.cellWidget(r, 0))
+        self.creer_combo_box(self.tbl_champs, r, 0, self.table_champs_selectionnee)
+        self.remplire_combobox(self.tbl_champs.cellWidget(r, 0), self.DICT_TABLE)
 
         # Combobox colonne vide
-        self.creer_combo_box(self.tbl_champs, r, 1, self.colonne_selectionnee)
+        self.creer_combo_box(self.tbl_champs, r, 1, self.colonne_champs_selectionnee)
 
         # ComboBox contrainte vide
         cbx = QComboBox()
         self.tbl_champs.setCellWidget(r, 2, cbx)
 
-    def ajouter_table(self, cbx):
-        """Ajoute les tables de champs"""
-        for key, value in self.DICT_TABLE.items():
-                cbx.addItem(value['nom'], key)
+        # Ajouter le style à la ligne
+        self.set_style(self.tbl_champs, r)
 
-    def colonne_selectionnee(self, row):
-        """Afficher la ligne suivante"""
-        if self.tbl_champs.cellWidget(row, 1).currentText() != "":
-            self.ajouter_ligne_champ()
 
-    def table_selectionnee(self, row):
+    def colonne_champs_selectionnee(self, row):
+        """
+        Affiche la ligne suivante dans la table des champs
+        
+        Arguments : 
+            row : Ligne de la table du combobox qui vient d'être activé
+        """
+
+        # Ajouter une nouvelle ligne seulement si la ligne activée est la dernière
+        if row == self.tbl_champs.rowCount() - 1:
+            # Ajouter une nouvelle ligne seulement si une valeur non nulle de colonne à été sélectionnée
+            if self.tbl_champs.cellWidget(row, 1).currentText() != "":
+                self.ajouter_ligne_champ()
+
+    def table_champs_selectionnee(self, row):
         """
         Afficher les informations relative à la table sélectionnée
         dans les combobox colonne et contraintes
+
+        Arguments : 
+            row : Ligne du table qui a été activée
         """
         # Effacer le contenu existant
         self.tbl_champs.cellWidget(row, 1).clear()
@@ -301,27 +394,27 @@ class Statistiques(Form):
 
         # Afficher les champs pour la colonne et le constrainte
         if table == "Activité":
-            self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_ACTIVITE)
+            self.remplire_combobox(self.tbl_champs.cellWidget(row, 1), self.DICT_ACTIVITE)
         elif table == "Article":
-            self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_ARTICLE)
+            self.remplire_combobox(self.tbl_champs.cellWidget(row, 1), self.DICT_ARTICLE)
         elif table == "Catégorie d'activité":
-            self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_CATEGORIE_ACTIVITE)
+            self.remplire_combobox(self.tbl_champs.cellWidget(row, 1), self.DICT_CATEGORIE_ACTIVITE)
         elif table == "Facture":
-            self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_FACTURE)
+            self.remplire_combobox(self.tbl_champs.cellWidget(row, 1), self.DICT_FACTURE)
         elif table == "Groupe":
-            self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_GROUPE)
+            self.remplire_combobox(self.tbl_champs.cellWidget(row, 1), self.DICT_GROUPE)
         elif table == "Inscription":
-            self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_INSCRIPTION)
+            self.remplire_combobox(self.tbl_champs.cellWidget(row, 1), self.DICT_INSCRIPTION)
         elif table == "Lieu":
-            self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_LIEU)
+            self.remplire_combobox(self.tbl_champs.cellWidget(row, 1), self.DICT_LIEU)
         elif table == "Membre":
-            self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_MEMBRE)
+            self.remplire_combobox(self.tbl_champs.cellWidget(row, 1), self.DICT_MEMBRE)
         elif table == "Participante":
-            self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_PARTICIPANTE)
+            self.remplire_combobox(self.tbl_champs.cellWidget(row, 1), self.DICT_PARTICIPANTE)
         elif table == "Responsable":
-            self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_RESPONSABLE)
+            self.remplire_combobox(self.tbl_champs.cellWidget(row, 1), self.DICT_RESPONSABLE)
         elif table == "Type d'activité":
-            self.tbl_champs.cellWidget(row, 1).addItems(self.LISTE_COLONNE_TYPE_ACTIVITE)
+            self.remplire_combobox(self.tbl_champs.cellWidget(row, 1), self.DICT_TYPE_ACTIVITE)
 
         # Pour toute les rangees sauf la premiere
         if row != 0:
