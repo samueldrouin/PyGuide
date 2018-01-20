@@ -24,6 +24,7 @@ from PyQt5.QtGui import QPalette
 # Project import
 from form import Form
 from Script import Error
+from Script.DataVerification import DataVerification
 
 class Statistiques(Form):
     """
@@ -44,6 +45,8 @@ class Statistiques(Form):
         table_champs_selectionnee : Afficher les informations relative à la table sélectionnée
                                     dans les combobox colonne et contraintes
         set_style : Ajout du style aux lignes du tableau
+        make_read_only : Disable le combobox de la ligne precedente
+        set_disabled_style : Modifie le style des tables lorsqu'elles deviennent inactives
     """
     # Liste des colonnes
     LISTE_COLONNE_ACTIVITE = ["", "Date", "Heure début", "Heure fin", "Date limite d'inscription", "Status"]
@@ -278,7 +281,7 @@ class Statistiques(Form):
         for key, value in sorted(dict.items()):
                 cbx.addItem(value['nom'], key)
 
-    def set_style(self, table, row):
+    def set_row_style(self, table, row):
         """
         Ajout du style aux lignes du tableau
 
@@ -289,11 +292,9 @@ class Statistiques(Form):
         if row % 2:
             style = "QComboBox {\
                         border: 0px solid gray;\
-                        background-color: #e9e7e3\
+                        background-color: #e9e7e3;\
+                        font-size: 12px\
                      } \
-                     QComboBox:disabled {\
-                        color: black;\
-                     }\
                      QScrollBar:horizontal { \
                         border: 2px solid grey; \
                         background: #32CC99; \
@@ -311,11 +312,9 @@ class Statistiques(Form):
         else:
             style = "QComboBox {\
                         border: 0px solid gray;\
-                        background-color: #ffffff\
+                        background-color: #ffffff;\
+                        font-size: 12px\
                      } \
-                     QComboBox:disabled {\
-                        color: black;\
-                     }\
                      QScrollBar:horizontal { \
                         border: 2px solid grey; \
                         background: #32CC99; \
@@ -360,7 +359,7 @@ class Statistiques(Form):
         self.tbl_champs.setCellWidget(r, 2, cbx)
 
         # Ajouter le style à la ligne
-        self.set_style(self.tbl_champs, r)
+        self.set_row_style(self.tbl_champs, r)
 
 
     def colonne_champs_selectionnee(self, row):
@@ -422,9 +421,17 @@ class Statistiques(Form):
             self.make_read_only(row) # Disable le combobox de la ligne precedante
 
     def make_read_only(self, row):
-        """Disable le combobox de la ligne precedente"""
+        """
+        Disable le combobox de la ligne precedente
+        
+        Cette méthode évite la création de combinaison impossible de table dans la requete. 
+
+        Arguments : 
+            row : Ligne du table pour laquelle une table vient être sélectionnée
+        """
         r = row-1
-        self.tbl_champs.cellWidget(r, 0).setEnabled(False)
+        if not DataVerification.is_empty(self.tbl_champs.cellWidget(row, 0).currentText()):
+            self.tbl_champs.cellWidget(r, 0).setEnabled(False)
 
     def afficher_contraintes(self, row):
         """
