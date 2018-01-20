@@ -1,4 +1,16 @@
-"""Statistiques"""
+"""
+Module permettant de créer des statistiques. 
+
+Le module n'est pas responsable de l'affichage ni du traitement vers la base de donnée. Il sert seulement à créer
+des fichiers XML contenant les requetes à effectuer pour obtenir les statistiques. 
+
+L'objectif est de fournir à l'utilisateur une interface simple et conviviale pour effectuer des requêtes SQLite
+sans que l'utilisateur n'ai à écrire de code. 
+
+Classes
+    Statistiques : Dialog par lequel l'utilisateur peut créer des ficher de statistiques.
+"""
+
 # Python import
 import os
 
@@ -13,7 +25,20 @@ from form import Form
 from Script import Error
 
 class Statistiques(Form):
-    """Dialog des statistiques"""
+    """
+    Dialog par lequel l'utilisateur peut créer des ficher de statistiques.
+
+    Le dialog est composé de deux tables : 
+    1) La table des champs qui présente à l'utilisateur tout les champs de la base de donnée qu'ils peut intégrer
+    aux statistiques. 
+    2) La table de tri qui présente à l'utilisateur toute les options de tri qu'ils peut utiliser sur la base de donnée. 
+    Cette table ne gère par le formattage des paramètres. L'utilisateur doit se référer au manuel d'utilisateur
+    pour s'assurer de formatter convenablement les données. 
+
+    Méthodes
+        ajouter_ligne_champs : Ajoute une ligne à la table des champs
+        creer_combo_box : Ajoute un ComboBox dans le tablea avec un mapping vers le numéro de ligne 
+    """
     # Liste des colonnes
     LISTE_COLONNE_ACTIVITE = ["", "Date", "Heure début", "Heure fin", "Date limite d'inscription", "Status"]
     LISTE_COLONNE_ARTICLE = ["", "Prix", "Description"]
@@ -192,19 +217,43 @@ class Statistiques(Form):
 
         # Instance variable definition
         self.DATABASE = database
-        self.DICT_TABLE = None
-        self.DICT_COLONNES = None
         self.liste_tri = [""] # Liste vide pour les tables du tri
-
-        # Créer la liste des tables
-        self.generer_liste_tables()
-        self.generer_liste_colonnes()
 
         # Afficher la premier ligne
         self.ajouter_ligne_champ()
 
         # Slots
         self.btn_annuler.clicked.connect(self.reject)
+
+    """
+    Méthodes communes aux deux types de table
+    """
+
+    def creer_combo_box(self, table, row, column, method):
+        """
+        Ajoute un ComboBox avec un mapping du signal "activated" pour transmettre la ligne
+        du tableau plutôt que l'index du ComboBox au tableau des champs. 
+
+        Arguments:
+            table : Table auquel le ComboBox doit être ajouté
+            row : Ligne du tableau à laquelle le ComboBox doit être ajouté
+            column : Colonne du tableau à laquelle le ComboBox doit être ajouté
+            method : Fonction qui sera connectée au mapping
+        """
+        # Créer un nouveau ComboBox
+        cbx = QComboBox()
+
+        # Ajouter un mapper pour transmettre la ligne du tableau plutôt que l'index du ComboBox
+        # lorsque la valeur est modifiée
+        mapper = QSignalMapper(self)
+        mapper.setMapping(cbx, row)
+        cbx.activated.connect(mapper.map)
+        table.setCellWidget(row, column, cbx)
+        mapper.setMapping(self.tbl_champs, row)
+        if column == 0:
+            mapper.mapped[int].connect(method)
+        elif column == 1:
+            mapper.mapped[int].connect(method)
 
     """
     Gestion de la table des champs
@@ -218,29 +267,20 @@ class Statistiques(Form):
         r = self.tbl_champs.rowCount() - 1
 
         # ComboBox Table
-        table_mapper = QSignalMapper(self)
-        cbx_table = QComboBox()
-        cbx_table.addItems(self.generer_liste_table_champs(r))
-        table_mapper.setMapping(cbx_table, r)
-        cbx_table.activated.connect(table_mapper.map)
-        self.tbl_champs.setCellWidget(r, 0, cbx_table)
-        table_mapper.setMapping(self.tbl_champs, r)
-        table_mapper.mapped[int].connect(self.table_selectionnee)
+        self.creer_combo_box(self.tbl_champs, r, 0, self.table_selectionnee)
+        self.ajouter_table(self.tbl_champs.cellWidget(r, 0))
 
         # Combobox colonne vide
-        colonne_mapper = QSignalMapper(self)
-        cbx_colonne = QComboBox()
-        cbx_colonne.addItem("")
-        colonne_mapper.setMapping(cbx_colonne, r)
-        cbx_colonne.activated.connect(colonne_mapper.map)
-        self.tbl_champs.setCellWidget(r, 1, cbx_colonne)
-        colonne_mapper.setMapping(self.tbl_champs, r)
-        colonne_mapper.mapped[int].connect(self.colonne_selectionnee)
+        self.creer_combo_box(self.tbl_champs, r, 1, self.colonne_selectionnee)
 
         # ComboBox contrainte vide
-        cbx_contrainte = QComboBox()
-        cbx_contrainte.addItem("")
-        self.tbl_champs.setCellWidget(r, 2, cbx_contrainte)
+        cbx = QComboBox()
+        self.tbl_champs.setCellWidget(r, 2, cbx)
+
+    def ajouter_table(self, cbx):
+        """Ajoute les tables de champs"""
+        for key, value in self.DICT_TABLE.items():
+                cbx.addItem(value['nom'], key)
 
     def colonne_selectionnee(self, row):
         """Afficher la ligne suivante"""
@@ -455,30 +495,3 @@ class Statistiques(Form):
         sorted(liste_table_champs)
 
         return liste_table_champs
-
-    def generer_liste_colonnes(self):
-        """Générer la liste des colonnes pour toutes les tables dans la liste des tables"""
-        # Pour toute les entree du dictionnaire des tables
-        for key in self.DICT_TABLE.items():
-            
-            pass
-
-    def generer_liste_tables(self):
-        """
-        Générer la liste des tables à partir de la base de donnéees
-        - Recherche de la liste des tables de la base de données
-        - Modification des noms pour les noms complets
-        """
-        # Obtenir la liste des tables de la base de donnees
-        liste_table = self.DATABASE.tables()
-        
-        # Afficher un message s'il y a une erreur
-        Error.DatabaseError.sql_error_handler(self.DATABASE.lastError())
-
-        # Retirer les entrees qui servent au fonctionnement interne de la base de donnees
-        liste_table.remove("sqlite_sequence")
-
-        # Transformer la liste en dictionnaire
-        liste_table.sort()
-        self.DICT_TABLE = dict(zip(liste_table, liste_table))
-
