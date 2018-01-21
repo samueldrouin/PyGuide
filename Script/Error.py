@@ -46,27 +46,27 @@ class DatabaseError(object):
                                    "Veuillez réessayer."
     
     ERREUR_PERM = "Accès interdit"
-    ERREUR_PERM_INFORMATION = "L'accès à la base de donnée est interdit. Assurez-vous d'avoir les permissions " \
-                              "nécessaire pour y accéder."
+    ERREUR_PERM_INFORMATION = "L'accès à la base de données est interdit. Assurez-vous d'avoir les permissions " \
+                              "nécessaires pour y accéder."
 
-    ERREUR_DB_LOCKED = "Base de donnée vérouillée"
-    ERREUR_DB_LOCKED_INFORMATION = "Impossible d'accéder à la base de donnée."
+    ERREUR_DB_LOCKED = "Base de donnée verrouillée"
+    ERREUR_DB_LOCKED_INFORMATION = "Impossible d'accéder à la base de données."
 
-    ERREUR_TABLE_LOCKED = "Tableau de la base de donnée vérouillée"
-    ERREUR_TABLE_LOCKED_INFORMATION = "Impossible d'accéder un à tableau de la base de donnée."
+    ERREUR_TABLE_LOCKED = "Tableau de la base de données vérouillé"
+    ERREUR_TABLE_LOCKED_INFORMATION = "Impossible d'accéder à un tableau de la base de données."
 
     ERREUR_DISQUE = "Erreur disque"
-    ERREUR_DISQUE_INFORMATION = "Erreur disque lors de la communication avec la base de donnée."
+    ERREUR_DISQUE_INFORMATION = "Erreur disque lors de la communication avec la base de données."
 
     ERREUR_MEMOIRE = "Erreur mémoire"
     ERREUR_MEMOIRE_INFORMATION = "Erreur lors de l'allocation de la mémoire."
 
-    ERREUR_CORRUPTION = "Base de donnée corrompue"
-    ERREUR_CORRUPTION_INFORMATION = "La base de donnée est corrompue et doit être réparée avant de pouvoir être utilisée à nouveau."
+    ERREUR_CORRUPTION = "Base de données corrompue"
+    ERREUR_CORRUPTION_INFORMATION = "La base de données est corrompue et doit être réparée avant de pouvoir être utilisée à nouveau."
 
-    ERREUR_ACCES = "Base de donnée inaccessible"
-    ERREUR_OUVERTURE = "Impossible d'ouvrir la base de donnée"
-    ERREUR_ACCES_INFORMATION = "Vérifiez dans les réglages que le chemin vers la base de donnée est valide."
+    ERREUR_ACCES = "Base de données inaccessible"
+    ERREUR_OUVERTURE = "Impossible d'ouvrir la base de données"
+    ERREUR_ACCES_INFORMATION = "Vérifiez dans les réglages que le chemin vers la base de données est valide."
 
     ERREUR_DONNEE = "Donnée invalide entrée"
     ERREUR_TOOBIG_INFORMATION = "Le texte entré est trop long pour pouvoir être ajouté."
@@ -74,7 +74,7 @@ class DatabaseError(object):
     ERREUR_MISMATCH_INFORMATION = "Le format de donnée ne correspond pas à ce qui est attendu"
 
     ERREUR_FICHIER = "Fichier invalide"
-    ERREUR_FICHIER_INFORMATION = "Le fichier sélectionné n'est pas une base de donnée valide. " \
+    ERREUR_FICHIER_INFORMATION = "Le fichier sélectionné n'est pas une base de données valide. " \
                                  "Veuillez modifier le fichier dans les réglages. "
 
     ERREUR_UNHANDELED = "Erreur non gérée"
@@ -87,12 +87,12 @@ class DatabaseError(object):
     ERREUR_TRANSACTION_INFORMATION = "La transaction n'a pas pu être effectuée."
 
     ERREUR_CONNECTION = "Erreur lors de la connection"
-    ERREUR_CONNECTION_INFORMATION = "La connection avec la base de donnée n'a pas pu être établie."
+    ERREUR_CONNECTION_INFORMATION = "La connection avec la base de données n'a pas pu être établie."
 
     @classmethod
     def sql_error_handler(self, err):
         """
-        Gestion des erreur SQLite
+        Gestion des erreurs SQLite
         :param err: QSqlError
         :return: True si erreur
         """

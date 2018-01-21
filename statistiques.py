@@ -46,7 +46,7 @@ class Statistiques(Form):
                                     dans les combobox colonne et contraintes
         set_style : Ajout du style aux lignes du tableau
         make_read_only : Disable le combobox de la ligne precedente
-        set_disabled_style : Modifie le style des tables lorsqu'elles deviennent inactives
+        generer_liste_table_champ : Générer le dictionnaire des tables à afficher dans les ComboBox du tableau des champs
     """
     # Liste des colonnes
     LISTE_COLONNE_ACTIVITE = ["", "Date", "Heure début", "Heure fin", "Date limite d'inscription", "Status"]
@@ -66,24 +66,60 @@ class Statistiques(Form):
     LISTE_COLONNE_RESPONSABLE = ["", "Prénom", "Nom"]
     LISTE_COLONNE_TYPE_ACTIVITE = ["", "Nom"]
     LISTE_CONTRAINTE_MEME_TABLE = ["et"]
-    LISTE_CONTRAINTE_AUTRE_TABLE = ["et", "et exclusif", "ou"]
+    LISTE_CONTRAINTE_AUTRE_TABLE = ["INNER JOIN", "LEFT JOIN", "CROSS JOIN"]
 
     # Dictionnaire des tables pertinentes de la base de donnée
     #   Key : Nom de la table
     #   Value : Nom pour l'affichage
     DICT_TABLE = {
-                  'activite' : {'nom' : 'Activité', 'reference' : ['activite', 'categorie_activite']},
-                  'article' : {'nom' : 'Article', 'reference' : ['article', 'facture', 'activite']},
-                  'categorie_activite' : {'nom' : 'Catégorie d\'activité', 'reference' : ['categorie_activite', 'responsable', 'type_activite', 'lieu']},
-                  'facture' : {'nom' : 'Facture', 'reference' : ['facture', 'participante']},
-                  'groupe' : {'nom' : 'Groupe', 'reference' : ['groupe', 'activite']},
-                  'inscription': {'nom' : 'Inscription', 'reference' : ['inscription', 'participante', 'activite']},
-                  'lieu' : {'nom' : 'Lieu', 'reference' : ['lieu']},
-                  'membre' :  {'nom' : 'Membre', 'reference' : ['membre', 'participante']},
-                  'participante' : {'nom' : 'Participante', 'reference' : ['participante']},
-                  'responsable' : {'nom' : 'Responsable', 'reference' : ['responsable']},
-                  'type_activite' : {'nom' : 'Type d\'activité', 'reference' : ['type_activite']}
+                  'activite' : {'nom': 'Activité'},
+                  'article' : {'nom': 'Article'},
+                  'categorie_activite' : {'nom': 'Catégorie d\'activité'},
+                  'facture' : {'nom': 'Facture'},
+                  'groupe' : {'nom': 'Groupe'},
+                  'inscription': {'nom': 'Inscription'},
+                  'lieu' : {'nom': 'Lieu'},
+                  'membre' : {'nom': 'Membre'},
+                  'participante' : {'nom': 'Participante'},
+                  'responsable' : {'nom': 'Responsable'},
+                  'type_activite' : {'nom': 'Type d\'activité'}
                   }
+
+    DICT_REFERENCE_TABLE = {
+                            'activite' : 
+                                {'to' : ['categorie_activite'],
+                                 'from' : ['article', 'groupe', 'inscription']},
+                            'article' : 
+                                {'to' : ['facture', 'activite'], 
+                                 'from' : []}, 
+                            'categorie_activite' : 
+                                {'to' : ['responsable', 'type_activite', 'lieu'],
+                                 'from' : ['activite']},
+                            'facture' : 
+                                {'to' : ['participante'],
+                                 'from' : ['article']},
+                            'groupe' : 
+                                {'to' : ['activite'],
+                                 'from' : []},
+                            'inscription' : 
+                                {'to' : ['participante', 'activite'],
+                                 'from' : []},
+                            'lieu' : 
+                                {'to' : [],
+                                 'from' : ['categorie_activite']},
+                            'membre' : 
+                                {'to' : ['participante'],
+                                 'from' : []},
+                            'participante' : 
+                                {'to' : [],
+                                 'from' : ['facture', 'inscription', 'membre']},
+                            'responsable' : 
+                                {'to' : [],
+                                 'from' : ['categorie_activite']},
+                            'type_activite' : 
+                                {'to' : [],
+                                 'from' : ['categorie_activite']},
+                           }
 
     """
     Valeur des types de donnée
@@ -349,7 +385,7 @@ class Statistiques(Form):
 
         # ComboBox Table
         self.creer_combo_box(self.tbl_champs, r, 0, self.table_champs_selectionnee)
-        self.remplire_combobox(self.tbl_champs.cellWidget(r, 0), self.DICT_TABLE)
+        self.remplire_combobox(self.tbl_champs.cellWidget(r, 0), self.generer_liste_table_champ(r))
 
         # Combobox colonne vide
         self.creer_combo_box(self.tbl_champs, r, 1, self.colonne_champs_selectionnee)
@@ -361,6 +397,38 @@ class Statistiques(Form):
         # Ajouter le style à la ligne
         self.set_row_style(self.tbl_champs, r)
 
+    def generer_liste_table_champ(self, row):
+        """
+        Générer le dictionnaire des tables à afficher dans les ComboBox du tableau des champs.
+
+        Seule les tables qui ont un foreign key sur la table de la ligne précédente sont affichée pour éviter
+        de créer des requêtes qui sont impossibles. 
+
+        Arguments : 
+            row : Ligne sur laquelle le ComboBox est ajouté
+        Return : 
+            Dictionnaire des tables
+        """
+        # Afficher toute les tables pour la première colonne
+        if row == 0:
+            return self.DICT_TABLE
+        # Afficher seulement les tables ayant une foreign key pour les colonnes suivantes
+        else:
+            # Obtenir la table de la rangee precendante
+            last_table = self.tbl_champs.cellWidget(row-1, 0).currentData()
+
+            # Créer la liste des tables ayant une référence vers ou de cette table
+            reference_dict =  self.DICT_REFERENCE_TABLE[last_table]
+            reference_to = reference_dict['to']
+            reference_from = reference_dict['from']
+            reference_list = reference_to + reference_from
+            
+            # Construire le dictionnaire à retourner
+            dict = {}
+            for reference in reference_list:
+                dict[reference] = {'nom' : self.DICT_TABLE[reference]['nom']}
+
+            return dict
 
     def colonne_champs_selectionnee(self, row):
         """
