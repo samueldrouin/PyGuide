@@ -33,10 +33,6 @@ python3 /path/to/main.py
 ```
 Si l'installation est correcte, le programme devrait s'ouvrir. 
 
-## Déploiement
-
-Il est nécessaire 
-
 ## Contribuer
 
 Ce programme devrait servir uniquement à l'usage interne du Centre de femmes du Haut-Richelieu. Les individus ou corporations mendatés pour modifier le programme par le Centre de femmes du Haut-Richelieu peuvent créer de nouvelle branches pour modifier le programmes.
