@@ -388,11 +388,12 @@ class Statistiques(Form):
         self.remplire_combobox(self.tbl_champs.cellWidget(r, 0), self.generer_liste_table_champ(r))
 
         # Combobox colonne vide
-        self.creer_combo_box(self.tbl_champs, r, 1, self.colonne_champs_selectionnee)
+        cbx_colonne = QComboBox()
+        self.tbl_champs.setCellWidget(r, 1, cbx_colonne)
 
         # ComboBox contrainte vide
-        cbx = QComboBox()
-        self.tbl_champs.setCellWidget(r, 2, cbx)
+        cbx_contrainte = QComboBox()
+        self.tbl_champs.setCellWidget(r, 2, cbx_contrainte)
 
         # Ajouter le style à la ligne
         self.set_row_style(self.tbl_champs, r)
@@ -429,20 +430,6 @@ class Statistiques(Form):
                 dict[reference] = {'nom' : self.DICT_TABLE[reference]['nom']}
 
             return dict
-
-    def colonne_champs_selectionnee(self, row):
-        """
-        Affiche la ligne suivante dans la table des champs
-        
-        Arguments : 
-            row : Ligne de la table du combobox qui vient d'être activé
-        """
-
-        # Ajouter une nouvelle ligne seulement si la ligne activée est la dernière
-        if row == self.tbl_champs.rowCount() - 1:
-            # Ajouter une nouvelle ligne seulement si une valeur non nulle de colonne à été sélectionnée
-            if self.tbl_champs.cellWidget(row, 1).currentText() != "":
-                self.ajouter_ligne_champ()
 
     def table_champs_selectionnee(self, row):
         """
@@ -487,6 +474,9 @@ class Statistiques(Form):
         if row != 0:
             self.afficher_contraintes(row) # Afficher les contraintes de la ligne precedente
             self.make_read_only(row) # Disable le combobox de la ligne precedante
+
+        # Ajout d'une nouvelle ligne
+        self.ajouter_ligne_champ()
 
     def make_read_only(self, row):
         """
