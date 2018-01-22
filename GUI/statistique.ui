@@ -491,15 +491,29 @@
         <item>
          <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>Trier par : </string>
+           <string>Ordonner par :</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="comboBox"/>
+         <widget class="QComboBox" name="cbx_table">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="comboBox_2"/>
+         <widget class="QComboBox" name="cbx_colonne">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QCheckBox" name="checkBox">
@@ -507,6 +521,19 @@
            <string>Décroissant</string>
           </property>
          </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </item>
