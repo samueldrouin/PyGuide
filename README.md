@@ -10,7 +10,7 @@ Le programme est basé sur PyQt et Python 3.6 afin de permettre l'installation s
 
 Le programme nécessite l'installation des programmes suivants pour fonctionner : 
 * Python 3.6 et plus récent
-* PyQt 5.9.2 et plus récent
+* PyQt 5.10.0 et plus récent
 
 Installer d'abord la distribution Python 3 pour Windows la plus récente (https://www.python.org).
 
