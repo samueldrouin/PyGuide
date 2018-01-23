@@ -20,7 +20,8 @@ from PyQt5.QtSql import QSqlQuery
 # Project import
 from form import Form
 from Script import Error
-from Script.DataVerification import DataVerification
+from Script.DataVerification import *
+from Script.Error import DatabaseError
 
 
 class TypeActivite(Form):
@@ -56,7 +57,7 @@ class TypeActivite(Form):
         Return
             True s'ils sont bien remplis
         """
-        if is_empty(self.txt_nom.text()):
+        if not is_empty(self.txt_nom.text()):
             self.process()
         else:
             self.message_box_missing_information("Le nom du type d'activité doit être remplis")

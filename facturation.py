@@ -803,6 +803,13 @@ class Facturation(Facture):
 
 class Inscription(Facture):
     """Dialog pour la création de nouvelle inscriptions"""
+
+    # Constante definition
+    STATUS_INSCRIPTION_ANNULEE = 0
+    STATUS_INSCRIPTION = 1
+    STATUS_FACTURE = 2
+    STATUS_REMBOURSE = 3
+
     def __init__(self, database):
         super(Inscription, self).__init__(database)
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'inscription.ui')

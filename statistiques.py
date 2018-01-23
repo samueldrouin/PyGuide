@@ -13,18 +13,21 @@ Classes
 
 # Python import
 import os
+import tempfile
+import uuid
 
 # PyQt import
 from PyQt5 import uic
-from PyQt5.QtWidgets import QComboBox, QTableWidgetItem
-from PyQt5.QtCore import QSignalMapper, Qt
-from PyQt5.QtSql import QSqlDatabase, QSqlQuery
-from PyQt5.QtGui import QPalette
+from PyQt5.QtWidgets import QComboBox, QTableWidgetItem, QLineEdit, QSpinBox, QDateEdit, QTimeEdit, QDateTimeEdit, QCheckBox, QDoubleSpinBox, QWidget, QAbstractSpinBox, QCompleter
+from PyQt5.QtCore import QSignalMapper, Qt, QDate, QTime, QStringListModel
+from PyQt5.QtSql import QSqlDatabase, QSqlQuery, QSqlField, QSqlRecord
+from PyQt5.QtGui import QPalette, QColor
 
 # Project import
 from form import Form
 from Script import Error
-from Script.DataVerification import DataVerification
+from facturation import Inscription
+from Script.DataVerification import *
 
 class Statistiques(Form):
     """
@@ -53,61 +56,86 @@ class Statistiques(Form):
         dictionnaire_colonne : Passer la valeur du dictionnaire des colonnes qui correspond à la table fournir
     """
     # Liste des contraintes
-    CONTRAINTE_MEME_TABLE = ["et"]
-    CONTRAINTE_AUTRE_TABLE = ["INNER JOIN", "LEFT JOIN", "CROSS JOIN"]
-    OPERATEUR = ["=", ">", "<", "<=", ">="]
+    DICT_CONTRAINTE_MEME_TABLE = {'internal' : {'nom' : "Et"}}
+    DICT_CONTRAINTE_AUTRE_TABLE = {'INNER JOIN' : {'nom' : 'Et'}, 
+                                   'LEFT JOIN' : {'nom' : 'Gauche'}}
+
+    # Dictionnaire des opérateurs
+    DICT_OPERATEUR = {
+                      '=' : {'nom' : 'Égal'}, 
+                      '>' : {'nom' : 'Plus grand'}, 
+                      '<' : {'nom' : 'Plus petit'}, 
+                      '<=' : {'nom' : 'Plus grand ou égal'}, 
+                      '>=' : {'nom' : 'Plus petit ou égal'}, 
+                      'contient' : {'nom' : 'Contient'},
+                      'commence' : {'nom' : 'Commence par'},
+                      'termine' : {'nom' : 'Termine par'}
+                     }
+    DICT_CONTRAINTE_OPERATEUR = {'AND' : {'nom' : 'Et'}, 
+                                 'OR' : {'nom' : 'Ou'}}
 
     # Dictionnaire des tables pertinentes de la base de donnée
     #   Key : Nom de la table
     #   Value : Nom pour l'affichage
     DICT_TABLE = {
-                  'activite' : {'nom': 'Activité'},
-                  'article' : {'nom': 'Article'},
-                  'categorie_activite' : {'nom': 'Catégorie d\'activité'},
-                  'facture' : {'nom': 'Facture'},
-                  'groupe' : {'nom': 'Groupe'},
-                  'inscription': {'nom': 'Inscription'},
-                  'lieu' : {'nom': 'Lieu'},
-                  'membre' : {'nom': 'Membre'},
-                  'participante' : {'nom': 'Participante'},
-                  'responsable' : {'nom': 'Responsable'},
-                  'type_activite' : {'nom': 'Type d\'activité'}
+                  'activite' : {'nom': 'Activité', 'id' : 'id_activite'},
+                  'article' : {'nom': 'Article', 'id' : 'id_article'},
+                  'categorie_activite' : {'nom': 'Catégorie d\'activité', 'id' : 'id_categorie_activite'},
+                  'facture' : {'nom': 'Facture', 'id' : 'id_facture'},
+                  'groupe' : {'nom': 'Groupe', 'id' : 'id_groupe'},
+                  'inscription': {'nom': 'Inscription', 'id' : 'id_inscription'},
+                  'lieu' : {'nom': 'Lieu', 'id' : 'id_lieu'},
+                  'membre' : {'nom': 'Membre', 'id' : 'id_membre'},
+                  'participante' : {'nom': 'Participante', 'id' : 'id_participante'},
+                  'responsable' : {'nom': 'Responsable', 'id' : 'id_responsable'},
+                  'type_activite' : {'nom': 'Type d\'activité', 'id' : 'id_type_activite'}
                   }
 
     DICT_REFERENCE_TABLE = {
                             'activite' : 
                                 {'to' : ['categorie_activite'],
-                                 'from' : ['article', 'groupe', 'inscription']},
+                                 'from' : ['article', 'groupe', 'inscription'],
+                                 'self' : ['activite']},
                             'article' : 
                                 {'to' : ['facture', 'activite'], 
-                                 'from' : []}, 
+                                 'from' : [],
+                                 'self' : ['article']}, 
                             'categorie_activite' : 
                                 {'to' : ['responsable', 'type_activite', 'lieu'],
-                                 'from' : ['activite']},
+                                 'from' : ['activite'],
+                                 'self' : ['categorie_activite']},
                             'facture' : 
                                 {'to' : ['participante'],
-                                 'from' : ['article']},
+                                 'from' : ['article'],
+                                 'self' : ['facture']},
                             'groupe' : 
                                 {'to' : ['activite'],
-                                 'from' : []},
+                                 'from' : [],
+                                 'self' : ['groupe']},
                             'inscription' : 
                                 {'to' : ['participante', 'activite'],
-                                 'from' : []},
+                                 'from' : [],
+                                 'self' : ['inscription']},
                             'lieu' : 
                                 {'to' : [],
-                                 'from' : ['categorie_activite']},
+                                 'from' : ['categorie_activite'],
+                                 'self' : ['lieu']},
                             'membre' : 
                                 {'to' : ['participante'],
-                                 'from' : []},
+                                 'from' : [],
+                                 'self' : ['membre']},
                             'participante' : 
                                 {'to' : [],
-                                 'from' : ['facture', 'inscription', 'membre']},
+                                 'from' : ['facture', 'inscription', 'membre'],
+                                 'self' : ['participante']},
                             'responsable' : 
                                 {'to' : [],
-                                 'from' : ['categorie_activite']},
+                                 'from' : ['categorie_activite'],
+                                 'self' : ['responsable']},
                             'type_activite' : 
                                 {'to' : [],
-                                 'from' : ['categorie_activite']},
+                                 'from' : ['categorie_activite'],
+                                 'self' : ['type_activite']},
                            }
 
     """
@@ -259,6 +287,7 @@ class Statistiques(Form):
         # Slots
         self.btn_annuler.clicked.connect(self.reject)
         self.cbx_table.activated.connect(self.afficher_liste_colonne_ordre)
+        self.btn_afficher.clicked.connect(self.afficher)
 
     """
     Méthodes communes aux deux types de table
@@ -369,12 +398,17 @@ class Statistiques(Form):
             table : Tableau contenant la ligne
             row : Ligne dont le style sera modifieé
         """
+        # Définir le style pour les colonnes paires et impaires
         if row % 2:
-            style = "QComboBox {\
+            # QComboBox
+            style_cbx = "QComboBox {\
                         border: 0px solid gray;\
                         background-color: #e9e7e3;\
                         font-size: 12px\
                      } \
+                     QComboBox:disabled {\
+                        color: black\
+                     }\
                      QScrollBar:horizontal { \
                         border: 2px solid grey; \
                         background: #32CC99; \
@@ -389,12 +423,38 @@ class Statistiques(Form):
                         width: 10px;\
                         height: 10px;\
                      }"
+
+            # QDateTimeEdit
+            style_datetime = "QDateTimeEdit {\
+                             border: 0px solid gray;\
+                             background-color: #e9e7e3;\
+                             font-size: 12px\
+                             }\
+                             QDateTimeEdit::drop-down {\
+                             border: 0px; \
+                             }\
+                             QDateTimeEdit::down-arrow {\
+                             image: url(Resources/DropDownArrow.png);\
+                             width: 10px;\
+                             height: 10px;\
+                             }"
+
+            # QWidget
+            style_widget = "background-color:#e9e7e3"
+
+            # QAbstractSpinBox
+            palette_sbx = QPalette()
+            palette_sbx.setColor(QPalette.Base, QColor(233, 231, 227))
         else:
-            style = "QComboBox {\
+            # QComboBox
+            style_cbx = "QComboBox {\
                         border: 0px solid gray;\
                         background-color: #ffffff;\
                         font-size: 12px\
                      } \
+                     QComboBox:disabled {\
+                        color: black\
+                     }\
                      QScrollBar:horizontal { \
                         border: 2px solid grey; \
                         background: #32CC99; \
@@ -409,9 +469,39 @@ class Statistiques(Form):
                         width: 10px;\
                         height: 10px;\
                      }"
+            
+            # QWidget
+            style_widget = "background-color:#ffffff"
+
+            # QDateTimeEdit
+            style_datetime = "QDateTimeEdit {\
+                             border: 0px solid gray;\
+                             background-color: #ffffff;\
+                             font-size: 12px\
+                             }\
+                             QDateTimeEdit::drop-down {\
+                             border: 0px; \
+                             }\
+                             QDateTimeEdit::down-arrow {\
+                             image: url(Resources/DropDownArrow.png);\
+                             width: 10px;\
+                             height: 10px;\
+                             }"
+
+            # QAbstractSpinBox
+            palette_sbx = QPalette()
+            palette_sbx.setColor(QPalette.Base, QColor(255, 255, 255))
+
+        # Afficher le style selon le type de widget
         for c in range(table.columnCount()):
             if isinstance(table.cellWidget(row, c), QComboBox):
-                table.cellWidget(row, c).setStyleSheet(style)
+                table.cellWidget(row, c).setStyleSheet(style_cbx)
+            elif isinstance(table.cellWidget(row, c), QDateTimeEdit):
+                table.cellWidget(row, c).setStyleSheet(style_datetime)
+            elif isinstance(table.cellWidget(row, c), QAbstractSpinBox):
+                table.cellWidget(row, c).setPalette(palette_sbx)
+            else:
+                table.cellWidget(row, c).setStyleSheet(style_widget)
 
     """
     Gestion de la table des champs
@@ -467,11 +557,12 @@ class Statistiques(Form):
             reference_dict =  self.DICT_REFERENCE_TABLE[last_table]
             reference_to = reference_dict['to']
             reference_from = reference_dict['from']
-            reference_list = reference_to + reference_from
+            reference_self = reference_dict['self']
+            reference_list = reference_to + reference_from + reference_self
             
             # Construire le dictionnaire à retourner
             dict = {}
-            for reference in reference_list:
+            for reference in sorted(reference_list):
                 dict[reference] = {'nom' : self.DICT_TABLE[reference]['nom']}
 
             return dict
@@ -484,7 +575,7 @@ class Statistiques(Form):
         Arguments : 
             row : Ligne du table qui a été activée
         """
-        if not DataVerification.is_empty(self.tbl_champs.cellWidget(row, 0).currentText()):
+        if not is_empty(self.tbl_champs.cellWidget(row, 0).currentText()):
             # Effacer le contenu existant
             self.tbl_champs.cellWidget(row, 1).clear()
             self.tbl_champs.cellWidget(row, 2).clear()
@@ -522,7 +613,7 @@ class Statistiques(Form):
         Arguments : 
             row : Ligne du table pour laquelle une table vient être sélectionnée
         """
-        if not DataVerification.is_empty(self.tbl_champs.cellWidget(row, 0).currentText()):
+        if not is_empty(self.tbl_champs.cellWidget(row, 0).currentText()):
             self.tbl_champs.cellWidget(row, 0).setEnabled(False)
 
     def afficher_contraintes(self, row):
@@ -538,10 +629,13 @@ class Statistiques(Form):
         last_table = self.tbl_champs.cellWidget(r, 0).currentText()
         current_table = self.tbl_champs.cellWidget(row, 0).currentText()
         
+        # Ajouter les éléments au ComboBox
         if last_table == current_table:
-            self.tbl_champs.cellWidget(r, 2).addItems(self.CONTRAINTE_MEME_TABLE)
+            for key, value in sorted(self.DICT_CONTRAINTE_MEME_TABLE.items()):
+                self.tbl_champs.cellWidget(r, 2).addItem(value['nom'], key)
         else:
-            self.tbl_champs.cellWidget(r, 2).addItems(self.CONTRAINTE_AUTRE_TABLE)
+            for key, value in sorted(self.DICT_CONTRAINTE_AUTRE_TABLE.items()):
+                self.tbl_champs.cellWidget(r, 2).addItem(value['nom'], key)
 
     def activer_table_tri(self):
         """
@@ -564,15 +658,19 @@ class Statistiques(Form):
         self.remplire_combobox(self.tbl_tri.cellWidget(r, 0), self.liste_table_champs())
 
         # Combobox colonne vide
-        cbx_colonne = QComboBox()
-        self.tbl_tri.setCellWidget(r, 1, cbx_colonne)
+        self.creer_combo_box(self.tbl_tri, r, 1, self.colonne_tri_selectionnee)
 
         # ComboBox opérateur
         cbx_operateur = QComboBox()
         self.tbl_tri.setCellWidget(r, 2, cbx_operateur)
 
-        # Item vide
-        self.tbl_tri.setItem(r, 3, QTableWidgetItem(""))
+        # Widget opérateur vide
+        widget = QWidget()
+        self.tbl_tri.setCellWidget(r, 3, widget)
+
+        # ComboBox contrainte
+        cbx_contrainte = QComboBox()
+        self.tbl_tri.setCellWidget(r, 4, cbx_contrainte)
 
         # Ajouter le style à la ligne
         self.set_row_style(self.tbl_tri, r)
@@ -585,11 +683,10 @@ class Statistiques(Form):
         Arguments : 
             row : Ligne du table qui a été activée
         """
-        if not DataVerification.is_empty(self.tbl_tri.cellWidget(row, 0).currentText()):
+        if not is_empty(self.tbl_tri.cellWidget(row, 0).currentText()):
             # Effacer le contenu existant
             self.tbl_tri.cellWidget(row, 1).clear()
             self.tbl_tri.cellWidget(row, 2).clear()
-            self.tbl_tri.item(row, 3).setText("")
 
             # Déterminer le nom de la table
             table = self.tbl_tri.cellWidget(row, 0).currentData()
@@ -598,8 +695,11 @@ class Statistiques(Form):
             dict_colonne = self.dictionnaire_colonne(table)
             self.remplire_combobox(self.tbl_tri.cellWidget(row, 1), dict_colonne, ajouter_vide = False)
 
-            # Afficher les champs pour l'opérateur
-            self.tbl_tri.cellWidget(row, 2).addItems(self.OPERATEUR)
+            # Afficher les champs pour les opérateursqz et la valeur
+            self.colonne_tri_selectionnee(row)
+
+            # Afficher les champs pour la contrainte
+            self.remplire_combobox(self.tbl_tri.cellWidget(row, 4), self.DICT_CONTRAINTE_OPERATEUR, ajouter_vide = False)
 
             # Pour toute les rangees sauf la premiere
             if row != 0:
@@ -607,6 +707,98 @@ class Statistiques(Form):
 
             # Ajout d'une nouvelle ligne
             self.ajouter_ligne_tri()
+
+    def colonne_tri_selectionnee(self, row):
+        """
+        Affiche la liste des opérateurs disponible selon le type de donnée dans la colonne
+        """
+        # Obtenir le type de la colonne
+        table = self.tbl_tri.cellWidget(row, 0).currentData()
+        colonne = self.tbl_tri.cellWidget(row, 1).currentData()
+        dict_colonne = self.dictionnaire_colonne(table)
+        type = dict_colonne[colonne]['type']
+
+        # Afficher les opérateurs selon le type de colonne
+        if type == self.TYPE_STRING:
+            self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['=']['nom'], '=')
+            self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['contient']['nom'], 'contient')
+            self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['commence']['nom'], 'commence')
+            self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['termine']['nom'], 'termine')
+        elif type == self.TYPE_BOOLEAN:
+            self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['=']['nom'], '=')
+        elif type == self.TYPE_STATUS_INSCRIPTION:
+            self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['=']['nom'], '=')
+        else:
+            self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['=']['nom'], '=')
+            self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['>']['nom'], '>')
+            self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['<']['nom'], '<')
+            self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['<=']['nom'], '<=')
+            self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['>=']['nom'], '>=')
+
+        # Afficher le widget pour la valeur selon le type de valeur
+        if type == self.TYPE_STRING:
+            # Créer un nouveau LineEdit
+            widget = QLineEdit()
+            widget.setFrame(False)
+            completer = QCompleter()
+            completer.setModel(QStringListModel(self.get_field_list(row)))
+            widget.setCompleter(completer)
+        elif type == self.TYPE_INTEGER:
+            widget = QSpinBox()
+            widget.setFrame(False)
+            widget.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        elif type == self.TYPE_DATE:
+            widget = QDateEdit()
+            widget.setFrame(False)
+            widget.setCalendarPopup(True)
+            widget.setDate(QDate.currentDate())
+        elif type == self.TYPE_TIME:
+            widget = QTimeEdit()
+            widget.setFrame(False)
+            widget.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        elif type == self.TYPE_BOOLEAN:
+            widget = QCheckBox()
+        elif type == self.TYPE_DATETIME:
+            widget = QDateTimeEdit()
+            widget.setFrame(False)
+            widget.setCalendarPopup(True)
+            widget.setDate(QDate.currentDate())
+        elif type == self.TYPE_PRIX:
+            widget = QDoubleSpinBox()
+            widget.setFrame(False)
+            widget.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        else: # TYPE_STATUS_INSCRIPTION
+            widget = QComboBox()
+            widget.addItems(['Active', 'Facturée', 'Annulée', 'Remboursée'])
+
+        self.tbl_tri.setCellWidget(row, 3, widget)
+
+        # Ajouter le style à la ligne
+        self.set_row_style(self.tbl_tri, row)
+
+    def get_field_list(self, row):
+        """
+        Obtenir la liste des valeurs
+        """
+        # Obtenir les informations de la ligne
+        table = self.tbl_tri.cellWidget(row, 0).currentData()
+        colonne = self.tbl_tri.cellWidget(row, 1).currentData()
+        
+        # Obtenir la liste des valeurs dans la table de données
+        sql = "SELECT " + colonne + " FROM " + table + " ORDER BY " + colonne + " ASC" 
+
+        query = QSqlQuery()
+        query.exec_(sql)
+
+        # S'il y a une erreur dans la requete
+        if Error.DatabaseError.sql_error_handler(query.lastError()):
+            return # Ne pas continuer avec des données incomplètes
+
+        liste_valeur = []
+        while query.next():
+            liste_valeur.append(query.value(0))
+
+        return liste_valeur
 
     def afficher_liste_table_ordre(self):
         """
@@ -643,3 +835,170 @@ class Statistiques(Form):
         # Afficher les colonnes dans le ComboBox
         for key, value in sorted(dict_colonne.items()):
             self.cbx_colonne.addItem(value['nom'], key)
+
+    def afficher(self):
+        """
+        Effectuer la requete et afficher les résultats
+        """
+        sql = self.generer_requete()
+
+        query = QSqlQuery()
+        query.exec_(sql)
+
+        # S'il y a une erreur lors de l'exécution de la requête
+        if Error.DatabaseError.sql_error_handler(query.lastError()):
+            return # Évite de continuer avec des données incomplètes
+
+        temp_dir = tempfile.mkdtemp()
+        file = str(uuid.uuid4()) + ".csv"
+        filename = os.path.join(temp_dir, file)
+        
+        column_count = query.record().count()
+        with open(filename,'w') as file:
+            # Ajouter les headers
+            line = ""
+            for i in range(column_count):
+                print(query.record().field(i).tableName())
+                table = query.record().field(i).tableName() 
+                colonne = query.record().field(i).name()
+                dict_colonne = self.dictionnaire_colonne(table)
+                dict_colonne[colonne]['nom']
+                line = line + dict_colonne[colonne]['nom'] + ","
+            line[:-1]
+            file.write(line)
+            file.write('\n')
+
+            # Ajouter les lignes
+            while query.next():
+                line = ""
+                for i in range(column_count):
+                    line = line + query.value(i) + ","
+                line[:-1]
+                file.write(line)
+                file.write('\n')
+
+        os.startfile(os.path.normpath(filename))
+
+    def generer_requete(self):
+        """
+        Générer la requête SQLite à effectuer
+        """
+
+        # Début de la requête
+        sql = "SELECT "
+
+        # Ajouter les champs à la requête
+        for row in range(self.tbl_champs.rowCount()):
+            table = self.tbl_champs.cellWidget(row, 0).currentData()
+            colonne = self.tbl_champs.cellWidget(row, 1).currentData()
+
+            if not is_empty(table) and not is_empty(colonne):
+                sql = sql + table + "." + colonne + ", "
+
+        # Enlever la dernière virgule ajoutée
+        sql = sql[:-2] + " "
+
+        # Déterminer la table principale de la requête
+        table_principale = self.tbl_champs.cellWidget(0, 0).currentData()
+        sql = sql + "FROM " + table_principale + " "
+
+        # Déterminer les tables secondaires
+        dict_table_secondaire = self.liste_table_secondaire()
+
+        # Ajouter les tables secondaires à la requête
+        for key, value in dict_table_secondaire.items():
+            sql = sql + value['contrainte'] + " " + key[0] + " ON " + key[1] + "." + value['id'] + " " + key[0] + "." + value['id'] + " "
+
+        # Vérifier s'il y a des options de tri
+        if not is_empty(self.tbl_tri.cellWidget(0, 0).currentData()):
+            sql = sql + "WHERE "
+
+        # Ajouter les options de tri
+        for row in range(self.tbl_tri.rowCount()):
+            table = self.tbl_tri.cellWidget(row, 0).currentData()
+            colonne = self.tbl_tri.cellWidget(row, 1).currentData()
+            operateur = self.tbl_tri.cellWidget(row, 2).currentData()
+            contrainte = self.tbl_tri.cellWidget(row, 4).currentData()
+
+            if not is_empty(table) and not is_empty(contrainte):
+                valeur = self.get_constraint_value(row)
+                sql = sql + "(" + table + "." + colonne + " "
+                if operateur == self.DICT_OPERATEUR['contient']:
+                    sql = sql + "LIKE " + "'%" + valeur[-1:-1] + "%' " + contrainte + " " 
+                elif operateur == self.DICT_OPERATEUR['commence']:
+                    sql = sql + "LIKE " + "'" + valeur[-1:-1] + "%' " + contrainte + " " 
+                elif operateur == self.DICT_OPERATEUR['termine']:
+                    sql = sql + "LIKE " + "'%" + valeur[-1:-1] + "' " + contrainte + " " 
+                else:
+                    sql = sql + operateur + " " + valeur + " " + contrainte + " "
+                sql = sql[:-4] + ") "
+
+        # Ajouter l'ordre
+        sql = sql + "ORDER BY " + self.cbx_table.currentData() + "." + self.cbx_colonne.currentData()
+        return sql
+
+    def get_constraint_value(self, row):
+        """
+        Retourne la valeur de la contrainte dans un format valide pour la base de donnée
+
+        Argument :
+            row : Ligne de la contrainte
+        """
+        table = self.tbl_tri.cellWidget(row, 0).currentData()
+        colonne = self.tbl_tri.cellWidget(row, 1).currentData()
+        dict_colonne = self.dictionnaire_colonne(table)
+        type = dict_colonne[colonne]['type']
+
+        if type == self.TYPE_STRING:
+            return "'" + self.tbl_tri.cellWidget(row, 3).text() + "'"
+        elif type == self.TYPE_INTEGER:
+            return self.tbl_tri.cellWidget(row, 3).value()
+        elif type == self.TYPE_DATE:
+            return self.tbl_tri.cellWidget(row, 3).date().toString('yyyy-MM-dd')
+        elif type == self.TYPE_TIME:
+            return self.tbl_tri.cellWidget(row, 3).time().toString('HH:mm')
+        elif type == self.TYPE_BOOLEAN:
+            return self.tbl_tri.cellWidget(row, 3).checked()
+        elif type == self.TYPE_DATETIME:
+            return self.tbl_tri.cellWidget(row, 3).dateTime().toString('yyyy-MM-dd hh:mm:ss')
+        elif type == self.TYPE_PRIX:
+            return self.tbl_tri.cellWidget(row, 3).value()
+        else: # TYPE_STATUS_INSCRIPTION
+            if self.tbl_tri.cellWidget(row, 3).currentText() == 'Active':
+                return Inscription.STATUS_INSCRIPTION
+            elif self.tbl_tri.cellWidget(row, 3).currentText() == 'Facturée':
+                return Inscription.STATUS_FACTURE
+            elif self.tbl_tri.cellWidget(row, 3).currentText() == 'Annulée':
+                return Inscription.STATUS_INSCRIPTION_ANNULEE
+            else:
+                return Inscription.STATUS_REMBOURSE
+
+    def liste_table_secondaire(self):
+        """
+        Générer la liste des tables secondaires
+
+        Return : 
+            Dictionnaire des tables secondaires
+        """
+        for row in range(1, self.tbl_champs.rowCount()):
+            last_row = row - 1
+
+            # Tableau des lignes actuelle et suivante
+            last_table = self.tbl_champs.cellWidget(last_row, 0).currentData()
+            current_table = self.tbl_champs.cellWidget(row, 0).currentData()
+            contrainte = self.tbl_champs.cellWidget(last_row, 2).currentData()
+
+            dict_table_secondaire = {}
+
+            # Ajouter la table à la liste
+            if not is_empty(current_table) and not is_empty(contrainte):
+                if last_table != current_table:
+                    # Déterminer l'identifiant pour la clause 'ON'
+                    id = None
+                    if last_table in self.DICT_REFERENCE_TABLE[current_table]['from']:
+                        id = self.DICT_TABLE[last_table]['id']
+                    else:
+                        id = self.DICT_TABLE[current_table]['id']
+                    dict_table_secondaire[(current_table, last_table)] = {'contrainte': contrainte, 'id' : id}
+
+            return dict_table_secondaire
