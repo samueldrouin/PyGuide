@@ -18,10 +18,14 @@ import uuid
 
 # PyQt import
 from PyQt5 import uic
-from PyQt5.QtWidgets import QComboBox, QTableWidgetItem, QLineEdit, QSpinBox, QDateEdit, QTimeEdit, QDateTimeEdit, QCheckBox, QDoubleSpinBox, QWidget, QAbstractSpinBox, QCompleter
+from PyQt5.QtWidgets import QComboBox, QTableWidgetItem, QLineEdit, QSpinBox, QDateEdit, QTimeEdit, QDateTimeEdit, QCheckBox, QDoubleSpinBox, QWidget, QAbstractSpinBox, QCompleter, QWidget
 from PyQt5.QtCore import QSignalMapper, Qt, QDate, QTime, QStringListModel
-from PyQt5.QtSql import QSqlDatabase, QSqlQuery, QSqlField, QSqlRecord
+from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 from PyQt5.QtGui import QPalette, QColor
+
+# PyLaTeX import
+from pylatex import Document, Command, PageStyle, simple_page_number, MiniPage, LineBreak, MediumText, LargeText, Head, LongTabu
+from pylatex.utils import bold
 
 # Project import
 from form import Form
@@ -287,7 +291,9 @@ class Statistiques(Form):
         # Slots
         self.btn_annuler.clicked.connect(self.reject)
         self.cbx_table.activated.connect(self.afficher_liste_colonne_ordre)
-        self.btn_afficher.clicked.connect(self.afficher)
+        self.btn_affiche_excel.clicked.connect(self.afficher_csv)
+        self.btn_afficher_pdf.clicked.connect(self.afficher_pdf)
+
 
     """
     Méthodes communes aux deux types de table
@@ -836,9 +842,9 @@ class Statistiques(Form):
         for key, value in sorted(dict_colonne.items()):
             self.cbx_colonne.addItem(value['nom'], key)
 
-    def afficher(self):
+    def afficher_csv(self):
         """
-        Effectuer la requete et afficher les résultats
+        Effectuer la requete et afficher les résultats dans MS Excel
         """
         sql = self.generer_requete()
 
@@ -878,6 +884,86 @@ class Statistiques(Form):
                 file.write('\n')
 
         os.startfile(os.path.normpath(filename))
+
+    def afficher_pdf(self):
+        """
+        Effectuer la requete et afficher les résultats dans un fichier PDF
+        """
+        sql = self.generer_requete()
+
+        query = QSqlQuery()
+        query.exec_(sql)
+
+        # S'il y a une erreur lors de l'exécution de la requête
+        if Error.DatabaseError.sql_error_handler(query.lastError()):
+            return # Évite de continuer avec des données incomplètes
+
+        # Générer le fichier PDF
+        geometry_options = {"margin": "1in"}
+        doc = Document(page_numbers=True, geometry_options=geometry_options)
+
+        # Document header
+        header = PageStyle("header")
+        # Left header
+        with header.create(Head("L")):
+            header.append(self.txt_titre.text())
+        # Right header
+        with header.create(Head("R")):
+            header.append("Centre femmes du Haut-Richelieu")
+
+        doc.preamble.append(header)
+        doc.change_document_style("header")
+
+        # Titre du document
+        with doc.create(MiniPage(align='c')):
+            doc.append(LargeText(bold(self.txt_titre.text())))
+            doc.append(LineBreak())
+            doc.append(MediumText("Générée le : {}".format(QDate.currentDate().toString('dd MMMM yyyy'))))
+
+        column_count = query.record().count()
+
+        print(column_count)
+
+        # Continuer seulement si le nombre de colonne est de moins de 4
+        if column_count > 4:
+            Error.DataError.trop_champs()
+        else:
+            # Generer le tableau
+            with doc.create(LongTabu("X[l]"*column_count)) as data_table:
+                # Création de l'entête
+                header_row1 = []
+                for i in range(column_count):
+                    print(query.record().field(i).tableName())
+                    table = query.record().field(i).tableName() 
+                    colonne = query.record().field(i).name()
+                    dict_colonne = self.dictionnaire_colonne(table)
+                    dict_colonne[colonne]['nom']
+                    header_row1.append(dict_colonne[colonne]['nom'])
+
+                data_table.add_row(header_row1, mapper=[bold])
+                data_table.add_hline()
+                data_table.end_table_header()
+                data_table.add_row(row)
+            
+                # Ajouter les données
+                while query.next():
+                    row = []
+                    for i in range(column_count):
+                        row.append(query.value(i))
+                    data_table.add_row(row)
+                    data_table.add_empty_row()
+
+                data_table.add_hline()
+
+            temp_dir = tempfile.mkdtemp()
+            file = str(uuid.uuid4())
+            filename = os.path.join(temp_dir, file)
+
+            doc.generate_pdf(filename, compiler="pdflatex")
+
+            file_ext = file + ".pdf"
+            filename_ext = os.path.join(temp_dir, file_ext)
+            os.startfile(os.path.normpath(filename_ext))
 
     def generer_requete(self):
         """

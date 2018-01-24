@@ -581,9 +581,19 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_afficher">
+      <widget class="QPushButton" name="btn_afficher_pdf">
        <property name="text">
-        <string>Afficher</string>
+        <string>Afficher en PDF</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_affiche_excel">
+       <property name="text">
+        <string>Afficher dans Excel</string>
        </property>
        <property name="default">
         <bool>true</bool>

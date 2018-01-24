@@ -201,6 +201,9 @@ class DataError(object):
     ACTIVITE_COMPLETE = "Activité complète"
     ACTIVITE_COMPLETE_INFORMATION = "La participante sera mise sur la liste d'attente."
 
+    TROP_CHAMPS = "Trop de champs"
+    TROP_CHAMPS_INFORMATION = "Il doit y avoir quatre champs ou moins pour pouvoir générer un PDF."
+
     @classmethod
     def numero_telephone_inexistant(self):
         """Indiquer à l'utilisateur qu'il n'existe pas de compte avec ce numero"""
@@ -251,3 +254,17 @@ class DataError(object):
         msgbox.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
         msgbox.setDefaultButton(QMessageBox.Yes)
         return msgbox.exec()
+
+    @classmethod
+    def trop_champs(self):
+        """
+        Indique a l'utilisateur qu'il y a trop de champs pour qu'ils puissent être affichés
+        """
+        msgbox = QMessageBox()
+        msgbox.setWindowTitle(self.ERREUR_DONNEE)
+        msgbox.setText(self.TROP_CHAMPS)
+        msgbox.setInformativeText(self.TROP_CHAMPS_INFORMATION)
+        msgbox.setIcon(QMessageBox.Information)
+        msgbox.setStandardButtons(QMessageBox.Ok)
+        msgbox.setDefaultButton(QMessageBox.Ok)
+        msgbox.exec()
