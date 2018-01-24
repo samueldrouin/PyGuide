@@ -7,7 +7,7 @@ import pathlib
 # PyQt import
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTableWidget, QMessageBox, QTableWidgetItem, \
-    QAbstractItemView, QHeaderView
+    QAbstractItemView, QHeaderView, QAction
 from PyQt5.QtCore import QSettings, QDate, QTime
 from PyQt5.Qt import QApplication, QDialog
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
@@ -60,7 +60,21 @@ class MainWindow(QMainWindow):
         """
         Ajouter les statistiques au menu
         """
+        # Obtenir le dossier ou les fichiers statistique sont enregistrée
         statistique = self.verifier_path_statistique()
+
+        # Obtenir la liste des fichiers statistique
+        liste_statistique = []
+        for file in os.listdir(statistique):
+            if file.endswith(".gxml"):
+                act = QAction(os.path.basename(file))
+                act.triggered.connect()
+
+    def ouvrir_statistique(self):
+        """
+        Ouvrir une statistique
+        """
+
 
     def verifier_path_statistique(self):
         """

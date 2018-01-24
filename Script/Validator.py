@@ -11,7 +11,7 @@ Classes
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtCore import QRegExp
 
-FILE_NAME_REGEXP = "^[0-9a-zA-Z]{3,45}$"
+FILE_NAME_REGEXP = "^[0-9a-zA-Z ]{3,45}$"
 def file_name_validator():
         """
         Création d'un RegExpValidator pour les noms de fichier

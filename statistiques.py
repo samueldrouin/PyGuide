@@ -1114,13 +1114,12 @@ class Statistiques(Form):
             
             # Vérifier si la requête est vide
             if not is_empty(requete):
-                root = ET.Element("root")
-                stat = ET.SubElement(root, "stat")
+                stat = ET.Element("stat")
 
                 ET.SubElement(stat, "sql").text = requete
                 ET.SubElement(stat, "output").text = sortie
 
-                tree = ET.ElementTree(root)
+                tree = ET.ElementTree(stat)
 
                 # Obtenir le chemin vers la folder pour enregistrer des réglages
                 settings = QSettings("Samuel Drouin", "GUIDE-CFR")
