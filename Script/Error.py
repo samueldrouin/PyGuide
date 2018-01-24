@@ -204,6 +204,12 @@ class DataError(object):
     TROP_CHAMPS = "Trop de champs"
     TROP_CHAMPS_INFORMATION = "Il doit y avoir quatre champs ou moins pour pouvoir générer un PDF."
 
+    AUCUN_NOM = "Aucun nom"
+    AUCUN_NOM_STATISTIQUE = "La statistique doit avoir un nom pour pouvoir être enregistrée"
+
+    REQUETE_VIDE = "Requête vide"
+    REQUETE_VIDE_INFORMATION = "Impossible d'effectuer une requête vide. Ajoutez des champs à la requête puis réessayez."
+
     @classmethod
     def numero_telephone_inexistant(self):
         """Indiquer à l'utilisateur qu'il n'existe pas de compte avec ce numero"""
@@ -264,6 +270,34 @@ class DataError(object):
         msgbox.setWindowTitle(self.ERREUR_DONNEE)
         msgbox.setText(self.TROP_CHAMPS)
         msgbox.setInformativeText(self.TROP_CHAMPS_INFORMATION)
+        msgbox.setIcon(QMessageBox.Information)
+        msgbox.setStandardButtons(QMessageBox.Ok)
+        msgbox.setDefaultButton(QMessageBox.Ok)
+        msgbox.exec()
+
+    @classmethod
+    def aucun_nom_statistique(self):
+        """
+        Indique a l'utilisateur qu'une statistique doit avoir un nom pour pouvoir être enregistrée
+        """
+        msgbox = QMessageBox()
+        msgbox.setWindowTitle(self.ERREUR_DONNEE)
+        msgbox.setText(self.AUCUN_NOM)
+        msgbox.setInformativeText(self.AUCUN_NOM_STATISTIQUE)
+        msgbox.setIcon(QMessageBox.Information)
+        msgbox.setStandardButtons(QMessageBox.Ok)
+        msgbox.setDefaultButton(QMessageBox.Ok)
+        msgbox.exec()
+
+    @classmethod
+    def requete_vide(self):
+        """
+        Indique a l'utilisateur que la requete est vide
+        """
+        msgbox = QMessageBox()
+        msgbox.setWindowTitle(self.ERREUR_DONNEE)
+        msgbox.setText(self.REQUETE_VIDE)
+        msgbox.setInformativeText(self.REQUETE_VIDE_INFORMATION)
         msgbox.setIcon(QMessageBox.Information)
         msgbox.setStandardButtons(QMessageBox.Ok)
         msgbox.setDefaultButton(QMessageBox.Ok)

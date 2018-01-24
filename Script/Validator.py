@@ -7,6 +7,20 @@ Classes
     Validator : Validator utilisée dans les dialogs
 """
 
+# PyQt import
+from PyQt5.QtGui import QRegExpValidator
+from PyQt5.QtCore import QRegExp
+
+FILE_NAME_REGEXP = "^[0-9a-zA-Z]{3,45}$"
+def file_name_validator():
+        """
+        Création d'un RegExpValidator pour les noms de fichier
+
+        Return :
+            File Name RegExpValidator
+        """
+        validator = QRegExpValidator(QRegExp(FILE_NAME_REGEXP))
+        return validator
 
 class Validator(object):
     """
@@ -22,31 +36,29 @@ class Validator(object):
     POSTE_REGEXP = "^[0-9]{0,6}$"
     NUMERO_MEMBRE_REGEXP = "^[0-9]{0,6}$"
     EMAIL_REGEXP = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,4}$"
+    FILE_NAME_REGEXP = "^[0-9a-zA-Z]{3,45}$"
 
-    @staticmethod
-    def address_validator():
+    def address_validator(self):
         """
         RegExp validator pour les adresse
 
         Return : 
             Address RexExpValidator
         """
-        validator = QRegExpValidator(QRegExp(ADRESSE_REGEXP))
+        validator = QRegExpValidator(QRegExp(self.ADRESSE_REGEXP))
         return validator
 
-    @staticmethod
-    def name_validator():
+    def name_validator(self):
         """
         Création d'un RegExpValidator pour les noms
 
         Return : 
             Name RegExpValidator
         """
-        validator = QRegExpValidator(QRegExp(NAME_REGEXP))
+        validator = QRegExpValidator(QRegExp(self.NAME_REGEXP))
         return validator
 
-    @staticmethod
-    def zip_code_validator():
+    def zip_code_validator(self):
         """
         Création d'un RegExpValidator pour les codes postaux canadiens. 
 
@@ -55,11 +67,10 @@ class Validator(object):
         Return :
             Zip Code RegExpValidator
         """
-        validator = QRegExpValidator(QRegExp(ZIP_CODE_REGEXP))
+        validator = QRegExpValidator(QRegExp(self.ZIP_CODE_REGEXP))
         return validator
 
-    @staticmethod
-    def phone_validator():
+    def phone_validator(self):
         """
         Création d'un RegExpValidator pour les numéro de téléphone. 
 
@@ -68,11 +79,10 @@ class Validator(object):
         Return :
             Phone number RegExpValidator
         """
-        validator = QRegExpValidator(QRegExp(PHONE_REGEXP))
+        validator = QRegExpValidator(QRegExp(self.PHONE_REGEXP))
         return validator
 
-    @staticmethod
-    def poste_validator():
+    def poste_validator(self):
         """
         Création d'un RegExpValidator pour les postes téléphoniques
 
@@ -81,11 +91,10 @@ class Validator(object):
         Return : 
             Poste RegExpValidator
         """
-        validator = QRegExpValidator(QRegExp(POSTE_REGEXP))
+        validator = QRegExpValidator(QRegExp(self.POSTE_REGEXP))
         return validator
 
-    @staticmethod
-    def numero_membre_validator():
+    def numero_membre_validator(self):
         """
         Création d'un RegExpValidator pour le numéro de membre
 
@@ -94,11 +103,10 @@ class Validator(object):
         Return :
             Member number RegExpValidator
         """
-        validator = QRegExpValidator(QRegExp(NUMERO_MEMBRE_REGEXP))
+        validator = QRegExpValidator(QRegExp(self.NUMERO_MEMBRE_REGEXP))
         return validator
 
-    @staticmethod
-    def email_validator():
+    def email_validator(self):
         """
         Création d'un RegExpValidator pour les adresse courriel
 
@@ -109,5 +117,5 @@ class Validator(object):
         Return :
             Email RegExpValidator
         """
-        validator = QRegExpValidator(QRegExp(EMAIL_REGEXP))
+        validator = QRegExpValidator(QRegExp(self.EMAIL_REGEXP))
         return validator

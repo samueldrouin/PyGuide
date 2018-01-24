@@ -15,11 +15,12 @@ Classes
 import os
 import tempfile
 import uuid
+import xml.etree.cElementTree as ET
 
 # PyQt import
 from PyQt5 import uic
 from PyQt5.QtWidgets import QComboBox, QTableWidgetItem, QLineEdit, QSpinBox, QDateEdit, QTimeEdit, QDateTimeEdit, QCheckBox, QDoubleSpinBox, QWidget, QAbstractSpinBox, QCompleter, QWidget
-from PyQt5.QtCore import QSignalMapper, Qt, QDate, QTime, QStringListModel
+from PyQt5.QtCore import QSignalMapper, Qt, QDate, QTime, QStringListModel, QSettings
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 from PyQt5.QtGui import QPalette, QColor
 
@@ -32,6 +33,7 @@ from form import Form
 from Script import Error
 from facturation import Inscription
 from Script.DataVerification import *
+from Script import Validator
 
 class Statistiques(Form):
     """
@@ -285,6 +287,9 @@ class Statistiques(Form):
         self.DATABASE = database
         self.liste_tri = [""] # Liste vide pour les tables du tri
 
+        # Ajouter les validator
+        self.txt_titre.setValidator(Validator.file_name_validator())
+
         # Afficher la premier ligne
         self.ajouter_ligne_champ()
 
@@ -293,7 +298,7 @@ class Statistiques(Form):
         self.cbx_table.activated.connect(self.afficher_liste_colonne_ordre)
         self.btn_affiche_excel.clicked.connect(self.afficher_csv)
         self.btn_afficher_pdf.clicked.connect(self.afficher_pdf)
-
+        self.btn_enregistrer.clicked.connect(self.enregistrer)
 
     """
     Méthodes communes aux deux types de table
@@ -848,42 +853,43 @@ class Statistiques(Form):
         """
         sql = self.generer_requete()
 
-        query = QSqlQuery()
-        query.exec_(sql)
+        # Vérifier si la requête est vide
+        if not is_empty(sql):
+            query = QSqlQuery()
+            query.exec_(sql)
 
-        # S'il y a une erreur lors de l'exécution de la requête
-        if Error.DatabaseError.sql_error_handler(query.lastError()):
-            return # Évite de continuer avec des données incomplètes
-
-        temp_dir = tempfile.mkdtemp()
-        file = str(uuid.uuid4()) + ".csv"
-        filename = os.path.join(temp_dir, file)
+            # S'il y a une erreur lors de l'exécution de la requête
+            if not Error.DatabaseError.sql_error_handler(query.lastError()):
+                temp_dir = tempfile.mkdtemp()
+                file = str(uuid.uuid4()) + ".csv"
+                filename = os.path.join(temp_dir, file)
         
-        column_count = query.record().count()
-        with open(filename,'w') as file:
-            # Ajouter les headers
-            line = ""
-            for i in range(column_count):
-                print(query.record().field(i).tableName())
-                table = query.record().field(i).tableName() 
-                colonne = query.record().field(i).name()
-                dict_colonne = self.dictionnaire_colonne(table)
-                dict_colonne[colonne]['nom']
-                line = line + dict_colonne[colonne]['nom'] + ","
-            line[:-1]
-            file.write(line)
-            file.write('\n')
+                column_count = query.record().count()
+                with open(filename,'w') as file:
+                    # Ajouter les headers
+                    line = ""
+                    for i in range(column_count):
+                        table = query.record().field(i).tableName() 
+                        colonne = query.record().field(i).name()
+                        dict_colonne = self.dictionnaire_colonne(table)
+                        dict_colonne[colonne]['nom']
+                        line = line + dict_colonne[colonne]['nom'] + ","
+                    line[:-1]
+                    file.write(line)
+                    file.write('\n')
 
-            # Ajouter les lignes
-            while query.next():
-                line = ""
-                for i in range(column_count):
-                    line = line + query.value(i) + ","
-                line[:-1]
-                file.write(line)
-                file.write('\n')
+                    # Ajouter les lignes
+                    while query.next():
+                        line = ""
+                        for i in range(column_count):
+                            line = line + query.value(i) + ","
+                        line[:-1]
+                        file.write(line)
+                        file.write('\n')
 
-        os.startfile(os.path.normpath(filename))
+                os.startfile(os.path.normpath(filename))
+        else:
+            Error.DataError.requete_vide()
 
     def afficher_pdf(self):
         """
@@ -891,137 +897,137 @@ class Statistiques(Form):
         """
         sql = self.generer_requete()
 
-        query = QSqlQuery()
-        query.exec_(sql)
+        # Vérifier si la requête est vide
+        if not is_empty(sql):
+            query = QSqlQuery()
+            query.exec_(sql)
 
-        # S'il y a une erreur lors de l'exécution de la requête
-        if Error.DatabaseError.sql_error_handler(query.lastError()):
-            return # Évite de continuer avec des données incomplètes
+            # S'il y a une erreur lors de l'exécution de la requête
+            if not Error.DatabaseError.sql_error_handler(query.lastError()):
+                # Générer le fichier PDF
+                geometry_options = {"margin": "1in"}
+                doc = Document(page_numbers=True, geometry_options=geometry_options)
 
-        # Générer le fichier PDF
-        geometry_options = {"margin": "1in"}
-        doc = Document(page_numbers=True, geometry_options=geometry_options)
+                # Document header
+                header = PageStyle("header")
+                # Left header
+                with header.create(Head("L")):
+                    header.append(self.txt_titre.text())
+                # Right header
+                with header.create(Head("R")):
+                    header.append("Centre femmes du Haut-Richelieu")
 
-        # Document header
-        header = PageStyle("header")
-        # Left header
-        with header.create(Head("L")):
-            header.append(self.txt_titre.text())
-        # Right header
-        with header.create(Head("R")):
-            header.append("Centre femmes du Haut-Richelieu")
+                doc.preamble.append(header)
+                doc.change_document_style("header")
 
-        doc.preamble.append(header)
-        doc.change_document_style("header")
+                # Titre du document
+                with doc.create(MiniPage(align='c')):
+                    doc.append(LargeText(bold(self.txt_titre.text())))
+                    doc.append(LineBreak())
+                    doc.append(MediumText("Générée le : {}".format(QDate.currentDate().toString('dd MMMM yyyy'))))
 
-        # Titre du document
-        with doc.create(MiniPage(align='c')):
-            doc.append(LargeText(bold(self.txt_titre.text())))
-            doc.append(LineBreak())
-            doc.append(MediumText("Générée le : {}".format(QDate.currentDate().toString('dd MMMM yyyy'))))
+                column_count = query.record().count()
 
-        column_count = query.record().count()
+                # Continuer seulement si le nombre de colonne est de moins de 4
+                if column_count > 4:
+                    Error.DataError.trop_champs()
+                else:
+                    # Generer le tableau
+                    with doc.create(LongTabu("X[l]"*column_count)) as data_table:
+                        # Création de l'entête
+                        header_row1 = []
+                        for i in range(column_count):
+                            table = query.record().field(i).tableName() 
+                            colonne = query.record().field(i).name()
+                            dict_colonne = self.dictionnaire_colonne(table)
+                            dict_colonne[colonne]['nom']
+                            header_row1.append(dict_colonne[colonne]['nom'])
 
-        print(column_count)
-
-        # Continuer seulement si le nombre de colonne est de moins de 4
-        if column_count > 4:
-            Error.DataError.trop_champs()
-        else:
-            # Generer le tableau
-            with doc.create(LongTabu("X[l]"*column_count)) as data_table:
-                # Création de l'entête
-                header_row1 = []
-                for i in range(column_count):
-                    print(query.record().field(i).tableName())
-                    table = query.record().field(i).tableName() 
-                    colonne = query.record().field(i).name()
-                    dict_colonne = self.dictionnaire_colonne(table)
-                    dict_colonne[colonne]['nom']
-                    header_row1.append(dict_colonne[colonne]['nom'])
-
-                data_table.add_row(header_row1, mapper=[bold])
-                data_table.add_hline()
-                data_table.end_table_header()
-                data_table.add_row(row)
+                        data_table.add_row(header_row1, mapper=[bold])
+                        data_table.add_hline()
+                        data_table.end_table_header()
+                        data_table.add_empty_row()
             
-                # Ajouter les données
-                while query.next():
-                    row = []
-                    for i in range(column_count):
-                        row.append(query.value(i))
-                    data_table.add_row(row)
-                    data_table.add_empty_row()
+                        # Ajouter les données
+                        while query.next():
+                            row = []
+                            for i in range(column_count):
+                                row.append(query.value(i))
+                            data_table.add_row(row)
+                            data_table.add_empty_row()
 
-                data_table.add_hline()
+                        data_table.add_hline()
 
-            temp_dir = tempfile.mkdtemp()
-            file = str(uuid.uuid4())
-            filename = os.path.join(temp_dir, file)
+                    temp_dir = tempfile.mkdtemp()
+                    file = str(uuid.uuid4())
+                    filename = os.path.join(temp_dir, file)
 
-            doc.generate_pdf(filename, compiler="pdflatex")
+                    doc.generate_pdf(filename, compiler="pdflatex")
 
-            file_ext = file + ".pdf"
-            filename_ext = os.path.join(temp_dir, file_ext)
-            os.startfile(os.path.normpath(filename_ext))
+                    file_ext = file + ".pdf"
+                    filename_ext = os.path.join(temp_dir, file_ext)
+                    os.startfile(os.path.normpath(filename_ext))
+        else:
+            Error.DataError.requete_vide()
 
     def generer_requete(self):
         """
         Générer la requête SQLite à effectuer
         """
 
-        # Début de la requête
-        sql = "SELECT "
+        if not is_empty(self.tbl_champs.cellWidget(0, 0).currentData()):
+            # Début de la requête
+            sql = "SELECT "
 
-        # Ajouter les champs à la requête
-        for row in range(self.tbl_champs.rowCount()):
-            table = self.tbl_champs.cellWidget(row, 0).currentData()
-            colonne = self.tbl_champs.cellWidget(row, 1).currentData()
+            # Ajouter les champs à la requête
+            for row in range(self.tbl_champs.rowCount()):
+                table = self.tbl_champs.cellWidget(row, 0).currentData()
+                colonne = self.tbl_champs.cellWidget(row, 1).currentData()
 
-            if not is_empty(table) and not is_empty(colonne):
-                sql = sql + table + "." + colonne + ", "
+                if not is_empty(table) and not is_empty(colonne):
+                    sql = sql + table + "." + colonne + ", "
 
-        # Enlever la dernière virgule ajoutée
-        sql = sql[:-2] + " "
+            # Enlever la dernière virgule ajoutée
+            sql = sql[:-2] + " "
 
-        # Déterminer la table principale de la requête
-        table_principale = self.tbl_champs.cellWidget(0, 0).currentData()
-        sql = sql + "FROM " + table_principale + " "
+            # Déterminer la table principale de la requête
+            table_principale = self.tbl_champs.cellWidget(0, 0).currentData()
+            sql = sql + "FROM " + table_principale + " "
 
-        # Déterminer les tables secondaires
-        dict_table_secondaire = self.liste_table_secondaire()
+            # Déterminer les tables secondaires
+            dict_table_secondaire = self.liste_table_secondaire()
 
-        # Ajouter les tables secondaires à la requête
-        for key, value in dict_table_secondaire.items():
-            sql = sql + value['contrainte'] + " " + key[0] + " ON " + key[1] + "." + value['id'] + " " + key[0] + "." + value['id'] + " "
+            # Ajouter les tables secondaires à la requête
+            for key, value in dict_table_secondaire.items():
+                sql = sql + value['contrainte'] + " " + key[0] + " ON " + key[1] + "." + value['id'] + " " + key[0] + "." + value['id'] + " "
 
-        # Vérifier s'il y a des options de tri
-        if not is_empty(self.tbl_tri.cellWidget(0, 0).currentData()):
-            sql = sql + "WHERE "
+            # Vérifier s'il y a des options de tri
+            if not is_empty(self.tbl_tri.cellWidget(0, 0).currentData()):
+                sql = sql + "WHERE "
 
-        # Ajouter les options de tri
-        for row in range(self.tbl_tri.rowCount()):
-            table = self.tbl_tri.cellWidget(row, 0).currentData()
-            colonne = self.tbl_tri.cellWidget(row, 1).currentData()
-            operateur = self.tbl_tri.cellWidget(row, 2).currentData()
-            contrainte = self.tbl_tri.cellWidget(row, 4).currentData()
+            # Ajouter les options de tri
+            for row in range(self.tbl_tri.rowCount()):
+                table = self.tbl_tri.cellWidget(row, 0).currentData()
+                colonne = self.tbl_tri.cellWidget(row, 1).currentData()
+                operateur = self.tbl_tri.cellWidget(row, 2).currentData()
+                contrainte = self.tbl_tri.cellWidget(row, 4).currentData()
 
-            if not is_empty(table) and not is_empty(contrainte):
-                valeur = self.get_constraint_value(row)
-                sql = sql + "(" + table + "." + colonne + " "
-                if operateur == self.DICT_OPERATEUR['contient']:
-                    sql = sql + "LIKE " + "'%" + valeur[-1:-1] + "%' " + contrainte + " " 
-                elif operateur == self.DICT_OPERATEUR['commence']:
-                    sql = sql + "LIKE " + "'" + valeur[-1:-1] + "%' " + contrainte + " " 
-                elif operateur == self.DICT_OPERATEUR['termine']:
-                    sql = sql + "LIKE " + "'%" + valeur[-1:-1] + "' " + contrainte + " " 
-                else:
-                    sql = sql + operateur + " " + valeur + " " + contrainte + " "
-                sql = sql[:-4] + ") "
+                if not is_empty(table) and not is_empty(contrainte):
+                    valeur = self.get_constraint_value(row)
+                    sql = sql + "(" + table + "." + colonne + " "
+                    if operateur == self.DICT_OPERATEUR['contient']:
+                        sql = sql + "LIKE " + "'%" + valeur[-1:-1] + "%' " + contrainte + " " 
+                    elif operateur == self.DICT_OPERATEUR['commence']:
+                        sql = sql + "LIKE " + "'" + valeur[-1:-1] + "%' " + contrainte + " " 
+                    elif operateur == self.DICT_OPERATEUR['termine']:
+                        sql = sql + "LIKE " + "'%" + valeur[-1:-1] + "' " + contrainte + " " 
+                    else:
+                        sql = sql + operateur + " " + valeur + " " + contrainte + " "
+                    sql = sql[:-4] + ") "
 
-        # Ajouter l'ordre
-        sql = sql + "ORDER BY " + self.cbx_table.currentData() + "." + self.cbx_colonne.currentData()
-        return sql
+            # Ajouter l'ordre
+            sql = sql + "ORDER BY " + self.cbx_table.currentData() + "." + self.cbx_colonne.currentData()
+            return sql
 
     def get_constraint_value(self, row):
         """
@@ -1088,3 +1094,40 @@ class Statistiques(Form):
                     dict_table_secondaire[(current_table, last_table)] = {'contrainte': contrainte, 'id' : id}
 
             return dict_table_secondaire
+    
+    def enregistrer(self):
+        """
+        Enregistrer la statistique
+        """
+        # Vérifier que la statistique a un nom
+        if is_empty(self.txt_titre.text()):
+            Error.DataError.aucun_nom_statistique()
+        else:
+            # Obtenir la requête
+            requete = self.generer_requete()
+
+            # Obtenir le type de fichier de sortie
+            if self.rbt_excel.isChecked():
+                sortie = "csv"
+            else:
+                sortie = "pdf"
+            
+            # Vérifier si la requête est vide
+            if not is_empty(requete):
+                root = ET.Element("root")
+                stat = ET.SubElement(root, "stat")
+
+                ET.SubElement(stat, "sql").text = requete
+                ET.SubElement(stat, "output").text = sortie
+
+                tree = ET.ElementTree(root)
+
+                # Obtenir le chemin vers la folder pour enregistrer des réglages
+                settings = QSettings("Samuel Drouin", "GUIDE-CFR")
+                statistique = settings.value("Statistique")
+
+                filename = self.txt_titre.text() + ".gxml"
+                tree.write(os.path.join(statistique, filename))
+                self.accept()
+            else:
+                Error.DataError.requete_vide()

@@ -18,6 +18,7 @@ class Settings(QDialog):
         # Slots
         self.btn_cancel.clicked.connect(self.close)
         self.btn_fichier.clicked.connect(self.get_database_path)
+        self.btn_statistique.clicked.connect(self.get_statistique_folder)
         self.btn_appliquer.clicked.connect(self.save_settings)
 
         # Charge les réglages existants
@@ -29,7 +30,9 @@ class Settings(QDialog):
         """
         settings = QSettings("Samuel Drouin", "GUIDE-CFR")
         database = settings.value("Database")
+        statistique = settings.value("Statistique")
         self.txt_base_donnee.setText(database)
+        self.txt_statistique.setText(statistique)
 
     def get_database_path(self):
         """
@@ -37,7 +40,16 @@ class Settings(QDialog):
         """
         file_name = QFileDialog.getOpenFileName(self, "Ouvrir la base de données", str(Path.home()),
                                                 "Base de donnée SQLite (*.guide)")
-        self.txt_base_donnee.setText(file_name[0])
+        self.txt_base_donnee.setText(os.path.abspath(file_name[0]))
+
+    def get_statistique_folder(self):
+        """
+        Chemin vers le dossier statistiques
+        """
+        dialog = QFileDialog.getExistingDirectory(self, "Dossier pour enregistrer les fichers statistique", 
+                                                  str(os.path.join(Path.home(), 'Documents')))
+
+        self.txt_statistique.setText(os.path.abspath(folder))
 
     def save_settings(self):
         """
@@ -45,4 +57,5 @@ class Settings(QDialog):
         """
         settings = QSettings("Samuel Drouin", "GUIDE-CFR")
         settings.setValue("Database", self.txt_base_donnee.text())
+        settings.setValue("Statistique", self.txt_statistique.text())
         self.close()

@@ -35,6 +35,9 @@ class MainWindow(QMainWindow):
         # Connection à la base de données
         self.DATABASE = self.check_database_status()
 
+        # Ajout des statistiques
+        self.ajouter_statistiques()
+
         # Charger l'interface graphique
         self.set_participantes_central_widget()
 
@@ -52,6 +55,35 @@ class MainWindow(QMainWindow):
         self.act_facturation.triggered.connect(self.facturation)
         self.act_groupe.triggered.connect(self.groupe)
         self.act_statistiques.triggered.connect(self.statistiques)
+
+    def ajouter_statistiques(self):
+        """
+        Ajouter les statistiques au menu
+        """
+        statistique = self.verifier_path_statistique()
+
+    def verifier_path_statistique(self):
+        """
+        Vérifier s'il existe un folder pour les statistiques
+
+        S'il n'en existe pas, le créer et enregistrer le chemin dans les réglages
+
+        Return :
+            Chemin vers la folder des statistiques
+        """
+        # Obtenir le chemin dans les réglages
+        settings = QSettings("Samuel Drouin", "GUIDE-CFR")
+        statistique = settings.value("Statistique")
+
+        if not statistique:
+            statistique = str(os.path.join(pathlib.Path.home(), 'Documents', 'GUIDE-CFR', 'Statistiques'))
+            settings.setValue("Statistique", statistique)
+        else:
+            if not pathlib.Path(statistique).is_dir():
+                statistique = str(os.path.join(pathlib.Path.home(), 'Documents', 'GUIDE-CFR', 'Statistiques'))
+                settings.setValue("Statistique", statistique)
+
+        return statistique
 
     def check_database_status(self):
         """
