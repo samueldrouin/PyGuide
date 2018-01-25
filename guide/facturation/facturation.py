@@ -515,14 +515,7 @@ class Facturation(Facture, Ui_Facturation):
 
             # Si l'activite a deja ete facturee
             if count:
-                msgbox = QMessageBox()
-                msgbox.setWindowTitle("Facturation impossible")
-                msgbox.setText("Facturation impossible")
-                msgbox.setInformativeText("Impossible de facturer une activité qui à déjà été facturée")
-                msgbox.setIcon(QMessageBox.Information)
-                msgbox.setStandardButtons(QMessageBox.Ok)
-                msgbox.setDefaultButton(QMessageBox.Ok)
-                msgbox.exec()
+                DataError.facturation_impossible()
                 return
 
             # Avertissement si l'activité est complète
@@ -541,14 +534,7 @@ class Facturation(Facture, Ui_Facturation):
 
             # Si l'activite n'a jamais ete facturee
             if not count:
-                msgbox = QMessageBox()
-                msgbox.setWindowTitle("Remboursement impossible")
-                msgbox.setText("Remboursement impossible")
-                msgbox.setInformativeText("Impossible de rembourser une activité qui n'a jamais été facturée")
-                msgbox.setIcon(QMessageBox.Information)
-                msgbox.setStandardButtons(QMessageBox.Ok)
-                msgbox.setDefaultButton(QMessageBox.Ok)
-                msgbox.exec()
+                DataError.remboursement_impossible()
                 return
 
         if row != -1:
@@ -909,14 +895,7 @@ class Inscription(Facture, Ui_Inscription):
                 # Avertissement si une place de la liste d'attente est libérée
                 if int(self.tbl_panier.item(row, 2).text()):
                     # Avertissement de perte de priorité
-                    msgbox = QMessageBox()
-                    msgbox.setWindowTitle("Activité contingentée")
-                    msgbox.setText("Activité contingentée")
-                    msgbox.setInformativeText("En continuant l'annulation, vous allez retirer à la participante sa priorité sur la liste. Voulez-vous continuer ? ")
-                    msgbox.setIcon(QMessageBox.Information)
-                    msgbox.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
-                    msgbox.setDefaultButton(QMessageBox.Yes)
-                    if msgbox.exec() == QMessageBox.No:
+                    if DataError.activite_contingentee() == QMessageBox.No:
                         return
                     self.liberation_liste_attente(int(self.tbl_panier.item(row, 0).text()))
 

@@ -4,7 +4,7 @@
 import os
 
 # PyQt import
-from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem
+from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtCore import QDate, QTime, QDateTime
 from PyQt5.QtSql import QSqlQuery
 from PyQt5 import uic
@@ -17,6 +17,7 @@ from script.interface import Validator
 from script.interface import Completer
 from facturation import facturation
 from script.database import DataProcessing
+from script.data import DataError
 
 # Interface import
 from interface.participante import Ui_Participante
@@ -102,27 +103,13 @@ class Participante(Form, Ui_Participante):
                 self.prepare_data()
                 return True
             else:
-                msgbox = QMessageBox()
-                msgbox.setWindowTitle("Information manquante")
-                msgbox.setText("Information manquante")
-                msgbox.setInformativeText("Le premier numéro de téléphone doit être valide")
-                msgbox.setIcon(QMessageBox.Warning)
-                msgbox.setStandardButtons(QMessageBox.Ok)
-                msgbox.setDefaultButton(QMessageBox.Ok)
-                msgbox.exec()
+                DataError.message_box_missing_information("Le premier numéro de téléphone doit être valide")
         else:
-            msgbox = QMessageBox()
-            msgbox.setWindowTitle("Information manquante")
-            msgbox.setText("Information manquante")
             if self.txt_prenom.text() == "" and len(self.txt_telephone1.text()) != 12:
                 informative_text = "Le prénom et le premier numéro de téléphone doivent être valide"
             else:
                 informative_text = "Le prénom doit être valide"
-            msgbox.setInformativeText(informative_text)
-            msgbox.setIcon(QMessageBox.Warning)
-            msgbox.setStandardButtons(QMessageBox.Ok)
-            msgbox.setDefaultButton(QMessageBox.Ok)
-            msgbox.exec()
+            DataError.message_box_missing_information(informative_text)
         return False
 
     def prepare_data(self):

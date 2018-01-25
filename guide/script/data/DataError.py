@@ -11,6 +11,9 @@ Méthodes :
     trop_champs : Affiche un message d'erreur qui indique a l'utilisateur qu'il y a trop de champs pour qu'ils puissent être affichés
     aucun_nom_statistique : Affiche un message d'erreur qui indique a l'utilisateur qu'une statistique doit avoir un nom pour pouvoir être enregistrée
     message_box_missing_information : Affiche un message d'erreur qui indique à l'utilisateur qu'une information est manquante dans un formulaire
+    facturation_impossible : Affiche un message d'erreur qui indique à l'utilisateur d'une activité ne peut pas être facturée à deux reprises
+    activite_contingentee : Affiche un message d'erreur qui indique à l'utilisateur que l'activité est contingentee
+    remboursement_impossible : Affiche un message d'erreur qui indique à l'utilisateur que le remboursement de l'activité est impossible
 """
 
 # PyQt import
@@ -40,6 +43,15 @@ AUCUN_NOM_STATISTIQUE = "La statistique doit avoir un nom pour pouvoir être enr
 
 REQUETE_VIDE = "Requête vide"
 REQUETE_VIDE_INFORMATION = "Impossible d'effectuer une requête vide. Ajoutez des champs à la requête puis réessayez."
+
+FACTURATION_IMPOSSIBLE = "Facturation impossible"
+FACTURATION_IMPOSSIBLE_INFORMATION = "Impossible de facturer une activité qui à déjà été facturée"
+
+ACTIVITE_CONTINGENTEE = "Activité contingentée"
+ACTIVITE_CONTINGENTEE_INFORMATION = "En continuant l'annulation, vous allez retirer à la participante sa priorité sur la liste. Voulez-vous continuer ? "
+
+REMBOURSEMENT_IMPOSSIBLE = "Remboursement impossible"
+REMBOURSEMENT_IMPOSSIBLE_INFORMATION = "Impossible de rembourser une activité qui n'a jamais été facturée"
 
 def numero_telephone_inexistant():
     """
@@ -146,6 +158,45 @@ def message_box_missing_information(text):
     msgbox.setText(INFORMATION_MANQUANTE)
     msgbox.setInformativeText(text)
     msgbox.setIcon(QMessageBox.Warning)
+    msgbox.setStandardButtons(QMessageBox.Ok)
+    msgbox.setDefaultButton(QMessageBox.Ok)
+    msgbox.exec()
+
+def facturation_impossible():
+    """
+    Affiche un message d'erreur qui indique à l'utilisateur d'une activité ne peut pas être facturée à deux reprises
+    """
+    msgbox = QMessageBox()
+    msgbox.setWindowTitle(FACTURATION_IMPOSSIBLE)
+    msgbox.setText(FACTURATION_IMPOSSIBLE)
+    msgbox.setInformativeText(FACTURATION_IMPOSSIBLE_INFORMATION)
+    msgbox.setIcon(QMessageBox.Information)
+    msgbox.setStandardButtons(QMessageBox.Ok)
+    msgbox.setDefaultButton(QMessageBox.Ok)
+    msgbox.exec()
+
+def activite_contingentee():
+    """
+    Affiche un message d'erreur qui indique à l'utilisateur que l'activité est contingentee
+    """
+    msgbox = QMessageBox()
+    msgbox.setWindowTitle(ACTIVITE_CONTINGENTEE)
+    msgbox.setText(ACTIVITE_CONTINGENTEE)
+    msgbox.setInformativeText(ACTIVITE_CONTINGENTEE_INFORMATION)
+    msgbox.setIcon(QMessageBox.Information)
+    msgbox.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
+    msgbox.setDefaultButton(QMessageBox.Yes)
+    return msgbox.exec()
+
+def remboursement_impossible():
+    """
+    Affiche un message d'erreur qui indique à l'utilisateur que le remboursement de l'activité est impossible
+    """
+    msgbox = QMessageBox()
+    msgbox.setWindowTitle(REMBOURSEMENT_IMPOSSIBLE)
+    msgbox.setText(REMBOURSEMENT_IMPOSSIBLE)
+    msgbox.setInformativeText(REMBOURSEMENT_IMPOSSIBLE_INFORMATION)
+    msgbox.setIcon(QMessageBox.Information)
     msgbox.setStandardButtons(QMessageBox.Ok)
     msgbox.setDefaultButton(QMessageBox.Ok)
     msgbox.exec()
