@@ -19,9 +19,10 @@ from PyQt5.QtSql import QSqlQuery
 
 # Project import
 from form import Form
-from Script import Error
-from Script.DataVerification import *
-from Script.Error import DatabaseError
+from script.database import Error
+from script.data.DataVerification import *
+from script.database.Error import DatabaseError
+import definitions
 
 
 class TypeActivite(Form):
@@ -37,7 +38,7 @@ class TypeActivite(Form):
     """
     def __init__(self, database):
         super(TypeActivite, self).__init__()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'type_activite.ui')
+        ui = os.path.join(definitions.INTERFACE_DIR, 'type_activite.ui')
         uic.loadUi(ui, self)
 
         # Instance variable definition

@@ -8,11 +8,14 @@ from PyQt5.QtWidgets import QDialog, QFileDialog
 from PyQt5.QtCore import QSettings
 from PyQt5 import uic
 
+# Project import
+import definitions
+
 class Settings(QDialog):
     """Dialog permettant de modifier les réglages du programme"""
     def __init__(self):
         super(Settings, self).__init__()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'settings.ui')
+        ui = os.path.join(definitions.INTERFACE_DIR, 'settings.ui')
         uic.loadUi(ui, self)
 
         # Slots

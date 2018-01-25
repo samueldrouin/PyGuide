@@ -14,24 +14,25 @@ from PyQt5.Qt import QApplication, QDialog
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 
 # Projet import
-from participante import NouvelleParticipante, ModifierParticipante
-from lieu import NouveauLieu, ModifierLieu
-from activite import NouvelleActivite, AfficherActivite
-from categorie_activite import NouvelleCategorieActivite, ModifierCategorieActivite
+from membre.participante import NouvelleParticipante, ModifierParticipante
+from activite.lieu import NouveauLieu, ModifierLieu
+from activite.activite import NouvelleActivite, AfficherActivite
+from activite.categorie_activite import NouvelleCategorieActivite, ModifierCategorieActivite
 from settings import Settings
 from consultation import Consultation
-from facturation import Facturation, Inscription
-from statistiques import Statistiques, StatistiquesDialog
-from selection import SelectionStatistique
-from groupe import Groupe
-from Script import Error
+from facturation.facturation import Facturation, Inscription
+from statistique.statistiques import Statistiques, StatistiquesDialog
+from script.interface.selection import SelectionStatistique
+from facturation.groupe import Groupe
+from script.database import Error
+import definitions
 
 
 class MainWindow(QMainWindow):
     """Interface de la fenêtre principale"""
     def __init__(self):
         super(MainWindow, self).__init__()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'mainwindow.ui')
+        ui = os.path.join(definitions.INTERFACE_DIR, 'mainwindow.ui')
         uic.loadUi(ui, self)
 
         # Connection à la base de données
@@ -239,7 +240,7 @@ class MainWindow(QMainWindow):
         Affiche les informations sur l'application
         """
         a_propos = QDialog()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'about.ui')
+        ui = os.path.join(definitions.INTERFACE_DIR, 'about.ui')
         uic.loadUi(ui, a_propos)
         a_propos.btn_close.clicked.connect(a_propos.close)
         a_propos.exec()
@@ -301,7 +302,7 @@ class CentralWidgetParticipantes(CentralWidget):
 
         # GUI setup
         self.top_widget = QWidget()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_participantes.ui')
+        ui = os.path.join(definitions.INTERFACE_DIR, 'CentralWidget', 'widget_participantes.ui')
         uic.loadUi(ui, self.top_widget)
         self.layout.addWidget(self.top_widget)
 
@@ -471,7 +472,7 @@ class CentralWidgetActivite(CentralWidget):
     def __init__(self, database):
         super(CentralWidgetActivite, self).__init__()
         self.top_widget = QWidget()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_activite.ui')
+        ui = os.path.join(definitions.INTERFACE_DIR, 'CentralWidget', 'widget_activite.ui')
         uic.loadUi(ui, self.top_widget)
         self.layout.addWidget(self.top_widget)
 
@@ -644,7 +645,7 @@ class CentralWidgetLieux(CentralWidget):
         super(CentralWidgetLieux, self).__init__()
         # GUI setup
         self.top_widget = QWidget()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 'widget_lieux.ui')
+        ui = os.path.join(definitions.INTERFACE_DIR, 'CentralWidget', 'widget_lieux.ui')
         uic.loadUi(ui, self.top_widget)
         self.layout.addWidget(self.top_widget)
 
@@ -772,7 +773,7 @@ class CentralWidgetCategorieActivite(CentralWidget):
 
         # GUI setup
         self.top_widget = QWidget()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'CentralWidget', 
+        ui = os.path.join(definitions.INTERFACE_DIR, 'CentralWidget', 
                           'widget_categorie_activite.ui')
         uic.loadUi(ui, self.top_widget)
         self.layout.addWidget(self.top_widget)

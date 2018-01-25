@@ -9,14 +9,15 @@ from PyQt5 import uic
 
 # Projet import
 from form import Form
-from Script import Error
+from script.database import Error
+import definitions
 
 
 class CategorieActivite(Form):
     """Classe de bases des dialogs de création et de modification des catégories d'activité"""
     def __init__(self, database):
         super(CategorieActivite, self).__init__()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'categorie_activite.ui')
+        ui = os.path.join(definitions.INTERFACE_DIR, 'categorie_activite.ui')
         uic.loadUi(ui, self)
 
         # Instance variable definition

@@ -12,8 +12,9 @@ from PyQt5 import uic
 
 # Project import
 from form import Form
-from Script import Error
-import selection
+from script.database import Error
+import script.interface.selection
+import definitions
 
 
 class Facture(Form):
@@ -327,7 +328,7 @@ class Facturation(Facture):
     """Dialog pour la création de nouvelle facture"""
     def __init__(self, database):
         super(Facturation, self).__init__(database)
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'facturation.ui')
+        ui = os.path.join(definitions.INTERFACE_DIR, 'facturation.ui')
         uic.loadUi(ui, self)
 
         # Validator
@@ -812,7 +813,7 @@ class Inscription(Facture):
 
     def __init__(self, database):
         super(Inscription, self).__init__(database)
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'inscription.ui')
+        ui = os.path.join(definitions.INTERFACE_DIR, 'inscription.ui')
         uic.loadUi(ui, self)
 
         # Validator

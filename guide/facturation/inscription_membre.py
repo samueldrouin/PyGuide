@@ -11,14 +11,15 @@ from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 
 # Project import
 from form import Form
-from Script import Error
+from script.database import Error
+import definitions
 
 
 class InscriptionMembre(Form):
     """Dialog pour l'inscription ou le renouvellement d'un nouveau membre"""
     def __init__(self, database):
         super(InscriptionMembre, self).__init__()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'inscription_membre.ui')
+        ui = os.path.join(definitions.INTERFACE_DIR, 'inscription_membre.ui')
         uic.loadUi(ui, self)
 
         # Instance variable definition

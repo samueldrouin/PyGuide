@@ -18,13 +18,15 @@ from pylatex.utils import bold
 
 # Project import
 from form import Form
-from Script import Error
+from script.database import Error
+import definitions
+
 
 class NouvelleActivite(Form):
     """Dialog pour la création d'une nouvelle activité"""
     def __init__(self, database):
         super(NouvelleActivite, self).__init__()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'nouvelle_activite.ui')
+        ui = os.path.join(definitions.INTERFACE_DIR, 'nouvelle_activite.ui')
         uic.loadUi(ui, self)
 
         # Instance variable definition
@@ -209,7 +211,7 @@ class AfficherActivite(Form):
     """Dialog pour l'affichage des informations sur une activité"""
     def __init__(self, database, id_activite):
         super(AfficherActivite, self).__init__()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'afficher_activite.ui')
+        ui = os.path.join(definitions.INTERFACE_DIR, 'afficher_activite.ui')
         uic.loadUi(ui, self)
 
         # Instance variable definition

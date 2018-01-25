@@ -10,16 +10,17 @@ from PyQt5.QtSql import QSqlQuery
 from PyQt5 import uic
 
 # Project import
-from inscription_membre import NouvelleInscription, RenouvelerInscription
+from facturation.inscription_membre import NouvelleInscription, RenouvelerInscription
 from form import Form
-from Script import Error
+from script.database import Error
+import definitions
 
 
 class Participante(Form):
     """Dialog permettant la création et la modification des participantes"""
     def __init__(self, database):
         super(Participante, self).__init__()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'participante.ui')
+        ui = os.path.join(definitions.INTERFACE_DIR, 'participante.ui')
         uic.loadUi(ui, self)
 
         # Instance variable definition

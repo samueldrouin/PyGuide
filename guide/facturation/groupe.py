@@ -11,14 +11,15 @@ from PyQt5.QtSql import QSqlQuery
 
 # Project import
 from form import Form
-from Script import Error
+from script.database import Error
+import definitions
 
 
 class Groupe(Form):
     """Dialog pour la création de l'inscription d'un nouveau groupe"""
     def __init__(self, database):
         super(Groupe, self).__init__()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'groupe.ui')
+        ui = os.path.join(definitions.INTERFACE_DIR, 'groupe.ui')
         uic.loadUi(ui, self)
 
         # Instance variable definition

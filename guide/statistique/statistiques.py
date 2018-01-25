@@ -30,10 +30,11 @@ from pylatex.utils import bold
 
 # Project import
 from form import Form
-from Script import Error
-from facturation import Inscription
-from Script.DataVerification import *
-from Script import Validator
+from script.database import Error
+from facturation.facturation import Inscription
+from script.data.DataVerification import *
+from script.interface import Validator
+import definitions
 
 class Statistiques(Form):
     """
@@ -1126,7 +1127,7 @@ class StatistiquesDialog(Statistiques):
     """Dialog pour les statistiques"""
     def __init__(self, database):
         super().__init__(database)
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'statistique.ui')
+        ui = os.path.join(definitions.INTERFACE_DIR, 'statistique.ui')
         uic.loadUi(ui, self)
 
         # Ajouter les validator

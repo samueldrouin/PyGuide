@@ -13,9 +13,10 @@ from PyQt5.QtWidgets import QDialog, QHeaderView, QTableWidgetItem
 from PyQt5.QtSql import QSqlQuery
 
 # Project import
-from responsable import NouveauResponsable, ModifierResponsable
-from type_activite import NouveauTypeActivite, ModifierTypeActivite
-from Script import Error
+from activite.responsable import NouveauResponsable, ModifierResponsable
+from activite.type_activite import NouveauTypeActivite, ModifierTypeActivite
+from script.database import Error
+import definitions
 
 
 class Consultation(QDialog):
@@ -27,7 +28,7 @@ class Consultation(QDialog):
             2 : Responsables
         """
         super(Consultation, self).__init__()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'consultation.ui')
+        ui = os.path.join(definitions.INTERFACE_DIR, 'consultation.ui')
         uic.loadUi(ui, self)
 
         # Instance variable definition

@@ -9,13 +9,14 @@ from PyQt5 import uic
 
 # Project import
 from form import Form
+import definitions
 
 
 class Selection(Form):
     """Dialog pour la sélection d'un élément"""
     def __init__(self):
         super(Selection, self).__init__()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'selection.ui')
+        ui = os.path.join(definitions.INTERFACE_DIR, 'selection.ui')
         uic.loadUi(ui, self)
 
         # Slots
