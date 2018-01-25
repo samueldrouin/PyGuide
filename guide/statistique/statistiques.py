@@ -31,7 +31,7 @@ from pylatex.utils import bold
 # Project import
 from form import Form
 from script.database import Error
-from facturation.facturation import Inscription
+from facturation import facturation
 from script.data.DataVerification import *
 from script.interface import Validator
 
@@ -570,7 +570,7 @@ class Statistiques(Form):
         Arguments : 
             row : Ligne du table qui a été activée
         """
-        if not is_empty(self.tbl_champs.cellWidget(row, 0).currentText()):
+        if self.tbl_champs.cellWidget(row, 0).currentText():
             # Effacer le contenu existant
             self.tbl_champs.cellWidget(row, 1).clear()
             self.tbl_champs.cellWidget(row, 2).clear()
@@ -608,7 +608,7 @@ class Statistiques(Form):
         Arguments : 
             row : Ligne du table pour laquelle une table vient être sélectionnée
         """
-        if not is_empty(self.tbl_champs.cellWidget(row, 0).currentText()):
+        if self.tbl_champs.cellWidget(row, 0).currentText():
             self.tbl_champs.cellWidget(row, 0).setEnabled(False)
 
     def afficher_contraintes(self, row):
@@ -678,7 +678,7 @@ class Statistiques(Form):
         Arguments : 
             row : Ligne du table qui a été activée
         """
-        if not is_empty(self.tbl_tri.cellWidget(row, 0).currentText()):
+        if self.tbl_tri.cellWidget(row, 0).currentText():
             # Effacer le contenu existant
             self.tbl_tri.cellWidget(row, 1).clear()
             self.tbl_tri.cellWidget(row, 2).clear()
@@ -842,7 +842,7 @@ class Statistiques(Form):
             sql = self.generer_requete()
 
         # Vérifier si la requête est vide
-        if not is_empty(sql):
+        if sql:
             query = QSqlQuery()
             query.exec_(sql)
 
@@ -890,7 +890,7 @@ class Statistiques(Form):
             sql = self.generer_requete()
 
         # Vérifier si la requête est vide
-        if not is_empty(sql):
+        if sql:
             query = QSqlQuery()
             query.exec_(sql)
 
@@ -967,7 +967,7 @@ class Statistiques(Form):
         Générer la requête SQLite à effectuer
         """
 
-        if not is_empty(self.tbl_champs.cellWidget(0, 0).currentData()):
+        if self.tbl_champs.cellWidget(0, 0).currentData():
             # Début de la requête
             sql = "SELECT "
 
@@ -976,7 +976,7 @@ class Statistiques(Form):
                 table = self.tbl_champs.cellWidget(row, 0).currentData()
                 colonne = self.tbl_champs.cellWidget(row, 1).currentData()
 
-                if not is_empty(table) and not is_empty(colonne):
+                if table and colonne:
                     sql = sql + table + "." + colonne + ", "
 
             # Enlever la dernière virgule ajoutée
@@ -994,7 +994,7 @@ class Statistiques(Form):
                 sql = sql + value['contrainte'] + " " + key[0] + " ON " + key[1] + "." + value['id'] + " " + key[0] + "." + value['id'] + " "
 
             # Vérifier s'il y a des options de tri
-            if not is_empty(self.tbl_tri.cellWidget(0, 0).currentData()):
+            if self.tbl_tri.cellWidget(0, 0).currentData():
                 sql = sql + "WHERE "
 
             # Ajouter les options de tri
@@ -1004,7 +1004,7 @@ class Statistiques(Form):
                 operateur = self.tbl_tri.cellWidget(row, 2).currentData()
                 contrainte = self.tbl_tri.cellWidget(row, 4).currentData()
 
-                if not is_empty(table) and not is_empty(contrainte):
+                if table and contrainte:
                     valeur = self.get_constraint_value(row)
                     sql = sql + "(" + table + "." + colonne + " "
                     if operateur == 'contient':
@@ -1049,13 +1049,13 @@ class Statistiques(Form):
             return self.tbl_tri.cellWidget(row, 3).value()
         else: # TYPE_STATUS_INSCRIPTION
             if self.tbl_tri.cellWidget(row, 3).currentText() == 'Active':
-                return Inscription.STATUS_INSCRIPTION
+                return facturation.STATUS_INSCRIPTION
             elif self.tbl_tri.cellWidget(row, 3).currentText() == 'Facturée':
-                return Inscription.STATUS_FACTURE
+                return facturation.STATUS_FACTURE
             elif self.tbl_tri.cellWidget(row, 3).currentText() == 'Annulée':
-                return Inscription.STATUS_INSCRIPTION_ANNULEE
+                return facturation.STATUS_INSCRIPTION_ANNULEE
             else:
-                return Inscription.STATUS_REMBOURSE
+                return facturation.STATUS_REMBOURSE
 
     def liste_table_secondaire(self):
         """
@@ -1075,7 +1075,7 @@ class Statistiques(Form):
             dict_table_secondaire = {}
 
             # Ajouter la table à la liste
-            if not is_empty(current_table) and not is_empty(contrainte):
+            if current_table and contrainte:
                 if last_table != current_table:
                     # Déterminer l'identifiant pour la clause 'ON'
                     id = None
@@ -1092,7 +1092,7 @@ class Statistiques(Form):
         Enregistrer la statistique
         """
         # Vérifier que la statistique a un nom
-        if is_empty(self.txt_titre.text()):
+        if not self.txt_titre.text():
             Error.DataError.aucun_nom_statistique()
         else:
             # Obtenir la requête
@@ -1105,7 +1105,7 @@ class Statistiques(Form):
                 sortie = "pdf"
             
             # Vérifier si la requête est vide
-            if not is_empty(requete):
+            if requete:
                 stat = ET.Element("stat")
 
                 ET.SubElement(stat, "sql").text = requete
