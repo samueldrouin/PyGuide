@@ -87,7 +87,7 @@ class Facture(Form):
             elif len(resultat) != 1:
                 selection = Selection.SelectionParticipante(resultat)
                 if selection.exec() == QDialog.Accepted:
-                    index = selection.get_index()
+                    index = int(selection.get_value())
                     self.activer_facturation()
                     return [element for element in resultat if element["index"] == index][0]
             else:
@@ -803,6 +803,13 @@ class Facturation(Facture):
 
 class Inscription(Facture):
     """Dialog pour la création de nouvelle inscriptions"""
+
+    # Constante definition
+    STATUS_INSCRIPTION_ANNULEE = 0
+    STATUS_INSCRIPTION = 1
+    STATUS_FACTURE = 2
+    STATUS_REMBOURSE = 3
+
     def __init__(self, database):
         super(Inscription, self).__init__(database)
         ui = os.path.join(os.path.dirname(__file__), 'GUI', 'inscription.ui')

@@ -3,11 +3,12 @@
 # Python import
 import os
 import pathlib
+import xml.etree.ElementTree as ET
 
 # PyQt import
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTableWidget, QMessageBox, QTableWidgetItem, \
-    QAbstractItemView, QHeaderView
+    QAbstractItemView, QHeaderView, QAction, QMenu
 from PyQt5.QtCore import QSettings, QDate, QTime
 from PyQt5.Qt import QApplication, QDialog
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
@@ -20,6 +21,8 @@ from categorie_activite import NouvelleCategorieActivite, ModifierCategorieActiv
 from settings import Settings
 from consultation import Consultation
 from facturation import Facturation, Inscription
+from statistiques import Statistiques, StatistiquesDialog
+from selection import SelectionStatistique
 from groupe import Groupe
 from Script import Error
 
@@ -50,6 +53,75 @@ class MainWindow(QMainWindow):
         self.act_inscription.triggered.connect(self.inscription)
         self.act_facturation.triggered.connect(self.facturation)
         self.act_groupe.triggered.connect(self.groupe)
+        self.act_statistiques.triggered.connect(self.statistiques)
+        self.act_enregistre.triggered.connect(self.afficher_liste_statistique)
+
+    def afficher_liste_statistique(self):
+        """
+        Ajouter les statistiques au menu
+        """
+        # Obtenir le dossier ou les fichiers statistique sont enregistrée
+        statistique = self.verifier_path_statistique()
+
+        # Obtenir la liste des fichiers statistique
+        liste_statistique = []
+        for file in os.listdir(statistique):
+            statname = os.path.splitext(file)[0]
+
+            dict_stat = {}
+            dict_stat['fichier'] = file
+            dict_stat['nom'] = statname
+
+            liste_statistique.append(dict_stat)
+
+        selection = SelectionStatistique(liste_statistique)
+        selection.setWindowTitle("Statistique")
+        if selection.exec() == QDialog.Accepted:
+            nom = selection.get_value()
+            path = os.path.join(statistique, nom)
+            self.ouvrir_statistique(path)
+
+    def ouvrir_statistique(self, path):
+        """
+        Ouvrir une statistique
+
+        Argument :
+            path : Chemin du fichier de statistique sélectionné
+        """
+        tree = ET.parse(path)
+        stat = tree.getroot()
+
+        sql = stat.find('sql').text
+        type = stat.find('output').text
+
+        statistiques = Statistiques(self.DATABASE)
+        if type == "csv":
+            statistiques.afficher_csv(sql)
+        else:
+            statistiques.afficher_pdf(sql)
+
+    def verifier_path_statistique(self):
+        """
+        Vérifier s'il existe un folder pour les statistiques
+
+        S'il n'en existe pas, le créer et enregistrer le chemin dans les réglages
+
+        Return :
+            Chemin vers la folder des statistiques
+        """
+        # Obtenir le chemin dans les réglages
+        settings = QSettings("Samuel Drouin", "GUIDE-CFR")
+        statistique = settings.value("Statistique")
+
+        if not statistique:
+            statistique = str(os.path.join(pathlib.Path.home(), 'Documents', 'GUIDE-CFR', 'Statistiques'))
+            settings.setValue("Statistique", statistique)
+        else:
+            if not pathlib.Path(statistique).is_dir():
+                statistique = str(os.path.join(pathlib.Path.home(), 'Documents', 'GUIDE-CFR', 'Statistiques'))
+                settings.setValue("Statistique", statistique)
+
+        return statistique
 
     def check_database_status(self):
         """
@@ -113,6 +185,11 @@ class MainWindow(QMainWindow):
                 self.close()
 
         return db
+
+    def statistiques(self):
+        """Ouvre la fenetre de statistiques"""
+        statistiques = StatistiquesDialog(self.DATABASE)
+        statistiques.exec()
 
     def inscription(self):
         """
