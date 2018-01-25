@@ -24,12 +24,12 @@ class Selection(Form):
         # Paramètre du tableau
         self.table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
-    def get_index(self):
+    def get_value(self):
         """
         Obtenir la valeur de l'index selectionne
         :return: Nombre de l'index
         """
-        return int(self.table_widget.item(self.table_widget.currentRow()-1, 0).text())
+        return self.table_widget.item(self.table_widget.currentRow(), 0).text()
 
     def afficher_liste(self, lst):
         """
@@ -57,6 +57,20 @@ class SelectionParticipante(Selection):
         # Paramètres de la table
         self.table_widget.setColumnCount(2)
         headers = ["INDEX", "Nom"]
+        self.table_widget.setHorizontalHeaderLabels(headers)
+        self.table_widget.setColumnHidden(0, True)
+
+        # Afficher la liste
+        self.afficher_liste(lst)
+
+class SelectionStatistique(Selection):
+    """Dialog pour la sélection d'une statistique"""
+    def __init__(self, lst):
+        super(SelectionStatistique, self).__init__()
+
+        # Paramètres de la table
+        self.table_widget.setColumnCount(2)
+        headers = ["FICHIER", "Nom"]
         self.table_widget.setHorizontalHeaderLabels(headers)
         self.table_widget.setColumnHidden(0, True)
 

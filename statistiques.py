@@ -280,25 +280,8 @@ class Statistiques(Form):
 
     def __init__(self, database):
         super(Statistiques, self).__init__()
-        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'statistique.ui')
-        uic.loadUi(ui, self)
-
         # Instance variable definition
         self.DATABASE = database
-        self.liste_tri = [""] # Liste vide pour les tables du tri
-
-        # Ajouter les validator
-        self.txt_titre.setValidator(Validator.file_name_validator())
-
-        # Afficher la premier ligne
-        self.ajouter_ligne_champ()
-
-        # Slots
-        self.btn_annuler.clicked.connect(self.reject)
-        self.cbx_table.activated.connect(self.afficher_liste_colonne_ordre)
-        self.btn_affiche_excel.clicked.connect(self.afficher_csv)
-        self.btn_afficher_pdf.clicked.connect(self.afficher_pdf)
-        self.btn_enregistrer.clicked.connect(self.enregistrer)
 
     """
     Méthodes communes aux deux types de table
@@ -847,11 +830,15 @@ class Statistiques(Form):
         for key, value in sorted(dict_colonne.items()):
             self.cbx_colonne.addItem(value['nom'], key)
 
-    def afficher_csv(self):
+    def afficher_csv(self, sql = None):
         """
         Effectuer la requete et afficher les résultats dans MS Excel
+
+        Argument : 
+            sql : Requête à effectuer
         """
-        sql = self.generer_requete()
+        if not sql:
+            sql = self.generer_requete()
 
         # Vérifier si la requête est vide
         if not is_empty(sql):
@@ -891,11 +878,15 @@ class Statistiques(Form):
         else:
             Error.DataError.requete_vide()
 
-    def afficher_pdf(self):
+    def afficher_pdf(self, sql = None):
         """
         Effectuer la requete et afficher les résultats dans un fichier PDF
+
+        Argument : 
+            requete : Requête à effectuer
         """
-        sql = self.generer_requete()
+        if not sql:
+            sql = self.generer_requete()
 
         # Vérifier si la requête est vide
         if not is_empty(sql):
@@ -1015,11 +1006,11 @@ class Statistiques(Form):
                 if not is_empty(table) and not is_empty(contrainte):
                     valeur = self.get_constraint_value(row)
                     sql = sql + "(" + table + "." + colonne + " "
-                    if operateur == self.DICT_OPERATEUR['contient']:
+                    if operateur == 'contient':
                         sql = sql + "LIKE " + "'%" + valeur[-1:-1] + "%' " + contrainte + " " 
-                    elif operateur == self.DICT_OPERATEUR['commence']:
+                    elif operateur == 'commence':
                         sql = sql + "LIKE " + "'" + valeur[-1:-1] + "%' " + contrainte + " " 
-                    elif operateur == self.DICT_OPERATEUR['termine']:
+                    elif operateur == 'termine':
                         sql = sql + "LIKE " + "'%" + valeur[-1:-1] + "' " + contrainte + " " 
                     else:
                         sql = sql + operateur + " " + valeur + " " + contrainte + " "
@@ -1130,3 +1121,23 @@ class Statistiques(Form):
                 self.accept()
             else:
                 Error.DataError.requete_vide()
+
+class StatistiquesDialog(Statistiques):
+    """Dialog pour les statistiques"""
+    def __init__(self, database):
+        super().__init__(database)
+        ui = os.path.join(os.path.dirname(__file__), 'GUI', 'statistique.ui')
+        uic.loadUi(ui, self)
+
+        # Ajouter les validator
+        self.txt_titre.setValidator(Validator.file_name_validator())
+
+        # Afficher la premier ligne
+        self.ajouter_ligne_champ()
+
+        # Slots
+        self.btn_annuler.clicked.connect(self.reject)
+        self.cbx_table.activated.connect(self.afficher_liste_colonne_ordre)
+        self.btn_affiche_excel.clicked.connect(self.afficher_csv)
+        self.btn_afficher_pdf.clicked.connect(self.afficher_pdf)
+        self.btn_enregistrer.clicked.connect(self.enregistrer)

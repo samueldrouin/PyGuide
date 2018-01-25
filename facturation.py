@@ -87,7 +87,7 @@ class Facture(Form):
             elif len(resultat) != 1:
                 selection = Selection.SelectionParticipante(resultat)
                 if selection.exec() == QDialog.Accepted:
-                    index = selection.get_index()
+                    index = int(selection.get_value())
                     self.activer_facturation()
                     return [element for element in resultat if element["index"] == index][0]
             else:

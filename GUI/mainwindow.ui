@@ -51,6 +51,8 @@
      <string>Statistiques</string>
     </property>
     <addaction name="act_statistiques"/>
+    <addaction name="separator"/>
+    <addaction name="act_enregistre"/>
    </widget>
    <widget class="QMenu" name="menuAide">
     <property name="title">
@@ -193,6 +195,11 @@
   <action name="act_statistiques">
    <property name="text">
     <string>Statistiques</string>
+   </property>
+  </action>
+  <action name="act_enregistre">
+   <property name="text">
+    <string>Enregistrées</string>
    </property>
   </action>
  </widget>
