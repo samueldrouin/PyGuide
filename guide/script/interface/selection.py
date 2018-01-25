@@ -9,7 +9,6 @@ from PyQt5 import uic
 
 # Project import
 from form import Form
-import definitions
 
 
 class Selection(Form):

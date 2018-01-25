@@ -10,15 +10,16 @@ from PyQt5 import uic
 # Projet import
 from form import Form
 from script.database import Error
-import definitions
+
+# Interface import
+from interface.categorie_activite import Ui_CategorieActivite
 
 
-class CategorieActivite(Form):
+class CategorieActivite(Form, Ui_CategorieActivite):
     """Classe de bases des dialogs de création et de modification des catégories d'activité"""
     def __init__(self, database):
         super(CategorieActivite, self).__init__()
-        ui = os.path.join(definitions.INTERFACE_DIR, 'categorie_activite.ui')
-        uic.loadUi(ui, self)
+        self.setupUi(self)
 
         # Instance variable definition
         self.DATABASE = database

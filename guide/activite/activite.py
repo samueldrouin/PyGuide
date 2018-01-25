@@ -19,15 +19,17 @@ from pylatex.utils import bold
 # Project import
 from form import Form
 from script.database import Error
-import definitions
+
+# Interface import
+from interface.nouvelle_activite import Ui_NouvelleActivite
+from interface.afficher_activite import Ui_AfficherActivite
 
 
-class NouvelleActivite(Form):
+class NouvelleActivite(Form, Ui_NouvelleActivite):
     """Dialog pour la création d'une nouvelle activité"""
     def __init__(self, database):
         super(NouvelleActivite, self).__init__()
-        ui = os.path.join(definitions.INTERFACE_DIR, 'nouvelle_activite.ui')
-        uic.loadUi(ui, self)
+        self.setupUi(self)
 
         # Instance variable definition
         self.DATABASE= database
@@ -207,12 +209,11 @@ class NouvelleActivite(Form):
             QSqlDatabase(self.DATABASE).commit()
         self.accept()
 
-class AfficherActivite(Form):
+class AfficherActivite(Form, Ui_AfficherActivite):
     """Dialog pour l'affichage des informations sur une activité"""
     def __init__(self, database, id_activite):
         super(AfficherActivite, self).__init__()
-        ui = os.path.join(definitions.INTERFACE_DIR, 'afficher_activite.ui')
-        uic.loadUi(ui, self)
+        self.setupUi(self)
 
         # Instance variable definition
         self.DATABASE= database

@@ -10,15 +10,16 @@ from PyQt5.QtSql import QSqlQuery
 # Project import
 from form import Form
 from script.database import Error
-import definitions
+
+# Interface import
+from interface.responsable import Ui_Responsable
 
 
-class Responsable(Form):
+class Responsable(Form, Ui_Responsable):
     """Dialog pour la créaction ou la modification des responsables"""
     def __init__(self, database):
         super(Responsable, self).__init__()
-        ui = os.path.join(definitions.INTERFACE_DIR, 'responsable.ui')
-        uic.loadUi(ui, self)
+        self.setupUi(self)
 
         # Instance variable definition
         self.DATABASE = database

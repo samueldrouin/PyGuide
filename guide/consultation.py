@@ -16,10 +16,12 @@ from PyQt5.QtSql import QSqlQuery
 from activite.responsable import NouveauResponsable, ModifierResponsable
 from activite.type_activite import NouveauTypeActivite, ModifierTypeActivite
 from script.database import Error
-import definitions
+
+# Interface import
+from interface.consultation import Ui_Consultation
 
 
-class Consultation(QDialog):
+class Consultation(QDialog, Ui_Consultation):
     """Affichage du dialog de consultation"""
     def __init__(self, type_consultation, database):
         """
@@ -28,8 +30,8 @@ class Consultation(QDialog):
             2 : Responsables
         """
         super(Consultation, self).__init__()
-        ui = os.path.join(definitions.INTERFACE_DIR, 'consultation.ui')
-        uic.loadUi(ui, self)
+        # Interface graphique
+        self.setupUi(self)
 
         # Instance variable definition
         self.DATABASE = database

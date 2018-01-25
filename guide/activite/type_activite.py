@@ -22,10 +22,12 @@ from form import Form
 from script.database import Error
 from script.data.DataVerification import *
 from script.database.Error import DatabaseError
-import definitions
+
+# Interface import
+from interface.type_activite import Ui_TypeActivite
 
 
-class TypeActivite(Form):
+class TypeActivite(Form, Ui_TypeActivite):
     """
     Base des dialog permettant la modification ou la création de type d'activité. 
     
@@ -38,8 +40,7 @@ class TypeActivite(Form):
     """
     def __init__(self, database):
         super(TypeActivite, self).__init__()
-        ui = os.path.join(definitions.INTERFACE_DIR, 'type_activite.ui')
-        uic.loadUi(ui, self)
+        self.setupUi(self)
 
         # Instance variable definition
         self.DATABASE = database

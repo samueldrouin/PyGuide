@@ -13,15 +13,17 @@ from PyQt5 import uic
 from facturation.inscription_membre import NouvelleInscription, RenouvelerInscription
 from form import Form
 from script.database import Error
-import definitions
+
+# Interface import
+from interface.participante import Ui_Participante
 
 
-class Participante(Form):
+class Participante(Form, Ui_Participante):
     """Dialog permettant la création et la modification des participantes"""
     def __init__(self, database):
         super(Participante, self).__init__()
-        ui = os.path.join(definitions.INTERFACE_DIR, 'participante.ui')
-        uic.loadUi(ui, self)
+        # Affichage de l'interface graphique
+        self.setupUi(self)
 
         # Instance variable definition
         self.ID_PARTICIPANTE = None

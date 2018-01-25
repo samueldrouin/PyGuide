@@ -10,15 +10,16 @@ from PyQt5 import uic
 # Project import
 from form import Form
 from script.database import Error
-import definitions
+
+# Interface import
+from interface.lieu import Ui_Lieu
 
 
-class Lieu(Form):
+class Lieu(Form, Ui_Lieu):
     """Dialog de base pour la création ou la modification des lieux"""
     def __init__(self, database):
         super(Lieu, self).__init__()
-        ui = os.path.join(definitions.INTERFACE_DIR, 'lieu.ui')
-        uic.loadUi(ui, self)
+        self.setupUi(self)
 
         # Instance variable definition
         self.DATABASE = database

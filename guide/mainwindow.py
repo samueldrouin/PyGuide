@@ -18,22 +18,28 @@ from membre.participante import NouvelleParticipante, ModifierParticipante
 from activite.lieu import NouveauLieu, ModifierLieu
 from activite.activite import NouvelleActivite, AfficherActivite
 from activite.categorie_activite import NouvelleCategorieActivite, ModifierCategorieActivite
-from settings import Settings
+from setting import Setting
 from consultation import Consultation
 from facturation.facturation import Facturation, Inscription
 from statistique.statistiques import Statistiques, StatistiquesDialog
 from script.interface.selection import SelectionStatistique
 from facturation.groupe import Groupe
 from script.database import Error
-import definitions
+from script.interface.a_propos import APropos
+
+# Interface import
+from interface.mainwindow import Ui_MainWindow
+from interface.central_widget.widget_activite import Ui_WidgetActivite
+from interface.central_widget.widget_categorie_activite import Ui_WidgetTypeActivite
+from interface.central_widget.widget_lieu import Ui_WidgetLieu
+from interface.central_widget.widget_participante import Ui_WidgetParticipante
 
 
-class MainWindow(QMainWindow):
+class MainWindow(QMainWindow, Ui_MainWindow):
     """Interface de la fenêtre principale"""
     def __init__(self):
         super(MainWindow, self).__init__()
-        ui = os.path.join(definitions.INTERFACE_DIR, 'mainwindow.ui')
-        uic.loadUi(ui, self)
+        self.setupUi(self)
 
         # Connection à la base de données
         self.DATABASE = self.check_database_status()
@@ -224,8 +230,8 @@ class MainWindow(QMainWindow):
         """
         Ouvre la fenetre des reglages
         """
-        settings = Settings()
-        settings.exec()
+        setting = Setting()
+        setting.exec()
 
     def groupe(self):
         """
@@ -234,22 +240,18 @@ class MainWindow(QMainWindow):
         groupe = Groupe(self.DATABASE)
         groupe.exec()
 
-    @staticmethod
-    def a_propos():
+    def a_propos(self):
         """
         Affiche les informations sur l'application
         """
-        a_propos = QDialog()
-        ui = os.path.join(definitions.INTERFACE_DIR, 'about.ui')
-        uic.loadUi(ui, a_propos)
-        a_propos.btn_close.clicked.connect(a_propos.close)
+        a_propos = APropos()
         a_propos.exec()
 
     def set_participantes_central_widget(self):
         """
         Affichage de la liste des participantes et des options de tri
         """
-        central_widget = CentralWidgetParticipantes(self.DATABASE)
+        central_widget = CentralWidgetParticipante(self.DATABASE)
         self.setCentralWidget(central_widget)
 
     def set_activite_central_widget(self):
@@ -270,7 +272,7 @@ class MainWindow(QMainWindow):
         """
         Affichage des lieux et des options de tri
         """
-        central_widget = CentralWidgetLieux(self.DATABASE)
+        central_widget = CentralWidgetLieu(self.DATABASE)
         self.setCentralWidget(central_widget)
 
 class CentralWidget(QWidget):
@@ -289,8 +291,13 @@ CentralWidget spécifiques :
 - Tableau avec les informations à afficher
 """
 
+class TopWidgetParticipante(QWidget, Ui_WidgetParticipante):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
 
-class CentralWidgetParticipantes(CentralWidget):
+
+class CentralWidgetParticipante(CentralWidget):
     """
     CentralWidget pour les participantes
 
@@ -298,12 +305,9 @@ class CentralWidgetParticipantes(CentralWidget):
     Permet l'ouverture des dialogs pour modificer et ajouter des participantes
     """
     def __init__(self, database):
-        super(CentralWidgetParticipantes, self).__init__()
+        super(CentralWidgetParticipante, self).__init__()
 
-        # GUI setup
-        self.top_widget = QWidget()
-        ui = os.path.join(definitions.INTERFACE_DIR, 'CentralWidget', 'widget_participantes.ui')
-        uic.loadUi(ui, self.top_widget)
+        self.top_widget = TopWidgetParticipante()
         self.layout.addWidget(self.top_widget)
 
         self.table_widget = QTableWidget()
@@ -462,6 +466,13 @@ class CentralWidgetParticipantes(CentralWidget):
 
         self.table_widget.resizeColumnsToContents()
 
+
+class TopWidgetActivite(QWidget, Ui_WidgetActivite):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+
+
 class CentralWidgetActivite(CentralWidget):
     """
     CentralWidget pour les activités
@@ -471,9 +482,7 @@ class CentralWidgetActivite(CentralWidget):
     """
     def __init__(self, database):
         super(CentralWidgetActivite, self).__init__()
-        self.top_widget = QWidget()
-        ui = os.path.join(definitions.INTERFACE_DIR, 'CentralWidget', 'widget_activite.ui')
-        uic.loadUi(ui, self.top_widget)
+        self.top_widget = TopWidgetActivite()
         self.layout.addWidget(self.top_widget)
 
         self.table_widget = QTableWidget()
@@ -634,7 +643,13 @@ class CentralWidgetActivite(CentralWidget):
         afficher_activite.exec()
 
 
-class CentralWidgetLieux(CentralWidget):
+class TopWidgetLieu(QWidget, Ui_WidgetLieu):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+
+
+class CentralWidgetLieu(CentralWidget):
     """
     CentralWidget pour les lieux
     
@@ -642,11 +657,9 @@ class CentralWidgetLieux(CentralWidget):
     Permet l'ouverture des dialogs pour modificer et ajouter des lieux
     """
     def __init__(self, database):
-        super(CentralWidgetLieux, self).__init__()
+        super(CentralWidgetLieu, self).__init__()
         # GUI setup
-        self.top_widget = QWidget()
-        ui = os.path.join(definitions.INTERFACE_DIR, 'CentralWidget', 'widget_lieux.ui')
-        uic.loadUi(ui, self.top_widget)
+        self.top_widget = TopWidgetLieu()
         self.layout.addWidget(self.top_widget)
 
         self.table_widget = QTableWidget()
@@ -758,6 +771,12 @@ class CentralWidgetLieux(CentralWidget):
         self.table_widget.resizeColumnsToContents()
 
 
+class TopWidgetCategorieActivite(QWidget, Ui_WidgetTypeActivite):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+
+
 class CentralWidgetCategorieActivite(CentralWidget):
     """
     CentralWidget pour les catégories d'activité
@@ -772,10 +791,7 @@ class CentralWidgetCategorieActivite(CentralWidget):
         self.DATABASE = database
 
         # GUI setup
-        self.top_widget = QWidget()
-        ui = os.path.join(definitions.INTERFACE_DIR, 'CentralWidget', 
-                          'widget_categorie_activite.ui')
-        uic.loadUi(ui, self.top_widget)
+        self.top_widget = TopWidgetCategorieActivite()
         self.layout.addWidget(self.top_widget)
 
         self.table_widget = QTableWidget()

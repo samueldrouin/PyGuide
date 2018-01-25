@@ -14,7 +14,10 @@ from PyQt5 import uic
 from form import Form
 from script.database import Error
 import script.interface.selection
-import definitions
+
+# Interface import
+from interface.facturation import Ui_Facturation
+from interface.inscription import Ui_Inscription
 
 
 class Facture(Form):
@@ -324,12 +327,11 @@ class Facture(Form):
         msgbox.setDefaultButton(QMessageBox.Ok)
         msgbox.exec()
 
-class Facturation(Facture):
+class Facturation(Facture, Ui_Facturation):
     """Dialog pour la création de nouvelle facture"""
     def __init__(self, database):
         super(Facturation, self).__init__(database)
-        ui = os.path.join(definitions.INTERFACE_DIR, 'facturation.ui')
-        uic.loadUi(ui, self)
+        self.setupUi(self)
 
         # Validator
         self.txt_numero.setValidator(self.phone_validator())
@@ -802,7 +804,7 @@ class Facturation(Facture):
         else:
             self.txt_facture.setText("1")
 
-class Inscription(Facture):
+class Inscription(Facture, Ui_Inscription):
     """Dialog pour la création de nouvelle inscriptions"""
 
     # Constante definition
@@ -813,8 +815,7 @@ class Inscription(Facture):
 
     def __init__(self, database):
         super(Inscription, self).__init__(database)
-        ui = os.path.join(definitions.INTERFACE_DIR, 'inscription.ui')
-        uic.loadUi(ui, self)
+        self.setupUi(self)
 
         # Validator
         self.txt_numero.setValidator(self.phone_validator())

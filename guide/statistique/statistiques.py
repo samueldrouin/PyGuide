@@ -34,7 +34,7 @@ from script.database import Error
 from facturation.facturation import Inscription
 from script.data.DataVerification import *
 from script.interface import Validator
-import definitions
+
 
 class Statistiques(Form):
     """
