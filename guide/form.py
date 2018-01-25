@@ -15,69 +15,6 @@ class Form(QDialog):
     STATUS_REMBOURSE = 3
 
     @staticmethod
-    def address_validator():
-        """
-        RegExp validator for address
-        :return: Address RexExpValidator
-        """
-        validator = QRegExpValidator(QRegExp("^[0-9a-zA-ZÀ-ÿ -.]+$"))
-        return validator
-
-    @staticmethod
-    def name_validator():
-        """
-        RegExp validator for name
-        :return: Name RegExpValidator
-        """
-        validator = QRegExpValidator(QRegExp("^[a-zA-ZÀ-ÿ -]+$"))
-        return validator
-
-    @staticmethod
-    def zip_code_validator():
-        """
-        RegExp validator for canadian zip code
-        :return: Zip Code RegExpValidator
-        """
-        validator = QRegExpValidator(QRegExp("^[A-Za-z]{1}[0-9]{1}[A-Za-z]{1}[0-9 ]{1}[0-9]{1}[A-Za-z]{1}[0-9]{1}$"))
-        return validator
-
-    @staticmethod
-    def phone_validator():
-        """
-        RegExp validator for phone number
-        :return: Phone number RegExpValidator
-        """
-        validator = QRegExpValidator(QRegExp("^[0-9]{3}[0-9 ]{1}[0-9]{3}[0-9-]{1}[0-9]{4}$"))
-        return validator
-
-    @staticmethod
-    def poste_validator():
-        """
-        RegExp validator for poste
-        :return: Poste RegExpValidator
-        """
-        validator = QRegExpValidator(QRegExp("^[0-9]{0,5}$"))
-        return validator
-
-    @staticmethod
-    def numero_membre_validator():
-        """
-        RegExp validator for member number
-        :return: Member number RegExpValidator
-        """
-        validator = QRegExpValidator(QRegExp("^[0-9]{0,10}$"))
-        return validator
-
-    @staticmethod
-    def email_validator():
-        """
-        RegExp validator for email
-        :return: Email RegExpValidator
-        """
-        validator = QRegExpValidator(QRegExp("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,4}$"))
-        return validator
-
-    @staticmethod
     def ville_completer():
         """
         Haut-Richelieu cities completer

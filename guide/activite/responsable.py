@@ -10,6 +10,7 @@ from PyQt5.QtSql import QSqlQuery
 # Project import
 from form import Form
 from script.database import Error
+from script.interface import Validator
 
 # Interface import
 from interface.responsable import Ui_Responsable
@@ -25,8 +26,8 @@ class Responsable(Form, Ui_Responsable):
         self.DATABASE = database
 
         # Validator
-        self.txt_prenom.setValidator(self.name_validator())
-        self.txt_nom.setValidator(self.name_validator())
+        self.txt_prenom.setValidator(Validator.name_validator())
+        self.txt_nom.setValidator(Validator.name_validator())
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)

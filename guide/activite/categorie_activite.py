@@ -10,6 +10,7 @@ from PyQt5 import uic
 # Projet import
 from form import Form
 from script.database import Error
+from script.interface import Validator
 
 # Interface import
 from interface.categorie_activite import Ui_CategorieActivite
@@ -25,7 +26,7 @@ class CategorieActivite(Form, Ui_CategorieActivite):
         self.DATABASE = database
 
         # Validator
-        self.txt_nom.setValidator(self.address_validator())
+        self.txt_nom.setValidator(Validator.address_validator())
 
         # Affiche le contenu des combobox
         self.afficher_responsable()

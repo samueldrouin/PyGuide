@@ -20,8 +20,9 @@ from PyQt5.QtSql import QSqlQuery
 # Project import
 from form import Form
 from script.database import Error
-from script.data.DataVerification import *
+from script.data.DataVerification import is_empty
 from script.database.Error import DatabaseError
+from script.interface import Validator
 
 # Interface import
 from interface.type_activite import Ui_TypeActivite
@@ -40,13 +41,14 @@ class TypeActivite(Form, Ui_TypeActivite):
     """
     def __init__(self, database):
         super(TypeActivite, self).__init__()
+        # Affichage de l'interface graphique
         self.setupUi(self)
 
         # Instance variable definition
         self.DATABASE = database
 
         # Validator
-        self.txt_nom.setValidator(self.name_validator())
+        self.txt_nom.setValidator(Validator.name_validator())
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)

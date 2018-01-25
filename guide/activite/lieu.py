@@ -10,6 +10,7 @@ from PyQt5 import uic
 # Project import
 from form import Form
 from script.database import Error
+from script.interface import Validator
 
 # Interface import
 from interface.lieu import Ui_Lieu
@@ -25,11 +26,11 @@ class Lieu(Form, Ui_Lieu):
         self.DATABASE = database
 
         # Validator
-        self.txt_nom.setValidator(self.address_validator())
-        self.txt_adresse1.setValidator(self.address_validator())
-        self.txt_adresse2.setValidator(self.address_validator())
-        self.txt_ville.setValidator(self.name_validator())
-        self.txt_code_postal.setValidator(self.zip_code_validator())
+        self.txt_nom.setValidator(Validator.name_validator())
+        self.txt_adresse1.setValidator(Validator.address_validator())
+        self.txt_adresse2.setValidator(Validator.address_validator())
+        self.txt_ville.setValidator(Validator.name_validator())
+        self.txt_code_postal.setValidator(Validator.zip_code_validator())
 
         # Completer
         self.txt_ville.setCompleter(self.ville_completer())

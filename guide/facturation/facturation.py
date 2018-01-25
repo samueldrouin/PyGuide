@@ -14,6 +14,7 @@ from PyQt5 import uic
 from form import Form
 from script.database import Error
 import script.interface.selection
+from script.interface import Validator
 
 # Interface import
 from interface.facturation import Ui_Facturation
@@ -334,7 +335,7 @@ class Facturation(Facture, Ui_Facturation):
         self.setupUi(self)
 
         # Validator
-        self.txt_numero.setValidator(self.phone_validator())
+        self.txt_numero.setValidator(Validator.phone_validator())
 
         # Table widget parameters
         self.tbl_activite.setColumnHidden(0, True)
@@ -818,7 +819,7 @@ class Inscription(Facture, Ui_Inscription):
         self.setupUi(self)
 
         # Validator
-        self.txt_numero.setValidator(self.phone_validator())
+        self.txt_numero.setValidator(Validator.phone_validator())
 
         # Table widget parameters
         self.tbl_activite.setColumnHidden(0, True)

@@ -20,7 +20,7 @@ class Groupe(Form, Ui_Groupe):
     """Dialog pour la création de l'inscription d'un nouveau groupe"""
     def __init__(self, database):
         super(Groupe, self).__init__()
-        self.setupUi(self)
+        self.setupUi()
 
         # Instance variable definition
         self.DATABASE = database
