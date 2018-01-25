@@ -2,91 +2,11 @@
 
 # PyQt import
 from PyQt5.QtWidgets import QDialog, QCompleter, QMessageBox
-from PyQt5.QtCore import QRegExp, Qt
-from PyQt5.QtGui import QRegExpValidator
+from PyQt5.QtCore import Qt
 
 
 class Form(QDialog):
     """Classe de base des dialogs"""
-    # Constante definition
-    STATUS_INSCRIPTION_ANNULEE = 0
-    STATUS_INSCRIPTION = 1
-    STATUS_FACTURE = 2
-    STATUS_REMBOURSE = 3
-
-    @staticmethod
-    def ville_completer():
-        """
-        Haut-Richelieu cities completer
-        :return: Completer
-        """
-        liste_ville = ["Saint-Jean-sur-Richelieu",
-                       "Saint-Blaise-sur-Richelieu",
-                       "Saint-Paul-de-l'Île-aux-Noix",
-                       "Saint-Valentin", "Lacolle",
-                       "Noyan",
-                       "Saint-Sébastien",
-                       "Henryville",
-                       "Saint-Alexandre",
-                       "Sainte-Anne-de-Sabrevois",
-                       "Sainte-Brigide-d'Iberville",
-                       "Mont-Saint-Grégoire",
-                       "Venise-en-Québec",
-                       "Saint-Georges-de-Clarenceville"]
-        completer = QCompleter(liste_ville)
-        completer.setCaseSensitivity(Qt.CaseInsensitive)
-        return completer
-
-    @staticmethod
-    def check_string(value):
-        """
-        Check if the string s is empty for SQLite
-        :param s: String
-        :return: String or None
-        """
-        if not value:
-            value = None
-        return value
-
-    @staticmethod
-    def check_int(value):
-        """
-        Convert s to an int for SQLite
-        :param s: String
-        :return: Int or None
-        """
-        if value == "":
-            value = None
-        else:
-            int(value)
-        return value
-
-    @staticmethod
-    def check_phone_number(value):
-        """
-        Convert s to phone number for SQLite
-        :param s: String
-        :return: Phone number Int or None
-        """
-        if value != "":
-            value = value.replace(" ", "")
-            value = value.replace("-", "")
-            value = int(value)
-        else:
-            value = None
-        return value
-
-    @staticmethod
-    def xstr(value):
-        """
-        Return and empty string instead of None
-        :param s: String or None
-        :return: String or empty string
-        """
-        if not value:
-            value = ''
-        return value
-
     @staticmethod
     def message_box_missing_information(text):
         """

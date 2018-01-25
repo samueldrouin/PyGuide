@@ -11,6 +11,7 @@ from PyQt5 import uic
 from form import Form
 from script.database import Error
 from script.interface import Validator
+from script.database import DataProcessing
 
 # Interface import
 from interface.categorie_activite import Ui_CategorieActivite
@@ -153,7 +154,7 @@ class NouvelleCategorieActivite(CategorieActivite):
                         ":id_responsable, "
                         ":id_type_activite, "
                         ":id_lieu)")
-        query.bindValue(':nom', self.check_string(self.txt_nom.text()))
+        query.bindValue(':nom', DataProcessing.check_string(self.txt_nom.text()))
         query.bindValue(':prix_membre', self.sbx_prix_membre.value())
         query.bindValue(':prix_non_membre', self.sbx_prix_non_membre.value())
         query.bindValue(':participante_minimum', self.sbx_participante_minimum.value())
@@ -238,7 +239,7 @@ class ModifierCategorieActivite(CategorieActivite):
                         "id_lieu = :id_lieu "
                       "WHERE "
                         "id_categorie_activite = :id_categorie_activite")
-        query.bindValue(':nom', self.check_string(self.txt_nom.text()))
+        query.bindValue(':nom', DataProcessing.check_string(self.txt_nom.text()))
         query.bindValue(':prix_membre', self.sbx_prix_membre.value())
         query.bindValue(':prix_non_membre', self.sbx_prix_non_membre.value())
         query.bindValue(':participante_minimum', self.sbx_participante_minimum.value())

@@ -11,6 +11,8 @@ from PyQt5 import uic
 from form import Form
 from script.database import Error
 from script.interface import Validator
+from script.interface import Completer
+from script.database import DataProcessing
 
 # Interface import
 from interface.lieu import Ui_Lieu
@@ -33,7 +35,7 @@ class Lieu(Form, Ui_Lieu):
         self.txt_code_postal.setValidator(Validator.zip_code_validator())
 
         # Completer
-        self.txt_ville.setCompleter(self.ville_completer())
+        self.txt_ville.setCompleter(Completer.ville_completer())
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
@@ -83,12 +85,12 @@ class NouveauLieu(Lieu):
         query = QSqlQuery(self.DATABASE)
         query.prepare("INSERT INTO lieu (nom, adresse_1, adresse_2, ville, province, code_postal) "
                       "VALUES (:nom, :adresse_1, :adresse_2, :ville, :province, :code_postal)")
-        query.bindValue(':nom', self.check_string(self.txt_nom.text()))
-        query.bindValue(':adresse_1', self.check_string(self.txt_adresse1.text()))
-        query.bindValue(':adresse_2', self.check_string(self.txt_adresse2.text()))
-        query.bindValue(':ville', self.check_string(self.txt_ville.text()))
-        query.bindValue(':province', self.check_string(self.cbx_province.currentText()))
-        query.bindValue(':code_postal', self.check_string(self.txt_code_postal.text()))
+        query.bindValue(':nom', DataProcessing.check_string(self.txt_nom.text()))
+        query.bindValue(':adresse_1', DataProcessing.check_string(self.txt_adresse1.text()))
+        query.bindValue(':adresse_2', DataProcessing.check_string(self.txt_adresse2.text()))
+        query.bindValue(':ville', DataProcessing.check_string(self.txt_ville.text()))
+        query.bindValue(':province', DataProcessing.check_string(self.cbx_province.currentText()))
+        query.bindValue(':code_postal', DataProcessing.check_string(self.txt_code_postal.text()))
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
@@ -158,12 +160,12 @@ class ModifierLieu(Lieu):
                         "code_postal = :code_postal "
                       "WHERE "
                         "id_lieu = :id_lieu")
-        query.bindValue(':nom', self.check_string(self.txt_nom.text()))
-        query.bindValue(':adresse_1', self.check_string(self.txt_adresse1.text()))
-        query.bindValue(':adresse_2', self.check_string(self.txt_adresse2.text()))
-        query.bindValue(':ville', self.check_string(self.txt_ville.text()))
-        query.bindValue(':province', self.check_string(self.cbx_province.currentText()))
-        query.bindValue(':code_postal', self.check_string(self.txt_code_postal.text()))
+        query.bindValue(':nom', DataProcessing.check_string(self.txt_nom.text()))
+        query.bindValue(':adresse_1', DataProcessing.check_string(self.txt_adresse1.text()))
+        query.bindValue(':adresse_2', DataProcessing.check_string(self.txt_adresse2.text()))
+        query.bindValue(':ville', DataProcessing.check_string(self.txt_ville.text()))
+        query.bindValue(':province', DataProcessing.check_string(self.cbx_province.currentText()))
+        query.bindValue(':code_postal', DataProcessing.check_string(self.txt_code_postal.text()))
         query.bindValue(':id_lieu', self.id_lieu)
         query.exec_()
 

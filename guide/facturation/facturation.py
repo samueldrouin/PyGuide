@@ -15,10 +15,18 @@ from form import Form
 from script.database import Error
 import script.interface.selection
 from script.interface import Validator
+from script.database import DataProcessing
 
 # Interface import
 from interface.facturation import Ui_Facturation
 from interface.inscription import Ui_Inscription
+
+
+# Définition de constantes
+STATUS_INSCRIPTION_ANNULEE = 0
+STATUS_INSCRIPTION = 1
+STATUS_FACTURE = 2
+STATUS_REMBOURSE = 3
 
 
 class Facture(Form):
@@ -49,7 +57,7 @@ class Facture(Form):
         if len(numero_telephone) == 12:
 
             # Preparation du numero de telephone
-            phone_number = int(self.check_phone_number(numero_telephone))
+            phone_number = int(DataProcessing.check_phone_number(numero_telephone))
 
             query = QSqlQuery()
             query.prepare("SELECT "
@@ -217,7 +225,7 @@ class Facture(Form):
                       "ORDER BY categorie_activite.nom ASC, activite.date ASC")
         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
         query.bindValue(':current_date', QDate.currentDate().toString('yyyy-MM-dd'))
-        query.bindValue(':status', self.STATUS_INSCRIPTION)
+        query.bindValue(':status', STATUS_INSCRIPTION)
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
@@ -488,7 +496,7 @@ class Facturation(Facture, Ui_Facturation):
                         "(status = :status) AND "
                         "(id_activite = :id_activite) AND "
                         "(id_participante = :id_participante)")
-        query.bindValue(':status', self.STATUS_FACTURE)
+        query.bindValue(':status', STATUS_FACTURE)
         query.bindValue(':id_activite' , self.tbl_activite.item(row, 0).text())
         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
         query.exec_()
@@ -627,7 +635,7 @@ class Facturation(Facture, Ui_Facturation):
                         "(numero_recu, id_participante, total) "
                       "VALUES "
                         "(:numero_recu, :id_participante, :total)")
-        query.bindValue(':numero_recu', self.check_string(self.txt_recu.text()))
+        query.bindValue(':numero_recu', DataProcessing.check_string(self.txt_recu.text()))
         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
         query.bindValue(':total', float(self.txt_total.text()[:-1]))
         query.exec_()
@@ -689,7 +697,7 @@ class Facturation(Facture, Ui_Facturation):
                                 ":id_participante, :id_activite, :status)")
                 query.bindValue(':id_participante', self.ID_PARTICIPANTE)
                 query.bindValue(':id_activite', self.tbl_article.item(row, 0).text())
-                query.bindValue(':status', self.STATUS_FACTURE)
+                query.bindValue(':status', STATUS_FACTURE)
                 query.exec_()
 
                 # Vérifier s'il y a violation de la contraint de la primary key
@@ -725,7 +733,7 @@ class Facturation(Facture, Ui_Facturation):
                                         "AND (id_activite = :id_activite))")
                         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
                         query.bindValue(':id_activite', self.tbl_article.item(row, 0).text())
-                        query.bindValue(':status', self.STATUS_FACTURE)
+                        query.bindValue(':status', STATUS_FACTURE)
                         query.exec_()
 
                         # Affichage d'un message d'erreur si la requete echoue
@@ -744,7 +752,7 @@ class Facturation(Facture, Ui_Facturation):
                                         ":id_participante, :id_activite, :status)")
                         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
                         query.bindValue(':id_activite', self.tbl_article.item(row, 0).text())
-                        query.bindValue(':status', self.STATUS_FACTURE)
+                        query.bindValue(':status', STATUS_FACTURE)
                         query.exec_()
 
                         # Affichage d'un message d'erreur si la requete echoue
@@ -771,7 +779,7 @@ class Facturation(Facture, Ui_Facturation):
                                 ":id_participante, :id_activite, :status)")
                 query.bindValue(':id_participante', self.ID_PARTICIPANTE)
                 query.bindValue(':id_activite', self.tbl_article.item(row, 0).text())
-                query.bindValue(':status', self.STATUS_REMBOURSE)
+                query.bindValue(':status', STATUS_REMBOURSE)
                 query.exec_()
 
                 #Affichage d'un message d'erreur si la requete echoue
@@ -807,13 +815,6 @@ class Facturation(Facture, Ui_Facturation):
 
 class Inscription(Facture, Ui_Inscription):
     """Dialog pour la création de nouvelle inscriptions"""
-
-    # Constante definition
-    STATUS_INSCRIPTION_ANNULEE = 0
-    STATUS_INSCRIPTION = 1
-    STATUS_FACTURE = 2
-    STATUS_REMBOURSE = 3
-
     def __init__(self, database):
         super(Inscription, self).__init__(database)
         self.setupUi(self)
@@ -951,7 +952,7 @@ class Inscription(Facture, Ui_Inscription):
                                 ":id_participante, :id_activite, :status)")
                 query.bindValue(':id_participante', self.ID_PARTICIPANTE)
                 query.bindValue(':id_activite', self.tbl_panier.item(row, 0).text())
-                query.bindValue(':status', self.STATUS_INSCRIPTION)
+                query.bindValue(':status', STATUS_INSCRIPTION)
                 query.exec_()
 
                 # Vérifier s'il y a violation de la contraint de la primary key
@@ -988,7 +989,7 @@ class Inscription(Facture, Ui_Inscription):
                                         "AND (id_activite = :id_activite))")
                         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
                         query.bindValue(':id_activite', self.tbl_panier.item(row, 0).text())
-                        query.bindValue(':status', self.STATUS_INSCRIPTION)
+                        query.bindValue(':status', STATUS_INSCRIPTION)
                         query.exec_()
 
                         # Affichage d'un message d'erreur si la requete echoue
@@ -1007,7 +1008,7 @@ class Inscription(Facture, Ui_Inscription):
                                         ":id_participante, :id_activite, :status)")
                         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
                         query.bindValue(':id_activite', self.tbl_panier.item(row, 0).text())
-                        query.bindValue(':status', self.STATUS_INSCRIPTION)
+                        query.bindValue(':status', STATUS_INSCRIPTION)
                         query.exec_()
 
                         # Affichage d'un message d'erreur si la requete echoue
@@ -1035,7 +1036,7 @@ class Inscription(Facture, Ui_Inscription):
                                 ":id_participante, :id_activite, :status)")
                 query.bindValue(':id_participante', self.ID_PARTICIPANTE)
                 query.bindValue(':id_activite', self.tbl_panier.item(row, 0).text())
-                query.bindValue(':status', self.STATUS_INSCRIPTION_ANNULEE)
+                query.bindValue(':status', STATUS_INSCRIPTION_ANNULEE)
                 query.exec_()
 
                 #Affichage d'un message d'erreur si la requete echoue

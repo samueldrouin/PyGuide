@@ -13,6 +13,10 @@ from PyQt5 import uic
 from facturation.inscription_membre import NouvelleInscription, RenouvelerInscription
 from form import Form
 from script.database import Error
+from script.interface import Validator
+from script.interface import Completer
+from facturation import facturation
+from script.database import DataProcessing
 
 # Interface import
 from interface.participante import Ui_Participante
@@ -30,21 +34,21 @@ class Participante(Form, Ui_Participante):
         self.DATABASE = database
 
         # Validator
-        self.txt_prenom.setValidator(self.name_validator())
-        self.txt_nom.setValidator(self.name_validator())
-        self.txt_adresse1.setValidator(self.address_validator())
-        self.txt_adresse2.setValidator(self.address_validator())
-        self.txt_ville.setValidator(self.name_validator())
-        self.txt_code_postal.setValidator(self.zip_code_validator())
-        self.txt_telephone1.setValidator(self.phone_validator())
-        self.txt_poste1.setValidator(self.poste_validator())
-        self.txt_telephone2.setValidator(self.phone_validator())
-        self.txt_poste2.setValidator(self.poste_validator())
-        self.txt_numero_membre.setValidator(self.numero_membre_validator())
-        self.txt_email.setValidator(self.email_validator())
+        self.txt_prenom.setValidator(Validator.name_validator())
+        self.txt_nom.setValidator(Validator.name_validator())
+        self.txt_adresse1.setValidator(Validator.address_validator())
+        self.txt_adresse2.setValidator(Validator.address_validator())
+        self.txt_ville.setValidator(Validator.name_validator())
+        self.txt_code_postal.setValidator(Validator.zip_code_validator())
+        self.txt_telephone1.setValidator(Validator.phone_validator())
+        self.txt_poste1.setValidator(Validator.poste_validator())
+        self.txt_telephone2.setValidator(Validator.phone_validator())
+        self.txt_poste2.setValidator(Validator.poste_validator())
+        self.txt_numero_membre.setValidator(Validator.numero_membre_validator())
+        self.txt_email.setValidator(Validator.email_validator())
 
         # Completer
-        self.txt_ville.setCompleter(self.ville_completer())
+        self.txt_ville.setCompleter(Completer.ville_completer())
 
         # Cacher les informations du membre par default
         self.chk_actif.setHidden(True)
@@ -127,46 +131,46 @@ class Participante(Form, Ui_Participante):
         """
         fields = {}
 
-        appelation = self.check_string(self.cbx_appelation.currentText())
+        appelation = DataProcessing.check_string(self.cbx_appelation.currentText())
         fields['Appelation'] = appelation
 
-        prenom = self.check_string(self.txt_prenom.text())
+        prenom = DataProcessing.check_string(self.txt_prenom.text())
         fields['Prenom'] = prenom
 
-        nom = self.check_string(self.txt_nom.text())
+        nom = DataProcessing.check_string(self.txt_nom.text())
         fields['Nom'] = nom
 
-        address1 = self.check_string(self.txt_adresse1.text())
+        address1 = DataProcessing.check_string(self.txt_adresse1.text())
         fields['Address1'] = address1
 
-        address2 = self.check_string(self.txt_adresse2.text())
+        address2 = DataProcessing.check_string(self.txt_adresse2.text())
         fields['Address2'] = address2
 
-        ville = self.check_string(self.txt_ville.text())
+        ville = DataProcessing.check_string(self.txt_ville.text())
         fields['Ville'] = ville
 
-        province = self.check_string(self.cbx_province.currentText())
+        province = DataProcessing.check_string(self.cbx_province.currentText())
         fields['Province'] = province
 
-        code_postal = self.check_string(self.txt_code_postal.text())
+        code_postal = DataProcessing.check_string(self.txt_code_postal.text())
         fields['Code Postal'] = code_postal
 
-        courriel = self.check_string(self.txt_email.text())
+        courriel = DataProcessing.check_string(self.txt_email.text())
         fields['Courriel'] = courriel
 
-        phone_number1 = self.check_phone_number(self.txt_telephone1.text())
+        phone_number1 = DataProcessing.check_phone_number(self.txt_telephone1.text())
         fields['Phone Number 1'] = phone_number1
 
-        poste1 = self.check_int(self.txt_poste1.text())
+        poste1 = DataProcessing.check_int(self.txt_poste1.text())
         fields['Poste 1'] = poste1
 
-        phone_number2 = self.check_phone_number(self.txt_telephone2.text())
+        phone_number2 = DataProcessing.check_phone_number(self.txt_telephone2.text())
         fields['Phone Number 2'] = phone_number2
 
-        poste2 = self.check_int(self.txt_poste2.text())
+        poste2 = DataProcessing.check_int(self.txt_poste2.text())
         fields['Poste 2'] = poste2
 
-        annee_naissance = self.check_int(self.sbx_annee_naissance.value())
+        annee_naissance = DataProcessing.check_int(self.sbx_annee_naissance.value())
         fields['Annee Naissance'] = annee_naissance
 
         personne_nourries = self.sbx_personnes_nourries.value()
@@ -447,7 +451,7 @@ class ModifierParticipante(Participante):
                       "ORDER BY categorie_activite.nom ASC, activite.date ASC")
         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
         query.bindValue(':current_date', QDate.currentDate().toString('yyyy-MM-dd'))
-        query.bindValue(':status', self.STATUS_INSCRIPTION)
+        query.bindValue(':status', facturation.STATUS_INSCRIPTION)
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue

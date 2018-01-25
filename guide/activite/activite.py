@@ -19,6 +19,7 @@ from pylatex.utils import bold
 # Project import
 from form import Form
 from script.database import Error
+from facturation import facturation
 
 # Interface import
 from interface.nouvelle_activite import Ui_NouvelleActivite
@@ -335,8 +336,8 @@ class AfficherActivite(Form, Ui_AfficherActivite):
                       "LEFT JOIN membre ON membre.id_participante = inscription.id_participante "
                       "WHERE (inscription.id_activite = :id_activite) AND ((inscription.status = :inscription) OR (inscription.status = :facture))")
         query.bindValue(':id_activite', self.ID_ACTIVITE)
-        query.bindValue(':inscription', self.STATUS_INSCRIPTION)
-        query.bindValue(':facture', self.STATUS_FACTURE)
+        query.bindValue(':inscription', facturation.STATUS_INSCRIPTION)
+        query.bindValue(':facture', facturation.STATUS_FACTURE)
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
@@ -360,7 +361,7 @@ class AfficherActivite(Form, Ui_AfficherActivite):
                 phone_number = phone_number + " p. " + str(query.value(4))
             self.tbl_inscriptions.setItem(r, 2, QTableWidgetItem(phone_number))
 
-            if int(query.value(5)) == self.STATUS_FACTURE:
+            if int(query.value(5)) == facturation.STATUS_FACTURE:
                 item = QTableWidgetItem()
                 item.setCheckState(Qt.Checked)
                 item.setFlags(item.flags() ^ Qt.ItemIsUserCheckable)
