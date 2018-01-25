@@ -22,6 +22,7 @@ from form import Form
 from script.database import Error
 from script.database.Error import DatabaseError
 from script.interface import Validator
+from script.data import DataError
 
 # Interface import
 from interface.type_activite import Ui_TypeActivite
@@ -63,7 +64,7 @@ class TypeActivite(Form, Ui_TypeActivite):
         if self.txt_nom.text():
             self.process()
         else:
-            self.message_box_missing_information("Le nom du type d'activité doit être remplis")
+            DataError.message_box_missing_information("Le nom du type d'activité doit être remplis")
 
     def process(self):
         """

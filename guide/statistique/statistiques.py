@@ -32,8 +32,8 @@ from pylatex.utils import bold
 from form import Form
 from script.database import Error
 from facturation import facturation
-from script.data.DataVerification import *
 from script.interface import Validator
+from script.data import DataError
 
 
 class Statistiques(Form):
@@ -877,7 +877,7 @@ class Statistiques(Form):
 
                 os.startfile(os.path.normpath(filename))
         else:
-            Error.DataError.requete_vide()
+            DataError.requete_vide()
 
     def afficher_pdf(self, sql = None):
         """
@@ -922,7 +922,7 @@ class Statistiques(Form):
 
                 # Continuer seulement si le nombre de colonne est de moins de 4
                 if column_count > 4:
-                    Error.DataError.trop_champs()
+                    DataError.trop_champs()
                 else:
                     # Generer le tableau
                     with doc.create(LongTabu("X[l]"*column_count)) as data_table:
@@ -960,7 +960,7 @@ class Statistiques(Form):
                     filename_ext = os.path.join(temp_dir, file_ext)
                     os.startfile(os.path.normpath(filename_ext))
         else:
-            Error.DataError.requete_vide()
+            DataError.requete_vide()
 
     def generer_requete(self):
         """
@@ -1093,7 +1093,7 @@ class Statistiques(Form):
         """
         # Vérifier que la statistique a un nom
         if not self.txt_titre.text():
-            Error.DataError.aucun_nom_statistique()
+            DataError.aucun_nom_statistique()
         else:
             # Obtenir la requête
             requete = self.generer_requete()
@@ -1121,7 +1121,7 @@ class Statistiques(Form):
                 tree.write(os.path.join(statistique, filename))
                 self.accept()
             else:
-                Error.DataError.requete_vide()
+                DataError.requete_vide()
 
 class StatistiquesDialog(Statistiques):
     """Dialog pour les statistiques"""

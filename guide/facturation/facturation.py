@@ -16,6 +16,7 @@ from script.database import Error
 import script.interface.selection
 from script.interface import Validator
 from script.database import DataProcessing
+from script.data import DataError
 
 # Interface import
 from interface.facturation import Ui_Facturation
@@ -95,7 +96,7 @@ class Facture(Form):
 
             # La requête ne contient aucune information
             if not resultat:
-                Error.DataError.numero_telephone_inexistant()
+                DataError.numero_telephone_inexistant()
             # La requête contient plusieurs comptes
             elif len(resultat) != 1:
                 selection = Selection.SelectionParticipante(resultat)
@@ -108,7 +109,7 @@ class Facture(Form):
                 return resultat[0]
         # Le numéro de téléphone est invalide
         else:
-            Error.DataError.numero_telephone_invalide()
+            DataError.numero_telephone_invalide()
         return False
 
     def activer_facturation(self):
@@ -526,7 +527,7 @@ class Facturation(Facture, Ui_Facturation):
 
             # Avertissement si l'activité est complète
             if int(self.tbl_activite.item(row, 1).text()):
-                resultat = Error.DataError.activite_complete()
+                resultat = DataError.activite_complete()
                 if resultat == QMessageBox.No:
                     return # Ne pas ajouter l'article
 
@@ -578,7 +579,7 @@ class Facturation(Facture, Ui_Facturation):
                     self.liberation_liste_attente(int(self.tbl_activite.item(row, 0).text()))
 
         else:
-            Error.DataError.aucun_article_selectionne()
+            DataError.aucun_article_selectionne()
 
     def ajout_inscription(self):
         """Ajouter une inscription a la facture"""
@@ -603,7 +604,7 @@ class Facturation(Facture, Ui_Facturation):
 
             self.afficher_total(self.tbl_inscription.item(row, 2).text())
         else:
-            Error.DataError.aucun_article_selectionne()
+            DataError.aucun_article_selectionne()
 
     def retirer_activite(self):
         """Retirer une activite du panier"""
@@ -618,7 +619,7 @@ class Facturation(Facture, Ui_Facturation):
             # Effacer l'article de la facture 
             self.tbl_article.removeRow(row)
         else:
-            Error.DataError.aucun_article_selectionne()
+            DataError.aucun_article_selectionne()
 
     def process(self):
         """Traitement des donnees pour la base de données"""
@@ -877,7 +878,7 @@ class Inscription(Facture, Ui_Inscription):
         if activite_row != -1:
             # Avertissement si l'activité est complète
             if int(self.tbl_activite.item(activite_row, 1).text()):
-                resultat = Error.DataError.activite_complete()
+                resultat = DataError.activite_complete()
                 if resultat == QMessageBox.No:
                     return # Ne pas ajouter l'article
             
@@ -897,7 +898,7 @@ class Inscription(Facture, Ui_Inscription):
             self.tbl_panier.resizeColumnsToContents()
         # Avertissement qu'il est nécessaire de choisir un article
         else:
-            Error.DataError.aucun_article_selectionne()
+            DataError.aucun_article_selectionne()
 
     def retirer_activite(self):
         """Retirer une activite du panier"""
@@ -926,7 +927,7 @@ class Inscription(Facture, Ui_Inscription):
             elif self.tbl_panier.item(row, 1).text() == "1":
                 self.tbl_panier.removeRow(row)
         else:
-            Error.DataError.aucun_article_selectionne()
+            DataError.aucun_article_selectionne()
 
     def process(self):
         """Traitement des donnees pour la base de données"""

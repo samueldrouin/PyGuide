@@ -12,6 +12,7 @@ from form import Form
 from script.database import Error
 from script.interface import Validator
 from script.database import DataProcessing
+from script.data import DataError
 
 # Interface import
 from interface.categorie_activite import Ui_CategorieActivite
@@ -110,7 +111,7 @@ class CategorieActivite(Form, Ui_CategorieActivite):
             self.process()
             return True
         else:
-            self.message_box_missing_information("Le nom de la catégorie d'activité "\
+            DataError.message_box_missing_information("Le nom de la catégorie d'activité "\
                                                  "doit être remplis")
         return False
 

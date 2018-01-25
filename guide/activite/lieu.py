@@ -13,6 +13,7 @@ from script.database import Error
 from script.interface import Validator
 from script.interface import Completer
 from script.database import DataProcessing
+from script.data import DataError
 
 # Interface import
 from interface.lieu import Ui_Lieu
@@ -59,7 +60,7 @@ class Lieu(Form, Ui_Lieu):
         if self.txt_nom.text() != "":
             self.process()
         else:
-            self.message_box_missing_information("Le nom du lieu doit être remplis")
+            DataError.message_box_missing_information("Le nom du lieu doit être remplis")
 
     def process(self):
         """

@@ -11,6 +11,7 @@ from PyQt5.QtSql import QSqlQuery
 from form import Form
 from script.database import Error
 from script.interface import Validator
+from script.data import DataError
 
 # Interface import
 from interface.responsable import Ui_Responsable
@@ -41,7 +42,7 @@ class Responsable(Form, Ui_Responsable):
         if self.txt_prenom.text() != "":
             self.process()
         else:
-            self.message_box_missing_information("Le prénom du responsable doit être remplis")
+            DataError.message_box_missing_information("Le prénom du responsable doit être remplis")
 
     def process(self):
         """

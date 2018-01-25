@@ -7,21 +7,6 @@ from PyQt5.QtCore import Qt
 
 class Form(QDialog):
     """Classe de base des dialogs"""
-    @staticmethod
-    def message_box_missing_information(text):
-        """
-        MessageBox lorsqu'une information est manquante dans un formulaire
-        :param text: Informative text
-        :return:
-        """
-        msgbox = QMessageBox()
-        msgbox.setWindowTitle("Information manquante")
-        msgbox.setText("Information manquante")
-        msgbox.setInformativeText(text)
-        msgbox.setIcon(QMessageBox.Warning)
-        msgbox.setStandardButtons(QMessageBox.Ok)
-        msgbox.setDefaultButton(QMessageBox.Ok)
-        msgbox.exec()
 
     @staticmethod
     def phone_number_parsing(old, new, value):
