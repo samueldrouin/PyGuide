@@ -37,27 +37,27 @@ def file_name_validator():
         validator = QRegExpValidator(QRegExp(FILE_NAME_REGEXP))
         return validator
 
-def address_validator(self):
+def address_validator():
     """
     Création d'un QRegExpValidator pour les adresses.
 
     Return : 
         Address QRexExpValidator
     """
-    validator = QRegExpValidator(QRegExp(self.ADRESSE_REGEXP))
+    validator = QRegExpValidator(QRegExp(ADRESSE_REGEXP))
     return validator
 
-def name_validator(self):
+def name_validator():
     """
     Création d'un QRegExpValidator pour les noms.
 
     Return : 
         Name QRegExpValidator
     """
-    validator = QRegExpValidator(QRegExp(self.NAME_REGEXP))
+    validator = QRegExpValidator(QRegExp(NAME_REGEXP))
     return validator
 
-def zip_code_validator(self):
+def zip_code_validator():
     """
     Création d'un QRegExpValidator pour les codes postaux canadiens. 
 
@@ -66,10 +66,10 @@ def zip_code_validator(self):
     Return :
         Zip Code QRegExpValidator
     """
-    validator = QRegExpValidator(QRegExp(self.ZIP_CODE_REGEXP))
+    validator = QRegExpValidator(QRegExp(ZIP_CODE_REGEXP))
     return validator
 
-def phone_validator(self):
+def phone_validator():
     """
     Création d'un QRegExpValidator pour les numéro de téléphone. 
 
@@ -78,10 +78,10 @@ def phone_validator(self):
     Return :
         Phone number QRegExpValidator
     """
-    validator = QRegExpValidator(QRegExp(self.PHONE_REGEXP))
+    validator = QRegExpValidator(QRegExp(PHONE_REGEXP))
     return validator
 
-def poste_validator(self):
+def poste_validator():
     """
     Création d'un QRegExpValidator pour les postes téléphoniques.
 
@@ -90,10 +90,10 @@ def poste_validator(self):
     Return : 
         Poste QRegExpValidator
     """
-    validator = QRegExpValidator(QRegExp(self.POSTE_REGEXP))
+    validator = QRegExpValidator(QRegExp(POSTE_REGEXP))
     return validator
 
-def numero_membre_validator(self):
+def numero_membre_validator():
     """
     Création d'un QRegExpValidator pour le numéro de membre
 
@@ -102,10 +102,10 @@ def numero_membre_validator(self):
     Return :
         Member number QRegExpValidator
     """
-    validator = QRegExpValidator(QRegExp(self.NUMERO_MEMBRE_REGEXP))
+    validator = QRegExpValidator(QRegExp(NUMERO_MEMBRE_REGEXP))
     return validator
 
-def email_validator(self):
+def email_validator():
     """
     Création d'un QRegExpValidator pour les adresse courriel
 
@@ -116,5 +116,5 @@ def email_validator(self):
     Return :
         Email QRegExpValidator
     """
-    validator = QRegExpValidator(QRegExp(self.EMAIL_REGEXP))
+    validator = QRegExpValidator(QRegExp(EMAIL_REGEXP))
     return validator
