@@ -10,6 +10,7 @@ Méthodes:
 
 # PyQt import
 from PyQt5.QtWidgets import QCompleter
+from PyQt5.QtCore import Qt
 
 def ville_completer():
         """
