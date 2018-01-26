@@ -288,16 +288,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         central_widget = CentralWidgetLieu(self.DATABASE)
         self.setCentralWidget(central_widget)
 
-class CentralWidget(QWidget):
-    """
-    Classe principale pour les CentralWidget
-    Contient les fonction communes à tout les CentralWidget
-    """
-    def __init__(self):
-        super(CentralWidget, self).__init__()
-        self.layout = QVBoxLayout(self)
-
-
 """
 CentralWidget spécifiques :
 - Options de tri spécifique
@@ -310,7 +300,7 @@ class TopWidgetParticipante(QWidget, Ui_WidgetParticipante):
         self.setupUi(self)
 
 
-class CentralWidgetParticipante(CentralWidget):
+class CentralWidgetParticipante(QWidget):
     """
     CentralWidget pour les participantes
 
@@ -320,6 +310,7 @@ class CentralWidgetParticipante(CentralWidget):
     def __init__(self, database):
         super(CentralWidgetParticipante, self).__init__()
 
+        self.layout = QVBoxLayout(self)
         self.top_widget = TopWidgetParticipante()
         self.layout.addWidget(self.top_widget)
 
@@ -486,7 +477,7 @@ class TopWidgetActivite(QWidget, Ui_WidgetActivite):
         self.setupUi(self)
 
 
-class CentralWidgetActivite(CentralWidget):
+class CentralWidgetActivite(QWidget):
     """
     CentralWidget pour les activités
 
@@ -495,6 +486,7 @@ class CentralWidgetActivite(CentralWidget):
     """
     def __init__(self, database):
         super(CentralWidgetActivite, self).__init__()
+        self.layout = QVBoxLayout(self)
         self.top_widget = TopWidgetActivite()
         self.layout.addWidget(self.top_widget)
 
@@ -662,7 +654,7 @@ class TopWidgetLieu(QWidget, Ui_WidgetLieu):
         self.setupUi(self)
 
 
-class CentralWidgetLieu(CentralWidget):
+class CentralWidgetLieu(QWidget):
     """
     CentralWidget pour les lieux
     
@@ -672,6 +664,7 @@ class CentralWidgetLieu(CentralWidget):
     def __init__(self, database):
         super(CentralWidgetLieu, self).__init__()
         # GUI setup
+        self.layout = QVBoxLayout(self)
         self.top_widget = TopWidgetLieu()
         self.layout.addWidget(self.top_widget)
 
@@ -790,7 +783,7 @@ class TopWidgetCategorieActivite(QWidget, Ui_WidgetTypeActivite):
         self.setupUi(self)
 
 
-class CentralWidgetCategorieActivite(CentralWidget):
+class CentralWidgetCategorieActivite(QWidget):
     """
     CentralWidget pour les catégories d'activité
 
@@ -804,6 +797,7 @@ class CentralWidgetCategorieActivite(CentralWidget):
         self.DATABASE = database
 
         # GUI setup
+        self.layout = QVBoxLayout(self)
         self.top_widget = TopWidgetCategorieActivite()
         self.layout.addWidget(self.top_widget)
 
