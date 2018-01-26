@@ -5,6 +5,7 @@ import os
 
 # PyQt import
 from PyQt5.QtSql import QSqlQuery
+from PyQt5.QtWidgets import QDialog
 
 # Project import
 from script.database import Error
@@ -18,7 +19,7 @@ from script.data import Parsing
 from interface.lieu import Ui_Lieu
 
 
-class Lieu(Ui_Lieu):
+class Lieu(QDialog, Ui_Lieu):
     """Dialog de base pour la création ou la modification des lieux"""
     def __init__(self, database):
         super(Lieu, self).__init__()

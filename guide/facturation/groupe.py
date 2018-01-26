@@ -4,7 +4,7 @@
 import os
 
 # PyQt import
-from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWidgets import QTableWidgetItem, QDialog
 from PyQt5.QtCore import QTime, QDate
 
 from PyQt5.QtSql import QSqlQuery
@@ -15,11 +15,11 @@ from script.database import Error
 # Interface import
 from interface.groupe import Ui_Groupe
 
-class Groupe(Ui_Groupe):
+class Groupe(QDialog, Ui_Groupe):
     """Dialog pour la création de l'inscription d'un nouveau groupe"""
     def __init__(self, database):
         super(Groupe, self).__init__()
-        self.setupUi()
+        self.setupUi(self)
 
         # Instance variable definition
         self.DATABASE = database

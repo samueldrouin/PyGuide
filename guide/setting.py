@@ -14,7 +14,7 @@ from interface.setting import Ui_Setting
 # Resource import 
 import resources
 
-class Setting(Ui_Setting):
+class Setting(QDialog, Ui_Setting):
     """Dialog permettant de modifier les réglages du programme"""
     def __init__(self):
         super(Setting, self).__init__()

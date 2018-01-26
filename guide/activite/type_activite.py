@@ -15,6 +15,7 @@ import os
 
 # PyQt import
 from PyQt5.QtSql import QSqlQuery
+from PyQt5.QtWidgets import QDialog
 
 # Project import
 from script.database import Error
@@ -26,7 +27,7 @@ from script.data import DataError
 from interface.type_activite import Ui_TypeActivite
 
 
-class TypeActivite(Ui_TypeActivite):
+class TypeActivite(QDialog, Ui_TypeActivite):
     """
     Base des dialog permettant la modification ou la création de type d'activité. 
     

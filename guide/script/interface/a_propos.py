@@ -1,10 +1,10 @@
 # PyQt import
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QDialog
 
 # Project import
 from interface.a_propos import Ui_APropos
 
-class APropos(QWidget, Ui_APropos):
+class APropos(QDialog, Ui_APropos):
     def __init__(self):
         super().__init__()
         self.setupUi(self)

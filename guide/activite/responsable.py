@@ -5,6 +5,7 @@ import os
 
 # PyQt import
 from PyQt5.QtSql import QSqlQuery
+from PyQt5.QtWidgets import QDialog
 
 # Project import
 from script.database import Error
@@ -15,7 +16,7 @@ from script.data import DataError
 from interface.responsable import Ui_Responsable
 
 
-class Responsable(Ui_Responsable):
+class Responsable(QDialog, Ui_Responsable):
     """Dialog pour la créaction ou la modification des responsables"""
     def __init__(self, database):
         super(Responsable, self).__init__()

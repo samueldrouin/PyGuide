@@ -4,13 +4,13 @@ import os
 from pathlib import Path
 
 # PyQt import
-from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView
+from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView, QDialog
 
 # Interface import
 from interface.selection import Ui_Selection
 
 
-class Selection(Ui_Selection):
+class Selection(QDialog, Ui_Selection):
     """Dialog pour la sélection d'un élément"""
     def __init__(self):
         super(Selection, self).__init__()

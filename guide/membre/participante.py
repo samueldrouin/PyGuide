@@ -4,7 +4,7 @@
 import os
 
 # PyQt import
-from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWidgets import QTableWidgetItem, QDialog
 from PyQt5.QtCore import QDate, QTime, QDateTime
 from PyQt5.QtSql import QSqlQuery
 
@@ -22,7 +22,7 @@ from script.data import Parsing
 from interface.participante import Ui_Participante
 
 
-class Participante(Ui_Participante):
+class Participante(QDialog, Ui_Participante):
     """Dialog permettant la création et la modification des participantes"""
     def __init__(self, database):
         super(Participante, self).__init__()

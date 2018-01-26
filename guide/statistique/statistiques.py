@@ -18,7 +18,7 @@ import uuid
 import xml.etree.cElementTree as ET
 
 # PyQt import
-from PyQt5.QtWidgets import QComboBox, QTableWidgetItem, QLineEdit, QSpinBox, QDateEdit, QTimeEdit, QDateTimeEdit, QCheckBox, QDoubleSpinBox, QWidget, QAbstractSpinBox, QCompleter, QWidget
+from PyQt5.QtWidgets import QComboBox, QTableWidgetItem, QLineEdit, QSpinBox, QDateEdit, QTimeEdit, QDateTimeEdit, QCheckBox, QDoubleSpinBox, QWidget, QAbstractSpinBox, QCompleter, QWidget, QDialog
 from PyQt5.QtCore import QSignalMapper, Qt, QDate, QTime, QStringListModel, QSettings
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 from PyQt5.QtGui import QPalette, QColor
@@ -40,7 +40,7 @@ from interface.statistique import Ui_Statistique
 import resources
 
 
-class Statistiques(QWidget):
+class Statistiques(QDialog):
     """
     Dialog par lequel l'utilisateur peut créer des ficher de statistiques.
 

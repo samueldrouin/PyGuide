@@ -29,7 +29,7 @@ STATUS_FACTURE = 2
 STATUS_REMBOURSE = 3
 
 
-class Facture(object):
+class Facture(QDialog):
     """Fonctions nécessaires pour tous les types de facture"""
 
     def __init__(self, database):
