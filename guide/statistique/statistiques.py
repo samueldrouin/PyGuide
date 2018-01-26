@@ -18,7 +18,6 @@ import uuid
 import xml.etree.cElementTree as ET
 
 # PyQt import
-from PyQt5 import uic
 from PyQt5.QtWidgets import QComboBox, QTableWidgetItem, QLineEdit, QSpinBox, QDateEdit, QTimeEdit, QDateTimeEdit, QCheckBox, QDoubleSpinBox, QWidget, QAbstractSpinBox, QCompleter, QWidget
 from PyQt5.QtCore import QSignalMapper, Qt, QDate, QTime, QStringListModel, QSettings
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
@@ -29,7 +28,6 @@ from pylatex import Document, Command, PageStyle, simple_page_number, MiniPage, 
 from pylatex.utils import bold
 
 # Project import
-from form import Form
 from script.database import Error
 from facturation import facturation
 from script.interface import Validator
@@ -42,7 +40,7 @@ from interface.statistique import Ui_Statistique
 import resources
 
 
-class Statistiques(Form):
+class Statistiques(QWidget):
     """
     Dialog par lequel l'utilisateur peut créer des ficher de statistiques.
 

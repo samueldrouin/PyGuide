@@ -7,23 +7,22 @@ import os
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtCore import QDate, QTime, QDateTime
 from PyQt5.QtSql import QSqlQuery
-from PyQt5 import uic
 
 # Project import
 from facturation.inscription_membre import NouvelleInscription, RenouvelerInscription
-from form import Form
 from script.database import Error
 from script.interface import Validator
 from script.interface import Completer
 from facturation import facturation
 from script.database import DataProcessing
 from script.data import DataError
+from script.data import Parsing
 
 # Interface import
 from interface.participante import Ui_Participante
 
 
-class Participante(Form, Ui_Participante):
+class Participante(Ui_Participante):
     """Dialog permettant la création et la modification des participantes"""
     def __init__(self, database):
         super(Participante, self).__init__()
@@ -222,7 +221,7 @@ class Participante(Form, Ui_Participante):
         :param old: Old cursor position
         :param new: New cursor position
         """
-        code_postal = self.zip_code_parsing(old, new, self.sender().text())
+        code_postal = Parsing.zip_code_parsing(old, new, self.sender().text())
         self.sender().setText(code_postal)
 
     def set_parsed_phone_number(self, old, new):
@@ -231,7 +230,7 @@ class Participante(Form, Ui_Participante):
         :param old: Old cursor position
         :param new: New cursor position
         """
-        phone_number = self.phone_number_parsing(old, new, self.sender().text())
+        phone_number = Parsing.phone_number_parsing(old, new, self.sender().text())
         self.sender().setText(phone_number)
 
     def show_member_informations(self):

@@ -4,11 +4,9 @@
 import os
 
 # PyQt import
-from PyQt5 import uic
 from PyQt5.QtSql import QSqlQuery
 
 # Project import
-from form import Form
 from script.database import Error
 from script.interface import Validator
 from script.data import DataError
@@ -17,7 +15,7 @@ from script.data import DataError
 from interface.responsable import Ui_Responsable
 
 
-class Responsable(Form, Ui_Responsable):
+class Responsable(Ui_Responsable):
     """Dialog pour la créaction ou la modification des responsables"""
     def __init__(self, database):
         super(Responsable, self).__init__()

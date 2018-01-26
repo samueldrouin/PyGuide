@@ -14,11 +14,9 @@ Classes
 import os
 
 # PyQt import
-from PyQt5 import uic
 from PyQt5.QtSql import QSqlQuery
 
 # Project import
-from form import Form
 from script.database import Error
 from script.database.Error import DatabaseError
 from script.interface import Validator
@@ -28,7 +26,7 @@ from script.data import DataError
 from interface.type_activite import Ui_TypeActivite
 
 
-class TypeActivite(Form, Ui_TypeActivite):
+class TypeActivite(Ui_TypeActivite):
     """
     Base des dialog permettant la modification ou la création de type d'activité. 
     

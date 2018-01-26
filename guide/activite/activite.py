@@ -7,17 +7,15 @@ import tempfile
 import uuid
 
 # PyQt import
-from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem
+from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem, QDialog
 from PyQt5.QtCore import QDate, QTime, Qt, QDateTime
 from PyQt5.QtSql import QSqlQuery, QSqlDatabase
-from PyQt5 import uic
 
 # PyLaTeX import
 from pylatex import Document, Command, PageStyle, simple_page_number, MiniPage, LineBreak, MediumText, LargeText, Head, LongTabu
 from pylatex.utils import bold
 
 # Project import
-from form import Form
 from script.database import Error
 from facturation import facturation
 
@@ -26,7 +24,7 @@ from interface.nouvelle_activite import Ui_NouvelleActivite
 from interface.afficher_activite import Ui_AfficherActivite
 
 
-class NouvelleActivite(Form, Ui_NouvelleActivite):
+class NouvelleActivite(QDialog, Ui_NouvelleActivite):
     """Dialog pour la création d'une nouvelle activité"""
     def __init__(self, database):
         super(NouvelleActivite, self).__init__()
@@ -210,7 +208,7 @@ class NouvelleActivite(Form, Ui_NouvelleActivite):
             QSqlDatabase(self.DATABASE).commit()
         self.accept()
 
-class AfficherActivite(Form, Ui_AfficherActivite):
+class AfficherActivite(QDialog, Ui_AfficherActivite):
     """Dialog pour l'affichage des informations sur une activité"""
     def __init__(self, database, id_activite):
         super(AfficherActivite, self).__init__()

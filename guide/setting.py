@@ -6,7 +6,6 @@ from pathlib import Path
 # PyQt import
 from PyQt5.QtWidgets import QDialog, QFileDialog
 from PyQt5.QtCore import QSettings, QSize
-from PyQt5 import uic
 from PyQt5.QtGui import QIcon
 
 # Interface import
@@ -15,7 +14,7 @@ from interface.setting import Ui_Setting
 # Resource import 
 import resources
 
-class Setting(QDialog, Ui_Setting):
+class Setting(Ui_Setting):
     """Dialog permettant de modifier les réglages du programme"""
     def __init__(self):
         super(Setting, self).__init__()

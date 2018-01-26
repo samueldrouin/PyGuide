@@ -5,21 +5,20 @@ import os
 
 # PyQt import
 from PyQt5.QtSql import QSqlQuery
-from PyQt5 import uic
 
 # Project import
-from form import Form
 from script.database import Error
 from script.interface import Validator
 from script.interface import Completer
 from script.database import DataProcessing
 from script.data import DataError
+from script.data import Parsing
 
 # Interface import
 from interface.lieu import Ui_Lieu
 
 
-class Lieu(Form, Ui_Lieu):
+class Lieu(Ui_Lieu):
     """Dialog de base pour la création ou la modification des lieux"""
     def __init__(self, database):
         super(Lieu, self).__init__()
@@ -49,7 +48,7 @@ class Lieu(Form, Ui_Lieu):
         :param old: Old cursor position
         :param new: New cursor position
         """
-        code_postal = self.zip_code_parsing(old, new, self.sender().text())
+        code_postal = Parsing.zip_code_parsing(old, new, self.sender().text())
         self.sender().setText(code_postal)
 
     def check_fields(self):

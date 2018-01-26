@@ -8,7 +8,7 @@ Sert à afficher les éléments simples qui sont rarement modifié
 import os
 
 # PyQt import
-from PyQt5 import uic
+
 from PyQt5.QtWidgets import QDialog, QHeaderView, QTableWidgetItem
 from PyQt5.QtSql import QSqlQuery
 

@@ -8,15 +8,14 @@ from PyQt5.QtWidgets import QTableWidgetItem, QDialog, QMessageBox
 from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 from PyQt5.QtCore import QTime, QDate
 from PyQt5.QtGui import QColor, QBrush
-from PyQt5 import uic
 
 # Project import
-from form import Form
 from script.database import Error
 import script.interface.selection
 from script.interface import Validator
 from script.database import DataProcessing
 from script.data import DataError
+from script.data import Parsing
 
 # Interface import
 from interface.facturation import Ui_Facturation
@@ -30,7 +29,7 @@ STATUS_FACTURE = 2
 STATUS_REMBOURSE = 3
 
 
-class Facture(Form):
+class Facture(object):
     """Fonctions nécessaires pour tous les types de facture"""
 
     def __init__(self, database):
@@ -46,7 +45,7 @@ class Facture(Form):
         :param old: Old cursor position
         :param new: New cursor position
         """
-        phone_number = self.phone_number_parsing(old, new, self.sender().text())
+        phone_number = Parsing.phone_number_parsing(old, new, self.sender().text())
         self.sender().setText(phone_number)
 
     def information_participante(self, numero_telephone):

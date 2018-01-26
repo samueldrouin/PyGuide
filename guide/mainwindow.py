@@ -6,7 +6,7 @@ import pathlib
 import xml.etree.ElementTree as ET
 
 # PyQt import
-from PyQt5 import uic
+
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTableWidget, QMessageBox, QTableWidgetItem, \
     QAbstractItemView, QHeaderView, QAction, QMenu
 from PyQt5.QtCore import QSettings, QDate, QTime

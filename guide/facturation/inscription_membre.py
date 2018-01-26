@@ -4,13 +4,11 @@
 import os
 
 # PyQt import
-from PyQt5.QtWidgets import QTableWidgetItem, QMessageBox
+from PyQt5.QtWidgets import QTableWidgetItem, QMessageBox, QDialog
 from PyQt5.QtCore import QDate, Qt
-from PyQt5 import uic
 from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 
 # Project import
-from form import Form
 from script.database import Error
 from script.database import DataProcessing
 
@@ -18,7 +16,7 @@ from script.database import DataProcessing
 from interface.inscription_membre import Ui_InscriptionMembre
 
 
-class InscriptionMembre(Form, Ui_InscriptionMembre):
+class InscriptionMembre(QDialog, Ui_InscriptionMembre):
     """Dialog pour l'inscription ou le renouvellement d'un nouveau membre"""
     def __init__(self, database):
         super(InscriptionMembre, self).__init__()

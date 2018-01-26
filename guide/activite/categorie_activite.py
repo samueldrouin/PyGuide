@@ -5,10 +5,8 @@ import os
 
 # PyQt import
 from PyQt5.QtSql import QSqlQuery
-from PyQt5 import uic
 
 # Projet import
-from form import Form
 from script.database import Error
 from script.interface import Validator
 from script.database import DataProcessing
@@ -18,7 +16,7 @@ from script.data import DataError
 from interface.categorie_activite import Ui_CategorieActivite
 
 
-class CategorieActivite(Form, Ui_CategorieActivite):
+class CategorieActivite(Ui_CategorieActivite):
     """Classe de bases des dialogs de création et de modification des catégories d'activité"""
     def __init__(self, database):
         super(CategorieActivite, self).__init__()
