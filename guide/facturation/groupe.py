@@ -112,7 +112,7 @@ class Groupe(QDialog, Ui_Groupe):
               "FROM activite "\
               "INNER JOIN categorie_activite "\
                 "ON activite.id_categorie_activite = categorie_activite.id_categorie_activite " \
-              "WHERE activite.date_limite_inscription >= {} ".format(int(QDate.currentDate().toString('yyyy-MM-dd')))
+              "WHERE activite.date_limite_inscription >= {} ".format(QDate.currentDate().toString('yyyy-MM-dd'))
 
         # Recherche par nom d'activite
         if self.txt_activite.text() != "":

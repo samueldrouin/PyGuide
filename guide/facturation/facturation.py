@@ -143,7 +143,7 @@ class Facture(QDialog):
               "FROM activite " \
               "INNER JOIN categorie_activite "\
                 "ON activite.id_categorie_activite = categorie_activite.id_categorie_activite " \
-              "WHERE activite.date_limite_inscription >= {} ".format(int(QDate.currentDate().toString('yyyy-MM-dd')))
+              "WHERE activite.date_limite_inscription >= {} ".format(QDate.currentDate().toString('yyyy-MM-dd'))
         
         # Afficher les activités qui ne sont pas annulées
         if not annule:
