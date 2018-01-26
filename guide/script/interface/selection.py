@@ -10,13 +10,15 @@ from PyQt5 import uic
 # Project import
 from form import Form
 
+# Interface import
+from interface.selection import Ui_Selection
 
-class Selection(Form):
+
+class Selection(Form, Ui_Selection):
     """Dialog pour la sélection d'un élément"""
     def __init__(self):
         super(Selection, self).__init__()
-        ui = os.path.join(definitions.INTERFACE_DIR, 'selection.ui')
-        uic.loadUi(ui, self)
+        self.setupUi(self)
 
         # Slots
         self.table_widget.itemClicked.connect(self.accept)

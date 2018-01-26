@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTableWidget, QMe
     QAbstractItemView, QHeaderView, QAction, QMenu
 from PyQt5.QtCore import QSettings, QDate, QTime
 from PyQt5.Qt import QApplication, QDialog
+from PyQt5.QtGui import QIcon
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 
 # Projet import
@@ -34,6 +35,9 @@ from interface.central_widget.widget_categorie_activite import Ui_WidgetTypeActi
 from interface.central_widget.widget_lieu import Ui_WidgetLieu
 from interface.central_widget.widget_participante import Ui_WidgetParticipante
 
+# Resource import 
+import resources
+
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     """Interface de la fenêtre principale"""
@@ -47,10 +51,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Charger l'interface graphique
         self.set_participantes_central_widget()
 
+        # Afficher les images des boutons
+        self.act_consult_participante.setIcon(QIcon(":/mainwindow/Participante.png"))
+        self.act_consult_activite.setIcon(QIcon(":/mainwindow/Activite.png"))
+        self.act_consult_lieu.setIcon(QIcon(":/mainwindow/Lieu.png"))
+        self.act_consult_categorie_activite.setIcon(QIcon(":/mainwindow/TypeActivite.png"))
+        self.act_inscription.setIcon(QIcon(":/mainwindow/Inscription.png"))
+        self.act_facturation.setIcon(QIcon(":/mainwindow/Facture.png"))
+        self.act_groupe.setIcon(QIcon(":/mainwindow/Groupe.png"))
+
         # Actions
-        self.act_consult_participantes.triggered.connect(self.set_participantes_central_widget)
-        self.act_consult_activites.triggered.connect(self.set_activite_central_widget)
-        self.act_consult_lieux.triggered.connect(self.set_lieux_central_widget)
+        self.act_consult_participante.triggered.connect(self.set_participantes_central_widget)
+        self.act_consult_activite.triggered.connect(self.set_activite_central_widget)
+        self.act_consult_lieu.triggered.connect(self.set_lieux_central_widget)
         self.act_consult_categorie_activite.triggered.connect(self.set_categorie_activite_central_widget)
         self.act_about.triggered.connect(self.a_propos)
         self.act_about_qt.triggered.connect(QApplication.aboutQt)

@@ -79,6 +79,9 @@
            <height>16</height>
           </size>
          </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
          <property name="flat">
           <bool>false</bool>
          </property>
@@ -123,6 +126,9 @@
            <height>16</height>
           </size>
          </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
          <property name="flat">
           <bool>false</bool>
          </property>
@@ -152,12 +158,18 @@
        <property name="text">
         <string>Annuler</string>
        </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="btn_appliquer">
        <property name="text">
         <string>Appliquer</string>
+       </property>
+       <property name="default">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

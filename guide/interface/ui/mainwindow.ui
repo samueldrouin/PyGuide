@@ -89,16 +89,16 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="act_consult_participantes"/>
-   <addaction name="act_consult_activites"/>
-   <addaction name="act_consult_lieux"/>
+   <addaction name="act_consult_participante"/>
+   <addaction name="act_consult_activite"/>
+   <addaction name="act_consult_lieu"/>
    <addaction name="act_consult_categorie_activite"/>
    <addaction name="separator"/>
    <addaction name="act_inscription"/>
    <addaction name="act_facturation"/>
    <addaction name="act_groupe"/>
   </widget>
-  <action name="act_consult_activites">
+  <action name="act_consult_activite">
    <property name="icon">
     <iconset>
      <normaloff>../Resources/activite.png</normaloff>../Resources/activite.png</iconset>
@@ -107,7 +107,7 @@
     <string>Activités</string>
    </property>
   </action>
-  <action name="act_consult_lieux">
+  <action name="act_consult_lieu">
    <property name="icon">
     <iconset>
      <normaloff>../Resources/Lieu.png</normaloff>../Resources/Lieu.png</iconset>
@@ -116,7 +116,7 @@
     <string>Lieux</string>
    </property>
   </action>
-  <action name="act_consult_participantes">
+  <action name="act_consult_participante">
    <property name="icon">
     <iconset>
      <normaloff>../Resources/participante.png</normaloff>../Resources/participante.png</iconset>

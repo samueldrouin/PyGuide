@@ -35,6 +35,12 @@ from facturation import facturation
 from script.interface import Validator
 from script.data import DataError
 
+# Interface import
+from interface.statistique import Ui_Statistique
+
+# Resource import
+import resources
+
 
 class Statistiques(Form):
     """
@@ -414,7 +420,7 @@ class Statistiques(Form):
                         border: 0px; \
                      }\
                      QComboBox::down-arrow {\
-                        image: url(Resources/DropDownArrow.png);\
+                        image: url(:statistique/DropDownArrow.png);\
                         width: 10px;\
                         height: 10px;\
                      }"
@@ -429,7 +435,7 @@ class Statistiques(Form):
                              border: 0px; \
                              }\
                              QDateTimeEdit::down-arrow {\
-                             image: url(Resources/DropDownArrow.png);\
+                             image: url(:statistique/DropDownArrow.png);\
                              width: 10px;\
                              height: 10px;\
                              }"
@@ -460,7 +466,7 @@ class Statistiques(Form):
                         border: 0px; \
                      }\
                      QComboBox::down-arrow {\
-                        image: url(Resources/DropDownArrow.png);\
+                        image: url(:statistique/DropDownArrow.png);\
                         width: 10px;\
                         height: 10px;\
                      }"
@@ -478,7 +484,7 @@ class Statistiques(Form):
                              border: 0px; \
                              }\
                              QDateTimeEdit::down-arrow {\
-                             image: url(Resources/DropDownArrow.png);\
+                             image: url(:statistique/DropDownArrow.png);\
                              width: 10px;\
                              height: 10px;\
                              }"
@@ -1123,12 +1129,12 @@ class Statistiques(Form):
             else:
                 DataError.requete_vide()
 
-class StatistiquesDialog(Statistiques):
+class StatistiquesDialog(Statistiques, Ui_Statistique):
     """Dialog pour les statistiques"""
     def __init__(self, database):
         super().__init__(database)
-        ui = os.path.join(definitions.INTERFACE_DIR, 'statistique.ui')
-        uic.loadUi(ui, self)
+
+        self.setupUi(self)
 
         # Ajouter les validator
         self.txt_titre.setValidator(Validator.file_name_validator())

@@ -5,17 +5,25 @@ from pathlib import Path
 
 # PyQt import
 from PyQt5.QtWidgets import QDialog, QFileDialog
-from PyQt5.QtCore import QSettings
+from PyQt5.QtCore import QSettings, QSize
 from PyQt5 import uic
+from PyQt5.QtGui import QIcon
 
 # Interface import
 from interface.setting import Ui_Setting
+
+# Resource import 
+import resources
 
 class Setting(QDialog, Ui_Setting):
     """Dialog permettant de modifier les réglages du programme"""
     def __init__(self):
         super(Setting, self).__init__()
         self.setupUi(self)
+
+        # Afficher les images des boutons
+        self.btn_fichier.setIcon(QIcon(":/setting/Folder.png"))
+        self.btn_statistique.setIcon(QIcon(":/setting/Folder.png"))
 
         # Slots
         self.btn_cancel.clicked.connect(self.close)
