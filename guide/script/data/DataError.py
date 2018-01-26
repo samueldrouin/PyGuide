@@ -56,6 +56,9 @@ REMBOURSEMENT_IMPOSSIBLE_INFORMATION = "Impossible de rembourser une activité q
 def numero_telephone_inexistant():
     """
     Affiche un message d'erreur qui indique à l'utilisateur qu'il n'existe pas de compte avec ce numero
+
+    Return :
+        Sélection de l'utilisateur
     """
     msgbox = QMessageBox()
     msgbox.setWindowTitle(ERREUR_DONNEE)
@@ -64,11 +67,15 @@ def numero_telephone_inexistant():
     msgbox.setIcon(QMessageBox.Information)
     msgbox.setStandardButtons(QMessageBox.Ok)
     msgbox.setDefaultButton(QMessageBox.Ok)
-    msgbox.exec()
+    return msgbox.exec()
 
 def numero_telephone_invalide():
     """
-    Affiche un message d'erreur qui indique à l'utilisateur que le numero de telephone est invalide"""
+    Affiche un message d'erreur qui indique à l'utilisateur que le numero de telephone est invalide
+    
+    Return :
+        Sélection de l'utilisateur
+    """
     msgbox = QMessageBox()
     msgbox.setWindowTitle(ERREUR_DONNEE)
     msgbox.setText(NUMERO_TELEPHONE_INVALIDE)
@@ -76,11 +83,14 @@ def numero_telephone_invalide():
     msgbox.setIcon(QMessageBox.Information)
     msgbox.setStandardButtons(QMessageBox.Ok)
     msgbox.setDefaultButton(QMessageBox.Ok)
-    msgbox.exec()
+    return msgbox.exec()
 
 def aucun_article_selectionne():
     """
     Affiche un message d'erreur qui indique à l'utilisateur qu'aucun article n'est sélectionné
+
+    Return :
+        Sélection de l'utilisateur
     """
     msgbox = QMessageBox()
     msgbox.setWindowTitle(ERREUR_DONNEE)
@@ -89,7 +99,7 @@ def aucun_article_selectionne():
     msgbox.setIcon(QMessageBox.Information)
     msgbox.setStandardButtons(QMessageBox.Ok)
     msgbox.setDefaultButton(QMessageBox.Ok)
-    msgbox.exec()
+    return msgbox.exec()
 
 def activite_complete():
     """
@@ -110,6 +120,9 @@ def activite_complete():
 def trop_champs():
     """
     Affiche un message d'erreur qui indique a l'utilisateur qu'il y a trop de champs pour qu'ils puissent être affichés
+
+    Return :
+        Sélection de l'utilisateur
     """
     msgbox = QMessageBox()
     msgbox.setWindowTitle(ERREUR_DONNEE)
@@ -118,11 +131,14 @@ def trop_champs():
     msgbox.setIcon(QMessageBox.Information)
     msgbox.setStandardButtons(QMessageBox.Ok)
     msgbox.setDefaultButton(QMessageBox.Ok)
-    msgbox.exec()
+    return msgbox.exec()
 
 def aucun_nom_statistique():
     """
     Affiche un message d'erreur qui indique a l'utilisateur qu'une statistique doit avoir un nom pour pouvoir être enregistrée
+
+    Return :
+        Sélection de l'utilisateur
     """
     msgbox = QMessageBox()
     msgbox.setWindowTitle(ERREUR_DONNEE)
@@ -131,11 +147,14 @@ def aucun_nom_statistique():
     msgbox.setIcon(QMessageBox.Information)
     msgbox.setStandardButtons(QMessageBox.Ok)
     msgbox.setDefaultButton(QMessageBox.Ok)
-    msgbox.exec()
+    return msgbox.exec()
 
 def requete_vide():
     """
     Affiche un message d'erreur qui indique a l'utilisateur que la requete est vide
+
+    Return :
+        Sélection de l'utilisateur
     """
     msgbox = QMessageBox()
     msgbox.setWindowTitle(ERREUR_DONNEE)
@@ -144,14 +163,17 @@ def requete_vide():
     msgbox.setIcon(QMessageBox.Information)
     msgbox.setStandardButtons(QMessageBox.Ok)
     msgbox.setDefaultButton(QMessageBox.Ok)
-    msgbox.exec()
+    return msgbox.exec()
 
 def message_box_missing_information(text):
     """
     Affiche un message d'erreur qui indique à l'utilisateur qu'une information est manquante dans un formulaire
 
-    Arguement : 
+    Argument : 
         text : Texte informatif
+
+    Return :
+        Sélection de l'utilisateur
     """
     msgbox = QMessageBox()
     msgbox.setWindowTitle(INFORMATION_MANQUANTE)
@@ -160,11 +182,14 @@ def message_box_missing_information(text):
     msgbox.setIcon(QMessageBox.Warning)
     msgbox.setStandardButtons(QMessageBox.Ok)
     msgbox.setDefaultButton(QMessageBox.Ok)
-    msgbox.exec()
+    return msgbox.exec()
 
 def facturation_impossible():
     """
     Affiche un message d'erreur qui indique à l'utilisateur d'une activité ne peut pas être facturée à deux reprises
+
+    Return :
+        Sélection de l'utilisateur
     """
     msgbox = QMessageBox()
     msgbox.setWindowTitle(FACTURATION_IMPOSSIBLE)
@@ -173,11 +198,14 @@ def facturation_impossible():
     msgbox.setIcon(QMessageBox.Information)
     msgbox.setStandardButtons(QMessageBox.Ok)
     msgbox.setDefaultButton(QMessageBox.Ok)
-    msgbox.exec()
+    return msgbox.exec()
 
 def activite_contingentee():
     """
     Affiche un message d'erreur qui indique à l'utilisateur que l'activité est contingentee
+
+    Return :
+        Sélection de l'utilisateur
     """
     msgbox = QMessageBox()
     msgbox.setWindowTitle(ACTIVITE_CONTINGENTEE)
@@ -191,6 +219,9 @@ def activite_contingentee():
 def remboursement_impossible():
     """
     Affiche un message d'erreur qui indique à l'utilisateur que le remboursement de l'activité est impossible
+
+    Return :
+        Sélection de l'utilisateur
     """
     msgbox = QMessageBox()
     msgbox.setWindowTitle(REMBOURSEMENT_IMPOSSIBLE)
@@ -199,4 +230,4 @@ def remboursement_impossible():
     msgbox.setIcon(QMessageBox.Information)
     msgbox.setStandardButtons(QMessageBox.Ok)
     msgbox.setDefaultButton(QMessageBox.Ok)
-    msgbox.exec()
+    return msgbox.exec()
