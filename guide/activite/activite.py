@@ -26,7 +26,7 @@ from pylatex import Document, Command, PageStyle, simple_page_number, MiniPage, 
 from pylatex.utils import bold
 
 # Project import
-from script.database import Error
+from script.database import DatabaseError
 from facturation import facturation
 
 # Interface import
@@ -109,7 +109,7 @@ class NouvelleActivite(QDialog, Ui_NouvelleActivite):
                       "categorie_activite")
 
         # Affichage d'un message d'erreur si la requete echoue
-        Error.DatabaseError.sql_error_handler(query.lastError())
+        DatabaseError.sql_error_handler(query.lastError())
 
         # Ajouter les responsables a la liste
         while query.next():
@@ -162,7 +162,7 @@ class NouvelleActivite(QDialog, Ui_NouvelleActivite):
 
             query.exec_()
             # Affichage d'un message d'erreur si la requete echoue
-            if not Error.DatabaseError.sql_error_handler(query.lastError()):
+            if not DatabaseError.sql_error_handler(query.lastError()):
                 self.accept() # Fermer le dialog seulement si la requete est réussie
         else:
             # Lecture des informations du formulaire
@@ -223,7 +223,7 @@ class NouvelleActivite(QDialog, Ui_NouvelleActivite):
                 query.exec_()
 
                 # Affichage d'un message d'erreur si la requete echoue
-                if Error.DatabaseError.sql_error_handler(query.lastError()):
+                if DatabaseError.sql_error_handler(query.lastError()):
                     QSqlDatabase(self.DATABASE).rollback() # Annuler la transaction
                     return # Empêche la fermeture du dialog
             QSqlDatabase(self.DATABASE).commit()
@@ -274,7 +274,7 @@ class AfficherActivite(QDialog, Ui_AfficherActivite):
                 query.exec_()
 
                 # Affichage d'un message d'erreur si la requete echoue
-                if Error.DatabaseError.sql_error_handler(query.lastError()):
+                if DatabaseError.sql_error_handler(query.lastError()):
                     return # Ne pas continuer si la requete échoue
             # Entrer la personne comme abscente
             else:
@@ -287,7 +287,7 @@ class AfficherActivite(QDialog, Ui_AfficherActivite):
                 query.exec_()
 
                 # Affichage d'un message d'erreur si la requete echoue
-                if Error.DatabaseError.sql_error_handler(query.lastError()):
+                if DatabaseError.sql_error_handler(query.lastError()):
                     return # Ne pas continuer si la requete échoue
     
     def liste_presence(self):
@@ -362,7 +362,7 @@ class AfficherActivite(QDialog, Ui_AfficherActivite):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        Error.DatabaseError.sql_error_handler(query.lastError())
+        DatabaseError.sql_error_handler(query.lastError())
 
         while query.next():
             # Préparation du tableau
@@ -445,7 +445,7 @@ class AfficherActivite(QDialog, Ui_AfficherActivite):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        Error.DatabaseError.sql_error_handler(query.lastError())
+        DatabaseError.sql_error_handler(query.lastError())
 
         # Afficher les informations
         query.first()
@@ -486,7 +486,7 @@ class AfficherActivite(QDialog, Ui_AfficherActivite):
         query.bindValue(':id_activite', self.ID_ACTIVITE)
         query.exec_()
 
-        Error.DatabaseError.sql_error_handler(query.lastError())
+        DatabaseError.sql_error_handler(query.lastError())
 
     def annuler_activite(self):
         """Annuler une activite"""
@@ -512,6 +512,6 @@ class AfficherActivite(QDialog, Ui_AfficherActivite):
             query.bindValue(':id_activite', self.ID_ACTIVITE)
             query.exec_()
 
-            Error.DatabaseError.sql_error_handler(query.lastError())
+            DatabaseError.sql_error_handler(query.lastError())
 
             self.accept()

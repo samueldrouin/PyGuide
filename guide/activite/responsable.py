@@ -8,7 +8,7 @@ from PyQt5.QtSql import QSqlQuery
 from PyQt5.QtWidgets import QDialog
 
 # Project import
-from script.database import Error
+from script.database import DatabaseError
 from script.interface import Validator
 from script.data import DataError
 
@@ -73,7 +73,7 @@ class NouveauResponsable(Responsable):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if not Error.DatabaseError.sql_error_handler(query.lastError()):
+        if not DatabaseError.sql_error_handler(query.lastError()):
             self.accept() # Fermer le dialog seulement si la requete reussie
 
 
@@ -107,7 +107,7 @@ class ModifierResponsable(Responsable):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        Error.DatabaseError.sql_error_handler(query.lastError())
+        DatabaseError.sql_error_handler(query.lastError())
 
         # Afficher les informations
         query.first()
@@ -131,5 +131,5 @@ class ModifierResponsable(Responsable):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if not Error.DatabaseError.sql_error_handler(query.lastError()):
+        if not DatabaseError.sql_error_handler(query.lastError()):
             self.accept() # Fermer le dialog seulement si la requete reussie

@@ -33,7 +33,7 @@ from facturation.facturation import Facturation, Inscription
 from statistique.statistiques import Statistiques, StatistiquesDialog
 from script.interface.selection import SelectionStatistique
 from facturation.groupe import Groupe
-from script.database import Error
+from script.database import DatabaseError
 from script.interface.a_propos import APropos
 
 # Interface import
@@ -184,7 +184,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         database = settings.value("Database")
 
         # Demander le chemin de la base de donnée tant qu'un chemin n'est pas entré
-        while database is None:
+        while not database:
             msgbox = QMessageBox()
             msgbox.setText("Aucune base de donnée")
             msgbox.setInformativeText("Vous devez sélectionner la base de donnée dans les réglages "
@@ -217,11 +217,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         db = QSqlDatabase.addDatabase("QSQLITE")
         db.setDatabaseName(database)
 
-        dbopen = False
-        while not dbopen:
-            dbopen = db.open()
-
-            if not dbopen:
+        if not db.open():
                 msgbox = QMessageBox()
                 msgbox.setText("Erreur de connection")
                 msgbox.setInformativeText(
@@ -466,7 +462,7 @@ class CentralWidgetParticipante(QWidget):
         query.exec_(sql)
 
         # Affichage d'un message d'erreur si la requete echoue
-        Error.DatabaseError.sql_error_handler(query.lastError())
+        DatabaseError.sql_error_handler(query.lastError())
 
         # Show data in table widget
         self.table_widget.setRowCount(0)
@@ -621,7 +617,7 @@ class CentralWidgetActivite(QWidget):
         query.exec_(sql)
 
         # Affichage d'un message d'erreur si la requete echoue
-        Error.DatabaseError.sql_error_handler(query.lastError())
+        DatabaseError.sql_error_handler(query.lastError())
 
         # Show data in table widget
         self.table_widget.setRowCount(0)
@@ -790,7 +786,7 @@ class CentralWidgetLieu(QWidget):
         query.exec_(sql)
 
         # Affichage d'un message d'erreur si la requete echoue
-        Error.DatabaseError.sql_error_handler(query.lastError())
+        DatabaseError.sql_error_handler(query.lastError())
 
         # Show data in table widget
         self.table_widget.setRowCount(0)
@@ -914,7 +910,7 @@ class CentralWidgetCategorieActivite(QWidget):
         query.exec_(sql)
 
         # Affichage d'un message d'erreur si la requete echoue
-        Error.DatabaseError.sql_error_handler(query.lastError())
+        DatabaseError.sql_error_handler(query.lastError())
 
         # Show data in table widget
         self.table_widget.setRowCount(0)

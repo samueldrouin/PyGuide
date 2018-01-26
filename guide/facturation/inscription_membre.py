@@ -9,7 +9,7 @@ from PyQt5.QtCore import QDate, Qt
 from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 
 # Project import
-from script.database import Error
+from script.database import DatabaseError
 from script.database import DataProcessing
 
 # Interface import
@@ -152,7 +152,7 @@ class NouvelleInscription(InscriptionMembre):
         query.exec_("SELECT MAX(numero_membre) FROM membre")
 
         # Affichage d'un message d'erreur si la requete echoue
-        Error.DatabaseError.sql_error_handler(query.lastError())
+        DatabaseError.sql_error_handler(query.lastError())
 
         query.first()
 
@@ -208,7 +208,7 @@ class NouvelleInscription(InscriptionMembre):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if Error.DatabaseError.sql_error_handler(query.lastError()):
+        if DatabaseError.sql_error_handler(query.lastError()):
             QSqlDatabase(self.DATABASE).rollback() # Annuler la transaction
             return # Empecher la fermeture du dialog
 
@@ -231,7 +231,7 @@ class NouvelleInscription(InscriptionMembre):
         query.bindValue(':total', self.tbl_commande.item(0, 1).text())
 
         # Affichage d'un message d'erreur si la requete echoue
-        if Error.DatabaseError.sql_error_handler(query.lastError()):
+        if DatabaseError.sql_error_handler(query.lastError()):
             QSqlDatabase(self.DATABASE).rollback() # Annuler la transaction
             return# Empecher la fermeture du dialog
 
@@ -292,7 +292,7 @@ class RenouvelerInscription(InscriptionMembre):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        Error.DatabaseError.sql_error_handler(query.lastError())
+        DatabaseError.sql_error_handler(query.lastError())
 
         query.first()
         self.txt_numero_membre.setText(str(query.value(0)))
@@ -334,7 +334,7 @@ class RenouvelerInscription(InscriptionMembre):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if Error.DatabaseError.sql_error_handler(query.lastError()):
+        if DatabaseError.sql_error_handler(query.lastError()):
             QSqlDatabase(self.DATABASE).rollback() # Annuler la transaction
             return # Empecher la fermeture du dialog
 
@@ -361,7 +361,7 @@ class RenouvelerInscription(InscriptionMembre):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if Error.DatabaseError.sql_error_handler(query.lastError()):
+        if DatabaseError.sql_error_handler(query.lastError()):
             QSqlDatabase(self.DATABASE).rollback() # Annuler la transaction
             return # Empecher la fermeture du dialog
         #Termine la transation

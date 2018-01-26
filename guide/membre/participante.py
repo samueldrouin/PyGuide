@@ -10,7 +10,7 @@ from PyQt5.QtSql import QSqlQuery
 
 # Project import
 from facturation.inscription_membre import NouvelleInscription, RenouvelerInscription
-from script.database import Error
+from script.database import DatabaseError
 from script.interface import Validator
 from script.interface import Completer
 from facturation import facturation
@@ -251,7 +251,7 @@ class Participante(QDialog, Ui_Participante):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        Error.DatabaseError.sql_error_handler(query.lastError())
+        DatabaseError.sql_error_handler(query.lastError())
 
         if query.first() and int(query.value(0)):
             # Afficher les champs du formulaire
@@ -348,7 +348,7 @@ class NouvelleParticipante(Participante):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if not Error.DatabaseError.sql_error_handler(query.lastError()):
+        if not DatabaseError.sql_error_handler(query.lastError()):
             # Continuer le traitement seulement si la requete reussie
             if self.sender() == self.btn_add:
                 self.accept()
@@ -356,7 +356,7 @@ class NouvelleParticipante(Participante):
                 # Fetch inserted participante_id
                 query = QSqlQuery()
                 query.exec_("SELECT last_insert_rowid()")
-                Error.DatabaseError.sql_error_handler(query.lastError())
+                DatabaseError.sql_error_handler(query.lastError())
                 query.first()
                 self.ID_PARTICIPANTE = query.value(0)
 
@@ -399,7 +399,7 @@ class ModifierParticipante(Participante):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if Error.DatabaseError.sql_error_handler(query.lastError()):
+        if DatabaseError.sql_error_handler(query.lastError()):
             return # Ne pas continuer avec des informations incompletes
 
         while(query.next()):
@@ -441,7 +441,7 @@ class ModifierParticipante(Participante):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if Error.DatabaseError.sql_error_handler(query.lastError()):
+        if DatabaseError.sql_error_handler(query.lastError()):
             return # Ne pas continuer avec des informations incompletes
 
         while(query.next()):
@@ -491,7 +491,7 @@ class ModifierParticipante(Participante):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        Error.DatabaseError.sql_error_handler(query.lastError())
+        DatabaseError.sql_error_handler(query.lastError())
 
         query.first()
 
@@ -572,7 +572,7 @@ class ModifierParticipante(Participante):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if not Error.DatabaseError.sql_error_handler(query.lastError()):
+        if not DatabaseError.sql_error_handler(query.lastError()):
             # Fermeture du dialog seulement si la requete reussie
             # et le signal vient du bouton add
             if self.sender() == self.btn_add:

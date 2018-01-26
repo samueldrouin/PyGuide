@@ -8,7 +8,7 @@ from PyQt5.QtSql import QSqlQuery
 from PyQt5.QtWidgets import QDialog
 
 # Projet import
-from script.database import Error
+from script.database import DatabaseError
 from script.interface import Validator
 from script.database import DataProcessing
 from script.data import DataError
@@ -53,7 +53,7 @@ class CategorieActivite(QDialog, Ui_CategorieActivite):
                     "ORDER BY nom ASC")
 
         # Affichage d'un message d'erreur si la requete echoue
-        Error.DatabaseError.sql_error_handler(query.lastError())
+        DatabaseError.sql_error_handler(query.lastError())
 
         # Ajouter les responsables a la liste
         while query.next():
@@ -75,7 +75,7 @@ class CategorieActivite(QDialog, Ui_CategorieActivite):
                     "ORDER BY nom ASC")
 
         # Affichage d'un message d'erreur si la requete echoue
-        Error.DatabaseError.sql_error_handler(query.lastError())
+        DatabaseError.sql_error_handler(query.lastError())
 
         # Ajouter les types d'activite a la liste
         while query.next():
@@ -95,7 +95,7 @@ class CategorieActivite(QDialog, Ui_CategorieActivite):
                       "lieu")
 
         # Affichage d'un message d'erreur si la requete echoue
-        Error.DatabaseError.sql_error_handler(query.lastError())
+        DatabaseError.sql_error_handler(query.lastError())
 
         # Ajouter les types d'activite a la liste
         while query.next():
@@ -166,7 +166,7 @@ class NouvelleCategorieActivite(CategorieActivite):
         query.bindValue(':id_lieu', self.cbx_lieu.itemData(self.cbx_lieu.currentIndex()))
         query.exec_()
         # Affichage d'un message d'erreur si la requete echoue
-        if not Error.DatabaseError.sql_error_handler(query.lastError()):
+        if not DatabaseError.sql_error_handler(query.lastError()):
             self.accept() # Fermer si dialog seulement si la requete reussie
 
 
@@ -205,7 +205,7 @@ class ModifierCategorieActivite(CategorieActivite):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        Error.DatabaseError.sql_error_handler(query.lastError())
+        DatabaseError.sql_error_handler(query.lastError())
 
         # Afficher les informations
         query.first()
@@ -253,5 +253,5 @@ class ModifierCategorieActivite(CategorieActivite):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if not Error.DatabaseError.sql_error_handler(query.lastError()):
+        if not DatabaseError.sql_error_handler(query.lastError()):
             self.accept() # Fermer le dialog seulement si la requete reussie
