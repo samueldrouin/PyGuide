@@ -1,4 +1,12 @@
-"""Fenetre principale"""
+"""
+Module responsable de l'affichage de la fenêtre principale du programme
+
+Les classes de ce module peuvent afficher les informations de la base de donnée et afficher les
+fenêtre responsable de les modifier. Elle ne devrait pas pouvoir modifier la base de donnée directement. 
+
+Classes
+    MainWindow : Interface de la fenêtre principale
+"""
 
 # Python import
 import os
@@ -40,7 +48,27 @@ import resources
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
-    """Interface de la fenêtre principale"""
+    """
+    Interface de la fenêtre principale
+
+    L'interface de la fenêtre principale est généré par une combinaison de trois classes :
+                               _                                     _
+                               |   --------------                     |
+                               |   |            | <- Top Widget       |
+                MainWindow ->  |   |------------|    (option de       | <- CentralWidget
+                (élément de    |   |            |     tri)            |    (option de tri et
+                 QMainWindow)  |_  --------------                    _|     table)
+    
+    Le CentralWidget varie selon le type d'élément qui doit être affiché
+
+    La connection à la base de donnée est effectuée dans cette classe. La connection n'est pas vérifiée 
+    automatiquement ailleur.
+
+    Methodes : 
+        afficher_liste_statistique : Afficher la liste des statistiques enregistrées dans une fenêtre de sélection
+        ouvrir_statistique : Exécuter un fichier de statistique et afficher le résultat
+        verifier_path_statistique : Obtenir le chemin vers le folder contenant les statistiques
+    """
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setupUi(self)
@@ -78,7 +106,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def afficher_liste_statistique(self):
         """
-        Ajouter les statistiques au menu
+        Afficher la liste des statistiques enregistrées dans une fenêtre de sélection
         """
         # Obtenir le dossier ou les fichiers statistique sont enregistrée
         statistique = self.verifier_path_statistique()
@@ -94,6 +122,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
             liste_statistique.append(dict_stat)
 
+        # Afficher la liste des statistiques à l'utilisation
         selection = SelectionStatistique(liste_statistique)
         selection.setWindowTitle("Statistique")
         if selection.exec() == QDialog.Accepted:
@@ -103,17 +132,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def ouvrir_statistique(self, path):
         """
-        Ouvrir une statistique
+        Exécuter un fichier de statistique et afficher le résultat
 
         Argument :
             path : Chemin du fichier de statistique sélectionné
         """
+        # Préparer le contenu du fichier XML
         tree = ET.parse(path)
         stat = tree.getroot()
 
         sql = stat.find('sql').text
         type = stat.find('output').text
 
+        # Exécuter la statistique
         statistiques = Statistiques(self.DATABASE)
         if type == "csv":
             statistiques.afficher_csv(sql)
@@ -122,7 +153,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def verifier_path_statistique(self):
         """
-        Vérifier s'il existe un folder pour les statistiques
+        Obtenir le chemin vers le folder contenant les statistiques
 
         S'il n'en existe pas, le créer et enregistrer le chemin dans les réglages
 
