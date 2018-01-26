@@ -1,4 +1,14 @@
-"""Création et affichage des activité"""
+"""
+Module permettant la création et l'affichage des activités
+
+Le module est responsable de l'ajout et de la modification des activité dans la base de donnée. Contrairement à la majorité des modules, 
+se module ne comporte pas de classe de base puis les besoins pour la création et l'affichage des activités sont très différents. 
+
+Classes
+    NouvelleActivite : Dialog permettant la création d'une nouvelle activité dans la base de données
+    AfficherActivite : Dialog permettant l'affichage des informations sur une activité
+"""
+
 
 # Python import
 import os
@@ -25,7 +35,16 @@ from interface.afficher_activite import Ui_AfficherActivite
 
 
 class NouvelleActivite(QDialog, Ui_NouvelleActivite):
-    """Dialog pour la création d'une nouvelle activité"""
+    """
+    Dialog permettant la création d'une nouvelle activité dans la base de données
+    
+    Méthodes
+        vider_date_exclusion : Vide la liste des date d'exclusion
+        ajout_date_exclusion : Ajouter une date à la liste d'exclusion
+        afficher_categorie_activite : Afficher la liste des categories d'activite dans le combobox
+        afficher_champs_date : Afficher les champs pour entrer les date selon la fréquence de l'activité
+        process : Traitement de l'ajout de l'activité dans la base de données
+    """
     def __init__(self, database):
         super(NouvelleActivite, self).__init__()
         self.setupUi(self)
@@ -98,7 +117,9 @@ class NouvelleActivite(QDialog, Ui_NouvelleActivite):
 
     def afficher_champs_date(self):
         """
-        Afficher les champs pour entrer les dates
+        Afficher les champs pour entrer les date selon la fréquence de l'activité
+            - Activité unique : un seul champ est affiché pour entrer la date
+            - Activité hebdomadaire : les champs pour afficher les date de début, fin et exlcusion sotn affichés
         """
 
         # Date unique
@@ -113,7 +134,7 @@ class NouvelleActivite(QDialog, Ui_NouvelleActivite):
 
     def process(self):
         """
-        Traitement des donnees dans la base de donnee
+        Traitement de l'ajout de l'activité dans la base de données
         """
         if self.rbt_unique.isChecked():
             query = QSqlQuery(self.DATABASE)
@@ -209,7 +230,9 @@ class NouvelleActivite(QDialog, Ui_NouvelleActivite):
         self.accept()
 
 class AfficherActivite(QDialog, Ui_AfficherActivite):
-    """Dialog pour l'affichage des informations sur une activité"""
+    """
+    Dialog permettant l'affichage des informations sur une activité
+    """
     def __init__(self, database, id_activite):
         super(AfficherActivite, self).__init__()
         self.setupUi(self)
