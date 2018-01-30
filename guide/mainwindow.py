@@ -6,6 +6,10 @@ fenêtre responsable de les modifier. Elle ne devrait pas pouvoir modifier la ba
 
 Classes
     MainWindow : Interface de la fenêtre principale
+    TopWidgetParticipante : TopWidget du CentralWidget des participantes
+    CentralWidgetParticipante : CentralWidget pour les participantes
+    TopWidgetActivite : TopWidget du CentralWidget des activité
+    CentralWidgetActivite : CentralWidget pour les activités
 """
 
 # Python import
@@ -215,94 +219,96 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 return db
 
     def statistiques(self):
-        """Ouvre la fenetre de statistiques"""
+        """
+        Ouvre le dialog des statistiques
+        """
         statistiques = StatistiquesDialog(self.DATABASE)
         statistiques.exec()
 
     def inscription(self):
         """
-        Ouvre une fenetre pour une nouvelle inscription
+        Ouvre un dialog pour entrer une nouvelle inscription
         """
         inscription = Inscription(self.DATABASE)
         inscription.exec()
 
     def facturation(self):
         """
-        Ouvre une fenetre pour une nouvelle facture
+        Ouvre un dialog pour entrer une nouvelle facture
         """
         facturation = Facturation(self.DATABASE)
         facturation.exec()
 
     def consultation_responsables(self):
         """
-        Ouvre la fenetre de consultation des responsables
+        Ouvre le dialog pour consulter les responsables
         """
         consultation = Consultation(2, self.DATABASE)
         consultation.exec()
 
     def consultation_type_activite(self):
         """
-        Ouvrir la fenetre de consultation des types d'activite
+        Ouvrir le dialog pour consulter les types d'activite
         """
         consultation = Consultation(1, self.DATABASE)
         consultation.exec()
 
     def reglage(self):
         """
-        Ouvre la fenetre des reglages
+        Ouvre le dialog des réglages
         """
         setting = Setting()
         setting.exec()
 
     def groupe(self):
         """
-        Ouvre la fenetre des reglages
+        Ouvre le dialog pour entrer un groupe à une activité
         """
         groupe = Groupe(self.DATABASE)
         groupe.exec()
 
     def a_propos(self):
         """
-        Affiche les informations sur l'application
+        Ouvre le dialog qui affiche les informations sur l'application
         """
         a_propos = APropos()
         a_propos.exec()
 
     def set_participantes_central_widget(self):
         """
-        Affichage de la liste des participantes et des options de tri
+        Affichage de la liste des participantes et des options de tri dans la fenêtre principale
         """
         central_widget = CentralWidgetParticipante(self.DATABASE)
         self.setCentralWidget(central_widget)
 
     def set_activite_central_widget(self):
         """
-        Affichage de la liste des activites et des options de tri
+        Affichage de la liste des activites et des options de tri dans la fenêtre principale
         """
         central_widget = CentralWidgetActivite(self.DATABASE)
         self.setCentralWidget(central_widget)
 
     def set_categorie_activite_central_widget(self):
         """
-        Affichage de la liste des type d'activite et des options de tri
+        Affichage de la liste des type d'activite et des options de tri dans la fenêtre principale
         """
         central_widget = CentralWidgetCategorieActivite(self.DATABASE)
         self.setCentralWidget(central_widget)
 
     def set_lieux_central_widget(self):
         """
-        Affichage des lieux et des options de tri
+        Affichage des lieux et des options de tri dans la fenêtre principale
         """
         central_widget = CentralWidgetLieu(self.DATABASE)
         self.setCentralWidget(central_widget)
 
-"""
-CentralWidget spécifiques :
-- Options de tri spécifique
-- Tableau avec les informations à afficher
-"""
 
 class TopWidgetParticipante(QWidget, Ui_WidgetParticipante):
+    """
+    TopWidget du CentralWidget des participantes
+
+    Afficher l'interface du TopWidget seulement
+    """
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -314,10 +320,16 @@ class CentralWidgetParticipante(QWidget):
 
     Affiche les informations sur les participantes
     Permet l'ouverture des dialogs pour modificer et ajouter des participantes
+
+    Méthodes :
+        update_search_placeholder : Met à jour le placeholder text de la recherche lorsque l'item du ComboBox change
+        edit_participante : Ouvre le dialog pour modifier une participante
+        nouvelle_participante : Ouvre le dialog pour creer une nouvelle participante
+        update_list : Met à jour la liste des participantes lorsque les options de tri sont modifiées
     """
     def __init__(self, database):
         super(CentralWidgetParticipante, self).__init__()
-
+        # Création de l'interface du CentralWidget
         self.layout = QVBoxLayout(self)
         self.top_widget = TopWidgetParticipante()
         self.layout.addWidget(self.top_widget)
@@ -354,8 +366,10 @@ class CentralWidgetParticipante(QWidget):
 
     def update_search_placeholder(self, text):
         """
-        Update search placeholder text when combo box item is changed
-        :param text:
+        Met à jour le placeholder text de la recherche lorsque l'item du ComboBox change
+
+        Arguments : 
+            text : Texte sélectionné dans le ComboBox
         """
         self.top_widget.txt_search.clear()
         self.top_widget.txt_search.setPlaceholderText(text)
@@ -363,7 +377,9 @@ class CentralWidgetParticipante(QWidget):
     def edit_participante(self, index):
         """
         Ouvre le dialog pour modifier une participante
-        :param index: Index de la colonne
+
+        Argument :
+            index : Index de la colonne
         """
         participante_id = self.table_widget.item(index.row(), 0).text()
         modifier_participante = ModifierParticipante(participante_id, self.DATABASE)
@@ -372,7 +388,7 @@ class CentralWidgetParticipante(QWidget):
 
     def nouvelle_participante(self):
         """
-        Ouvrir le dialog pour creer une nouvelle participante
+        Ouvre le dialog pour creer une nouvelle participante
         """
         nouvelle_participante = NouvelleParticipante(self.DATABASE)
         nouvelle_participante.accepted.connect(self.update_list)
@@ -380,9 +396,9 @@ class CentralWidgetParticipante(QWidget):
 
     def update_list(self):
         """
-        Update participante list in table widget
+        Met à jour la liste des participantes lorsque les options de tri sont modifiées
         """
-        # Fetch data from database
+        # Obtenir la liste des participantes dans la base de donnée
         query = QSqlQuery(self.DATABASE)
         if self.top_widget.chk_membre.isChecked():
             sql = "SELECT "\
@@ -445,9 +461,10 @@ class CentralWidgetParticipante(QWidget):
         # Affichage d'un message d'erreur si la requete echoue
         DatabaseError.sql_error_handler(query.lastError())
 
-        # Show data in table widget
+        # Vider la table des éléments existants
         self.table_widget.setRowCount(0)
 
+        # Ajouter les éléments de la requête à la table des participantes
         while query.next():
             self.table_widget.insertRow(self.table_widget.rowCount())
             r = self.table_widget.rowCount() - 1
@@ -480,6 +497,11 @@ class CentralWidgetParticipante(QWidget):
 
 
 class TopWidgetActivite(QWidget, Ui_WidgetActivite):
+    """
+    TopWidget du CentralWidget des activité
+
+    Afficher l'interface du TopWidget seulement
+    """
     def __init__(self):
         super().__init__()
         self.setupUi(self)
