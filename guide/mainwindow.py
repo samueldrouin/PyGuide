@@ -164,11 +164,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         settings = QSettings("Samuel Drouin", "GUIDE-CFR")
         statistique = settings.value("Statistique")
 
+        # Vérifier s'il existe une valeur
         if not statistique:
+            # Créer le dossier et l'ajouter aux statistiques si aucune valeur n'est entrée
             statistique = str(os.path.join(pathlib.Path.home(), 'Documents', 'GUIDE-CFR', 'Statistiques'))
             settings.setValue("Statistique", statistique)
         else:
+            # Vérifier si le dossier existe
             if not pathlib.Path(statistique).is_dir():
+                # Créer le dossier et l'ajouter aux statistiques s'il n'existe pas
                 statistique = str(os.path.join(pathlib.Path.home(), 'Documents', 'GUIDE-CFR', 'Statistiques'))
                 settings.setValue("Statistique", statistique)
 
@@ -176,62 +180,39 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def check_database_status(self):
         """
-        Lecture des réglages
-        Vérifier si une base de donnée est enregistrée
-        :return: Path to database
+        Obtient le chemin vers la base de donnée à partir des réglages
+
+        Return :
+            Path to database
         """
         settings = QSettings("Samuel Drouin", "GUIDE-CFR")
         database = settings.value("Database")
 
-        # Demander le chemin de la base de donnée tant qu'un chemin n'est pas entré
-        while not database:
-            msgbox = QMessageBox()
-            msgbox.setText("Aucune base de donnée")
-            msgbox.setInformativeText("Vous devez sélectionner la base de donnée dans les réglages "
-                                      "avant de pouvoir utiliser le programme. ")
-            msgbox.setIcon(QMessageBox.Critical)
-            msgbox.setStandardButtons(QMessageBox.Ok)
-            msgbox.setDefaultButton(QMessageBox.Ok)
-            ret = msgbox.exec()
+        # Vérifier si le chemin vers la base de donnée existe 
+        # et si le fichier existe
+        if not database or not pathlib.Path(database).is_file():
+            # Indique à l'utilisateur que la base de donnée n'existe pas et
+            # qu'elle doit être créée
+            ret = DatabaseError.aucune_database()
 
+            # Ouvre les réglages pour entrer le chemin vers la base de donnée
             if ret == QMessageBox.Ok:
-                self.reglage()
-                settings = QSettings("Samuel Drouin", "GUIDE-CFR")
-                database = settings.value("Database")
-        # Demander le chemin vers la base de données tant qu'un chemin valide n'est pas entré
-        while not pathlib.Path(database).is_file():
-            msgbox = QMessageBox()
-            msgbox.setText("Base de donnée inexistante")
-            msgbox.setInformativeText("Vous devez sélectionner la base de donnée existante dans les réglages avant de "
-                                      "pouvoir utiliser le programme. ")
-            msgbox.setIcon(QMessageBox.Critical)
-            msgbox.setStandardButtons(QMessageBox.Ok)
-            msgbox.setDefaultButton(QMessageBox.Ok)
-            ret = msgbox.exec()
+                setting = Setting()
+                setting.accepted.connect(self.check_database_status)
+                setting.exec()
+        else:
+            # Ajouter la base de donnée
+            db = QSqlDatabase.addDatabase("QSQLITE")
+            db.setDatabaseName(database)
 
-            if ret == QMessageBox.Ok:
-                self.reglage()
-                settings = QSettings("Samuel Drouin", "GUIDE-CFR")
-                database = settings.value("Database")
-
-        db = QSqlDatabase.addDatabase("QSQLITE")
-        db.setDatabaseName(database)
-
-        if not db.open():
-                msgbox = QMessageBox()
-                msgbox.setText("Erreur de connection")
-                msgbox.setInformativeText(
-                    "Une erreur lors de la connection à la base de données "
-                    "empêche l'ouverture du programme. Appuyez "
-                    "sur annuler pour fermer le programme")
-                msgbox.setDetailedText(db.lastError().text())
-                msgbox.setIcon(QMessageBox.Critical)
-                msgbox.setStandardButtons(QMessageBox.Cancel)
-                msgbox.setDefaultButton(QMessageBox.Cancel)
-                msgbox.exec()
+            # Vérifier si la base de donnée ouvre
+            if not db.open():
+                # Avertit l'utilisateur d'une erreur de connection et ferme le programme
+                DatabaseError.sql_error_handler(db.lastError())
                 self.close()
-
-        return db
+            else:
+                # Si la base de donnée est ouverte, retourne le chemin vers la base de donnée
+                return db
 
     def statistiques(self):
         """Ouvre la fenetre de statistiques"""

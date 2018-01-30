@@ -745,6 +745,7 @@ class Statistiques(QDialog):
         elif type == self.TYPE_INTEGER:
             widget = QSpinBox()
             widget.setFrame(False)
+            widget.setMaximum(10000)
             widget.setButtonSymbols(QAbstractSpinBox.NoButtons)
         elif type == self.TYPE_DATE:
             widget = QDateEdit()
@@ -995,7 +996,7 @@ class Statistiques(QDialog):
 
             # Ajouter les tables secondaires à la requête
             for key, value in dict_table_secondaire.items():
-                sql = sql + value['contrainte'] + " " + key[0] + " ON " + key[1] + "." + value['id'] + " " + key[0] + "." + value['id'] + " "
+                sql = sql + value['contrainte'] + " " + key[0] + " ON " + key[1] + "." + value['id'] + " = " + key[0] + "." + value['id'] + " "
 
             # Vérifier s'il y a des options de tri
             if self.tbl_tri.cellWidget(0, 0).currentData():
@@ -1023,6 +1024,7 @@ class Statistiques(QDialog):
 
             # Ajouter l'ordre
             sql = sql + "ORDER BY " + self.cbx_table.currentData() + "." + self.cbx_colonne.currentData()
+            print(sql)
             return sql
 
     def get_constraint_value(self, row):
@@ -1083,7 +1085,7 @@ class Statistiques(QDialog):
                 if last_table != current_table:
                     # Déterminer l'identifiant pour la clause 'ON'
                     id = None
-                    if last_table in self.DICT_REFERENCE_TABLE[current_table]['from']:
+                    if last_table in self.DICT_REFERENCE_TABLE[current_table]['to']:
                         id = self.DICT_TABLE[last_table]['id']
                     else:
                         id = self.DICT_TABLE[current_table]['id']
