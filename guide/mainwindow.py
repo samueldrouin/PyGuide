@@ -72,6 +72,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         afficher_liste_statistique : Afficher la liste des statistiques enregistrées dans une fenêtre de sélection
         ouvrir_statistique : Exécuter un fichier de statistique et afficher le résultat
         verifier_path_statistique : Obtenir le chemin vers le folder contenant les statistiques
+        check_database_status : Obtient le chemin vers la base de donnée à partir des réglages
+        statistiques : Ouvre le dialog des statistiques
+        inscription : Ouvre un dialog pour entrer une nouvelle inscription
+        facturation : Ouvre un dialog pour entrer une nouvelle facture
+        consultation_responsables : Ouvre le dialog pour consulter les responsables
+        consultation_type_activite : Ouvrir le dialog pour consulter les types d'activite
+        reglage : Ouvre le dialog des réglages
+        groupe : Ouvre le dialog pour entrer un groupe à une activité
+        a_propos : Ouvre le dialog qui affiche les informations sur l'application
+        set_participantes_central_widget : Affichage de la liste des participantes et des options de tri dans la fenêtre principale
+        set_activite_central_widget : Affichage de la liste des activites et des options de tri dans la fenêtre principale
+        set_categorie_activite_central_widget : Affichage de la liste des type d'activite et des options de tri dans la fenêtre principale
+        set_lieux_central_widget : Affichage des lieux et des options de tri dans la fenêtre principale
     """
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -307,7 +320,7 @@ class TopWidgetParticipante(QWidget, Ui_WidgetParticipante):
     """
     TopWidget du CentralWidget des participantes
 
-    Afficher l'interface du TopWidget seulement
+    Affiche l'interface du TopWidget seulement
     """
     def __init__(self):
         super().__init__()
