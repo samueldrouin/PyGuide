@@ -40,7 +40,7 @@ def check_int(value):
     else:
         return int(str)
 
-def check_phone_number(str):
+def check_phone_number(value):
     """
     Convertit un numéro de téléphone en nombre entier
     

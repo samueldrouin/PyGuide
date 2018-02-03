@@ -38,6 +38,7 @@ from statistique.statistiques import Statistiques, StatistiquesDialog
 from script.interface.selection import SelectionStatistique
 from facturation.groupe import Groupe
 from script.database import DatabaseError
+from script.database import DataProcessing
 from script.interface.a_propos import APropos
 
 # Interface import
@@ -412,45 +413,39 @@ class CentralWidgetParticipante(QWidget):
         Met à jour la liste des participantes lorsque les options de tri sont modifiées
         """
         # Obtenir la liste des participantes dans la base de donnée
-        query = QSqlQuery(self.DATABASE)
+
+        # Requête principale
+        sql = "SELECT "\
+                "participante.id_participante, "\
+                "participante.prenom, participante.nom, " \
+                "participante.ville, "\
+                "participante.courriel, "\
+                "participante.telephone_1, " \
+                "participante.poste_telephone_1, "\
+                "membre.numero_membre "\
+                "FROM "\
+                "participante " \
+
+        # Sélection des membres seulement
         if self.top_widget.chk_membre.isChecked():
-            sql = "SELECT "\
-                    "participante.id_participante, "\
-                    "participante.prenom, participante.nom, " \
-                    "participante.ville, "\
-                    "participante.courriel, "\
-                    "participante.telephone_1, " \
-                    "participante.poste_telephone_1, "\
-                    "membre.numero_membre "\
-                  "FROM "\
-                    "participante " \
-                  "INNER JOIN membre "\
-                    "ON membre.id_participante = participante.id_participante "
+            sql = sql + "INNER JOIN membre "\
+                            "ON membre.id_participante = participante.id_participante "
+        # Sélection de tout les membres et les participantes
         else:
-            sql = "SELECT "\
-                    "participante.id_participante, "\
-                    "participante.prenom, participante.nom, " \
-                    "participante.ville, "\
-                    "participante.courriel, "\
-                    "participante.telephone_1, " \
-                    "participante.poste_telephone_1, "\
-                    "membre.numero_membre "\
-                  "FROM "\
-                    "participante " \
-                  "LEFT JOIN membre "\
-                    "ON membre.id_participante = participante.id_participante "
+            sql = sql + "LEFT JOIN membre "\
+                            "ON membre.id_participante = participante.id_participante "
 
         # Ajout des options de recherche
         search = self.top_widget.txt_search.text()
         if search != "":
             if self.top_widget.cbx_search.currentText() == "Prénom":
-                sql = sql + "WHERE participante.prenom LIKE '%{}%' ".format(search)
+                sql = sql + "WHERE participante.prenom LIKE '{}%' ".format(search)
             elif self.top_widget.cbx_search.currentText() == "Nom":
-                sql = sql + "WHERE participante.nom LIKE '%{}%' ".format(search)
+                sql = sql + "WHERE participante.nom LIKE '{}%' ".format(search)
             elif self.top_widget.cbx_search.currentText() == "Ville":
-                sql = sql + "WHERE participante.ville LIKE '%{}%' ".format(search)
+                sql = sql + "WHERE participante.ville LIKE '{}%' ".format(search)
             else:
-                sql = sql + "WHERE participante.telephone_1 LIKE '%{}%' ".format(search)
+                sql = sql + "WHERE participante.telephone_1 LIKE '{}%' ".format(DataProcessing.check_phone_number(search))
 
         # Ajouter les options de tri
         if self.top_widget.cbx_sort.currentText() == "Prénom":
@@ -469,6 +464,9 @@ class CentralWidgetParticipante(QWidget):
             sql = sql + "DESC "
         else:
             sql = sql + "ASC "
+
+        # Exécution de la requête
+        query = QSqlQuery(self.DATABASE)
         query.exec_(sql)
 
         # Affichage d'un message d'erreur si la requete echoue
