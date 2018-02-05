@@ -52,10 +52,32 @@ from interface.central_widget.widget_participante import Ui_WidgetParticipante
 import resources
 
 # Global constante definition
+
+# Élément affiché
 ACTIVITE = 0
 CATEGORY_ACTIVITE = 1
 LIEU = 2
 PARTICIPANTE = 3
+
+# Largeur relative des colonnes des tableaux
+FACTOR_COL_NOM = 0.23
+FACTOR_COL_ADRESSE = 0.2
+FACTOR_COL_COURRIEL = 0.2
+FACTOR_COL_TELEPHONE = 0.2
+
+FACTOR_COL_NOM_ACTIVITE = 0.2
+FACTOR_COL_LIEU = 0.2
+FACTOR_COL_PRIX = 0.15
+FACTOR_COL_DATE = 0.15
+FACTOR_COL_HEURE = 0.15
+
+FACTOR_COL_PARTICIPANTE = 0.15
+FACTOR_COL_RESPONSABLE = 0.15
+FACTOR_COL_TYPE_ACTIVITE = 0.15
+
+FACTOR_COL_NOM_LIEU = 0.3
+FACTOR_COL_ADRESSE_LIEU = 0.25
+FACTOR_COL_VILLE = 0.25
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -90,6 +112,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         reglage : Ouvre le dialog des réglages
         groupe : Ouvre le dialog pour entrer un groupe à une activité
         a_propos : Ouvre le dialog qui affiche les informations sur l'application
+        resizeEvent : Appelle la fonction responsable de modifier la taille des colonnes lorsque la taille de la fenêtre est modifiée
+        resize_table : Ajuster la taille des colonnes à la taille du tableau
+        showEvent : Appelle la fonction responsable de modifier la taille des colonnes du tableau lorsque la programme apparait
 
         afficher_participante : Affichage de la liste des participantes et des options de tri dans la fenêtre principale
         edit_participante : Ouvre le dialog pour modifier une participante
@@ -124,6 +149,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Enlever la barre de titre du DockWidget
         self.dock_widget.setTitleBarWidget(QWidget())
+
+        # Paramètres du tableau
+        self.table_widget.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
 
         # Afficher les images des boutons
         self.act_consult_participante.setIcon(QIcon(":/mainwindow/Participante.png"))
@@ -185,6 +213,56 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             settings.setValue("MainWindow/CentralWidget", PARTICIPANTE)
         
         return super().closeEvent(QCloseEvent)
+
+    def resizeEvent(self, event):
+        """
+        Appelle la fonction responsable de modifier la taille des colonnes du tableau lorsque la taille de
+        la fenêtre est modifiée
+        """
+        self.resize_table()
+        return super().resizeEvent(event)
+
+    def showEvent(self, QShowEvent):
+        """
+        Appelle la fonction responsable de modifier la taille des colonnes du tableau lorsque la programme apparait
+
+        Cette fonction est nécessaire pour que l'affichage de la taille des colonnes soit optimale à l'ouverture. 
+        """
+        self.resize_table()
+        return super().showEvent(QShowEvent)
+
+    def resize_table(self):
+        """
+        Ajuster la taille des colonnes à la taille du tableau
+        """
+        # Taille du tableau
+        width = self.table_widget.width()
+
+        # Régler la taille des colonnes
+        if isinstance(self.dock_widget.widget(), DockWidgetActivite):
+            self.table_widget.setColumnWidth(1, FACTOR_COL_NOM_ACTIVITE*width)
+            self.table_widget.setColumnWidth(2, FACTOR_COL_LIEU*width)
+            self.table_widget.setColumnWidth(3, FACTOR_COL_PRIX*width)
+            self.table_widget.setColumnWidth(4, FACTOR_COL_DATE*width)
+            self.table_widget.setColumnWidth(5, FACTOR_COL_HEURE*width)
+        elif isinstance(self.dock_widget.widget(), DockWidgetCategorieActivite):
+            self.table_widget.setColumnWidth(1, FACTOR_COL_NOM_ACTIVITE*width)
+            self.table_widget.setColumnWidth(2, FACTOR_COL_PRIX*width)
+            self.table_widget.setColumnWidth(3, FACTOR_COL_PARTICIPANTE*width)
+            self.table_widget.setColumnWidth(4, FACTOR_COL_RESPONSABLE*width)
+            self.table_widget.setColumnWidth(5, FACTOR_COL_TYPE_ACTIVITE*width)
+        elif isinstance(self.dock_widget.widget(), DockWidgetLieu):
+            self.table_widget.setColumnWidth(1, FACTOR_COL_NOM_LIEU*width)
+            self.table_widget.setColumnWidth(2, FACTOR_COL_ADRESSE_LIEU*width)
+            self.table_widget.setColumnWidth(3, FACTOR_COL_VILLE*width)
+        elif isinstance(self.dock_widget.widget(), DockWidgetParticipante):
+            self.table_widget.setColumnWidth(1, FACTOR_COL_NOM*width)
+            self.table_widget.setColumnWidth(2, FACTOR_COL_ADRESSE*width)
+            self.table_widget.setColumnWidth(3, FACTOR_COL_COURRIEL*width)
+            self.table_widget.setColumnWidth(4, FACTOR_COL_TELEPHONE*width)
+
+        # Ajouter la dernier colonne pour prendre tout l'espace restant
+        self.table_widget.horizontalHeader().setStretchLastSection(True)
 
     def afficher_liste_statistique(self):
         """
@@ -367,13 +445,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Afficher l'interface du table widget
         self.table_widget.setColumnCount(6)
         self.table_widget.setColumnHidden(0, True)
-        headers = ["Index", "Nom", "Ville", "Courriel", "Telephone", "Numéro de membre"]
+        headers = ["Index", "Nom", "Ville", "Courriel", "Téléphone", "Numéro \n de membre"]
         self.table_widget.setHorizontalHeaderLabels(headers)
         self.table_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table_widget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.table_widget.setSelectionMode(QAbstractItemView.NoSelection)
         self.table_widget.setAlternatingRowColors(True)
-        self.table_widget.horizontalHeader().setStretchLastSection(True)
 
         # Slots
         self.dock_widget.widget().btn_add.clicked.connect(self.nouvelle_participante)
@@ -385,6 +462,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Afficher la liste
         self.update_liste_participante()
+        self.resize_table()
 
     def edit_participante(self, index):
         """
@@ -517,7 +595,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Table widget parameters
         self.table_widget.setColumnCount(7)
         self.table_widget.setColumnHidden(0, True)
-        headers = ["Index", "Nom", "Lieu", "Prix", "Date", "Heure", "Date limite d'inscription"]
+        headers = ["Index", "Nom", "Lieu", "Prix", "Date", "Heure", "Date limite \n d'inscription"]
         self.table_widget.setHorizontalHeaderLabels(headers)
         self.table_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table_widget.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -536,6 +614,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Update GUI elements
         self.update_liste_activite()
+        self.resize_table()
 
     def nouvelle_activite(self):
         """
@@ -675,6 +754,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Update GUI elements
         self.update_liste_categorie_activite()
+        self.resize_table()
 
     def nouvelle_categorie_activite(self):
         """
@@ -805,6 +885,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Update GUI elements
         self.update_liste_lieu()
+        self.resize_table()
 
     def nouveau_lieu(self):
         """
