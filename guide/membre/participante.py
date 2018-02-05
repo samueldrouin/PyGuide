@@ -12,8 +12,8 @@ Classes
 import os
 
 # PyQt import
-from PyQt5.QtWidgets import QTableWidgetItem, QDialog
-from PyQt5.QtCore import QDate, QTime, QDateTime
+from PyQt5.QtWidgets import QTableWidgetItem, QDialog, QHBoxLayout, QCheckBox, QLineEdit, QDateEdit, QPushButton, QSpacerItem, QSizePolicy, QLabel, QAbstractSpinBox
+from PyQt5.QtCore import QDate, QTime, QDateTime, Qt
 from PyQt5.QtSql import QSqlQuery
 
 # Project import
@@ -61,30 +61,19 @@ class Participante(QDialog, Ui_Participante):
         self.txt_poste1.setValidator(Validator.poste_validator())
         self.txt_telephone2.setValidator(Validator.phone_validator())
         self.txt_poste2.setValidator(Validator.poste_validator())
-        self.txt_numero_membre.setValidator(Validator.numero_membre_validator())
         self.txt_email.setValidator(Validator.email_validator())
 
         # Completer
         self.txt_ville.setCompleter(Completer.ville_completer())
-
-        # Cacher les informations du membre par default
-        self.chk_actif.setHidden(True)
-        self.lbl_numero_membre.setHidden(True)
-        self.txt_numero_membre.setHidden(True)
-        self.chk_honoraire.setHidden(True)
-        self.lbl_renouvellement.setHidden(True)
-        self.ded_renouvellement.setHidden(True)
-        self.btn_renew.setHidden(True)
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
         self.txt_code_postal.cursorPositionChanged.connect(self.afficher_code_postal)
         self.txt_telephone1.cursorPositionChanged.connect(self.set_parsed_phone_number)
         self.txt_telephone2.cursorPositionChanged.connect(self.set_parsed_phone_number)
-        self.chk_membre.clicked.connect(self.nouveau_membre)
+        self.btn_inscription.clicked.connect(self.nouveau_membre)
         self.btn_add.clicked.connect(self.check_fields)
         self.cbx_appelation.currentTextChanged.connect(self.appellation_changed)
-        self.btn_renew.clicked.connect(self.renouveler_status_membre)
         self.resize(self.minimumSize())
 
     def appellation_changed(self, text):
@@ -255,6 +244,7 @@ class Participante(QDialog, Ui_Participante):
         """
         Afficher les informations sur le membre
         """
+        # Obtenir les informations de la base de données
         query = QSqlQuery(self.DATABASE)
         query.prepare("SELECT "
                         "actif, "
@@ -272,28 +262,83 @@ class Participante(QDialog, Ui_Participante):
         DatabaseError.sql_error_handler(query.lastError())
 
         if query.first() and int(query.value(0)):
-            # Afficher les champs du formulaire
-            self.chk_actif.setHidden(False)
-            self.txt_numero_membre.setHidden(False)
-            self.lbl_numero_membre.setHidden(False)
-            self.chk_honoraire.setHidden(False)
-            self.ded_renouvellement.setHidden(False)
-            self.lbl_renouvellement.setHidden(False)
-            self.btn_renew.setHidden(False)
-
-            # Ajouter les informations dans les champs
+            # Retirer le bouton pour ajouter un membre
+            self.lay_status.removeItem(self.lay_membre)
+            
+            # Afficher les champs du status de membre
             self.chk_membre.setChecked(True)
             self.chk_membre.setEnabled(False)
-            self.chk_actif.setChecked(True)
-            self.txt_numero_membre.setText(str(query.value(1)))
-            self.chk_honoraire.setChecked(int(query.value(2)))
-            date = QDate.fromString(query.value(3), 'yyyy-MM-dd')
-            self.ded_renouvellement.setDate(date)
 
-            # Ne pas afficher la date de renouvellement pour un membre honoraire
-            if self.chk_honoraire.isChecked():
-                self.ded_renouvellement.setHidden(True)
-                self.lbl_renouvellement.setHidden(True)
+            layout_membre = QHBoxLayout()
+
+            chk_actif = QCheckBox("Actif")
+            chk_actif.setEnabled(False)
+            chk_actif.setChecked(True)
+
+            chk_honoraire = QCheckBox("Honoraire")
+            chk_honoraire.setEnabled(False)
+            chk_honoraire.setChecked(int(query.value(2)))
+
+            spacer_membre = QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
+            layout_membre.addWidget(chk_actif)
+            layout_membre.addWidget(chk_honoraire)
+            layout_membre.addItem(spacer_membre)
+            layout_membre.addStretch()
+
+            self.lay_status.addLayout(layout_membre, 0, 1)
+
+            # Afficher les champs pour les numéro de membre
+            layout_numero = QHBoxLayout()
+
+            txt_numero_membre = QLineEdit(str(query.value(1)))
+            txt_numero_membre.setValidator(Validator.numero_membre_validator())
+            txt_numero_membre.setMinimumWidth(100)
+            txt_numero_membre.setReadOnly(True)
+
+            lbl_numero_membre = QLabel("Numéro de membre :")
+            lbl_numero_membre.setMinimumWidth(150)
+            lbl_numero_membre.setMaximumWidth(150)
+
+            spacer_membre = QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
+            layout_numero.addWidget(txt_numero_membre)
+            layout_numero.addItem(spacer_membre)
+            layout_numero.addStretch()
+
+            self.lay_status.addWidget(lbl_numero_membre, 1, 0)
+            self.lay_status.addLayout(layout_numero, 1, 1)
+
+            # Afficher les champs pour la date de renouvellement
+            # Seulement si le membre n'est pas honoraire
+            if not int(query.value(2)):
+                # Afficher le champs de la date de renouvellement
+                layout_renouvellement = QHBoxLayout()
+
+                ded_renouvellement = QDateEdit()
+                ded_renouvellement.setReadOnly(True)
+                ded_renouvellement.setButtonSymbols(QAbstractSpinBox.NoButtons)
+                ded_renouvellement.setDisplayFormat("dd-MM-yyyy")
+                ded_renouvellement.setCalendarPopup(False)
+                date = QDate.fromString(query.value(3), 'yyyy-MM-dd')
+                ded_renouvellement.setDate(date)
+
+                btn_renouvellement = QPushButton("Renouvellement")
+                btn_renouvellement.clicked.connect(self.renouveler_status_membre)
+
+                lbl_renouvellement = QLabel("Date de renouvellement :")
+                lbl_renouvellement.setMinimumWidth(150)
+                lbl_renouvellement.setMaximumWidth(150)
+
+                spacer_renouvellement = QSpacerItem(100, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
+                layout_renouvellement.addWidget(ded_renouvellement)
+                layout_renouvellement.addItem(spacer_renouvellement)
+                layout_renouvellement.addWidget(btn_renouvellement)
+                layout_renouvellement.addStretch()
+
+                self.lay_status.addWidget(lbl_renouvellement, 2, 0)
+                self.lay_status.addLayout(layout_renouvellement, 2, 1)
+
+        # Ajuster le dialog à sa nouvelle taille minimale
+        self.resize(self.minimumSize())
 
 
 class NouvelleParticipante(Participante):
