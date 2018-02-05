@@ -1,4 +1,12 @@
 """Création et modification des participantes"""
+"""
+Module permettant le traitement des participantes
+
+Le module est responsable de l'ajout et de la modification des types d'activité dans la base de donnée. 
+
+Classes
+    Participante : Base des dialog permettant la modification ou la création des participantes
+"""
 
 # Python import
 import os
@@ -23,7 +31,16 @@ from interface.participante import Ui_Participante
 
 
 class Participante(QDialog, Ui_Participante):
-    """Dialog permettant la création et la modification des participantes"""
+    """
+    Base des dialog permettant la modification ou la création des participantes
+    
+    Cette classe est responsable de l'affichage de l'interface et de la connection des slots à l'interface. 
+    Les sous classes doivent override la méthode process qui traite les données dans la base de donnée lorsque le dialog est accepté. 
+
+    Méthodes
+        check_fields: Vérifie que tout les champs nécessaires sont remplis
+        process : Traitement de donnée dans la base de donnée. Doit être implantée dans les sous classes. 
+    """
     def __init__(self, database):
         super(Participante, self).__init__()
         # Affichage de l'interface graphique
@@ -68,10 +85,11 @@ class Participante(QDialog, Ui_Participante):
         self.btn_add.clicked.connect(self.check_fields)
         self.cbx_appelation.currentTextChanged.connect(self.appellation_changed)
         self.btn_renew.clicked.connect(self.renouveler_status_membre)
+        self.resize(self.minimumSize())
 
     def appellation_changed(self, text):
         """
-        Change le nom selon l'appellation choisie
+        Change l'apparence du dialog selon le type d'appelation sélectionnée
         """
         if text == "Mme." or text == "M." or text == "Autre" or text == "Employée":
             self.txt_nom.show()
@@ -293,6 +311,7 @@ class NouvelleParticipante(Participante):
         self.lbl_inscription.setHidden(True)
         self.tbl_inscription.setHidden(True)
         self.line.setHidden(True)
+        self.resize(self.minimumSize())
 
     def process_data(self, prepared_data):
         # Insert data
@@ -359,7 +378,6 @@ class NouvelleParticipante(Participante):
                 DatabaseError.sql_error_handler(query.lastError())
                 query.first()
                 self.ID_PARTICIPANTE = query.value(0)
-
 
 class ModifierParticipante(Participante):
     """Dialog permettant la modification de participante"""
