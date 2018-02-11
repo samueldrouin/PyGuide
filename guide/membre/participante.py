@@ -81,23 +81,56 @@ class Participante(QDialog, Ui_Participante):
         Change l'apparence du dialog selon le type d'appelation sélectionnée
         """
         if text == "Mme." or text == "M." or text == "Autre" or text == "Employée":
-            self.txt_nom.show()
-            self.lbl_annee_naissance.show()
-            self.sbx_annee_naissance.show()
-            self.lbl_personne_nourries.show()
-            self.sbx_personnes_nourries.show()
-            self.lbl_consentement.show()
-            self.cbx_photo.show()
+            # Afficher le placeholder pour le prénom
             self.txt_prenom.setPlaceholderText("Prénom")
+
+            # Ajouter les widget au grid layout et les afficher
+            self.txt_nom.show() # Ne pas ajouter, appartient à un autre layout 
+
+            self.lay_informations.addWidget(self.lbl_annee_naissance, 10, 0)
+            self.lbl_annee_naissance.show()
+
+            self.lay_informations.addWidget(self.sbx_annee_naissance, 10, 1)
+            self.sbx_annee_naissance.show()
+
+            self.lay_informations.addWidget(self.lbl_personne_nourries, 11, 0)
+            self.lbl_personne_nourries.show()
+
+            self.lay_informations.addWidget(self.sbx_personnes_nourries, 11, 1)
+            self.sbx_personnes_nourries.show()
+
+            self.lay_informations.addWidget(self.lbl_consentement, 12, 0)
+            self.lbl_consentement.show()
+
+            self.lay_informations.addWidget(self.cbx_photo, 12, 1)
+            self.cbx_photo.show()
         else:
-            self.txt_nom.hide()
-            self.lbl_annee_naissance.hide()
-            self.sbx_annee_naissance.hide()
-            self.lbl_personne_nourries.hide()
-            self.sbx_personnes_nourries.hide()
-            self.lbl_consentement.hide()
-            self.cbx_photo.hide()
+            # Afficher le placeholder pour le nom
             self.txt_prenom.setPlaceholderText(text)
+
+            # Retirer les widgets du grid layout et les cacher
+            self.txt_nom.hide() # Ne pas retirer, appartient à un autre layout 
+
+            self.lay_informations.removeWidget(self.lbl_annee_naissance)
+            self.lbl_annee_naissance.hide()
+
+            self.lay_informations.removeWidget(self.sbx_annee_naissance)
+            self.sbx_annee_naissance.hide()
+
+            self.lay_informations.removeWidget(self.lbl_personne_nourries)
+            self.lbl_personne_nourries.hide()
+
+            self.lay_informations.removeWidget(self.sbx_personnes_nourries)
+            self.sbx_personnes_nourries.hide()
+
+            self.lay_informations.removeWidget(self.lbl_consentement)
+            self.lbl_consentement.hide()
+
+            self.lay_informations.removeWidget(self.cbx_photo)
+            self.cbx_photo.hide()
+
+        # Ajuster la taille du dialog
+        self.resize(self.minimumSize())
 
     def check_fields(self):
         """
@@ -264,6 +297,7 @@ class Participante(QDialog, Ui_Participante):
         if query.first() and int(query.value(0)):
             # Retirer le bouton pour ajouter un membre
             self.lay_status.removeItem(self.lay_membre)
+            self.btn_inscription.hide()
             
             # Afficher les champs du status de membre
             self.chk_membre.setChecked(True)
@@ -337,7 +371,7 @@ class Participante(QDialog, Ui_Participante):
                 self.lay_status.addWidget(lbl_renouvellement, 2, 0)
                 self.lay_status.addLayout(layout_renouvellement, 2, 1)
 
-        # Ajuster le dialog à sa nouvelle taille minimale
+        # Ajuster la taille du dialog
         self.resize(self.minimumSize())
 
 

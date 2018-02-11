@@ -7,8 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>925</width>
-    <height>606</height>
+    <height>610</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
@@ -24,6 +30,9 @@
   </property>
   <property name="windowTitle">
    <string>Participante</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_8">
    <item>
@@ -67,10 +76,23 @@
           </widget>
          </item>
          <item>
-          <layout class="QFormLayout" name="formLayout">
-           <property name="labelAlignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          <layout class="QGridLayout" name="lay_informations" columnminimumwidth="150,300">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetMinimumSize</enum>
            </property>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_2">
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Appelation : </string>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="1">
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
@@ -129,6 +151,12 @@
            </item>
            <item row="1" column="0">
             <widget class="QLabel" name="label">
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>0</height>
+              </size>
+             </property>
              <property name="font">
               <font>
                <weight>75</weight>
@@ -141,7 +169,7 @@
             </widget>
            </item>
            <item row="1" column="1">
-            <layout class="QHBoxLayout" name="horizontalLayout">
+            <layout class="QHBoxLayout" name="lay_nom">
              <item>
               <widget class="QLineEdit" name="txt_prenom">
                <property name="sizePolicy">
@@ -184,6 +212,12 @@
            </item>
            <item row="2" column="0">
             <widget class="QLabel" name="label_3">
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>0</height>
+              </size>
+             </property>
              <property name="text">
               <string>Adresse :</string>
              </property>
@@ -227,6 +261,12 @@
            </item>
            <item row="3" column="0">
             <widget class="QLabel" name="label_13">
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>0</height>
+              </size>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -264,6 +304,12 @@
            </item>
            <item row="4" column="0">
             <widget class="QLabel" name="label_4">
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>0</height>
+              </size>
+             </property>
              <property name="text">
               <string>Ville : </string>
              </property>
@@ -301,6 +347,12 @@
            </item>
            <item row="5" column="0">
             <widget class="QLabel" name="label_5">
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>0</height>
+              </size>
+             </property>
              <property name="text">
               <string>Province : </string>
              </property>
@@ -394,6 +446,12 @@
            </item>
            <item row="6" column="0">
             <widget class="QLabel" name="label_6">
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>0</height>
+              </size>
+             </property>
              <property name="text">
               <string>Code postal : </string>
              </property>
@@ -429,8 +487,57 @@
              </item>
             </layout>
            </item>
+           <item row="7" column="0">
+            <widget class="QLabel" name="label_12">
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Courriel : </string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="1">
+            <layout class="QHBoxLayout" name="horizontalLayout_14">
+             <item>
+              <widget class="QLineEdit" name="txt_email">
+               <property name="minimumSize">
+                <size>
+                 <width>200</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="placeholderText">
+                <string>Courriel</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_12">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
            <item row="8" column="0">
             <widget class="QLabel" name="label_7">
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>0</height>
+              </size>
+             </property>
              <property name="font">
               <font>
                <weight>75</weight>
@@ -493,6 +600,12 @@
            </item>
            <item row="9" column="0">
             <widget class="QLabel" name="label_8">
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>0</height>
+              </size>
+             </property>
              <property name="text">
               <string>Téléphone 2 : </string>
              </property>
@@ -552,6 +665,12 @@
            </item>
            <item row="10" column="0">
             <widget class="QLabel" name="lbl_annee_naissance">
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>0</height>
+              </size>
+             </property>
              <property name="font">
               <font>
                <weight>75</weight>
@@ -567,6 +686,18 @@
             <layout class="QHBoxLayout" name="horizontalLayout_10">
              <item>
               <widget class="QSpinBox" name="sbx_annee_naissance">
+               <property name="minimumSize">
+                <size>
+                 <width>60</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>60</width>
+                 <height>16777215</height>
+                </size>
+               </property>
                <property name="buttonSymbols">
                 <enum>QAbstractSpinBox::NoButtons</enum>
                </property>
@@ -592,6 +723,12 @@
            </item>
            <item row="11" column="0">
             <widget class="QLabel" name="lbl_personne_nourries">
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>0</height>
+              </size>
+             </property>
              <property name="text">
               <string>Personnes nourries : </string>
              </property>
@@ -601,6 +738,18 @@
             <layout class="QHBoxLayout" name="horizontalLayout_11">
              <item>
               <widget class="QSpinBox" name="sbx_personnes_nourries">
+               <property name="minimumSize">
+                <size>
+                 <width>60</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>60</width>
+                 <height>16777215</height>
+                </size>
+               </property>
                <property name="buttonSymbols">
                 <enum>QAbstractSpinBox::NoButtons</enum>
                </property>
@@ -626,15 +775,14 @@
            </item>
            <item row="12" column="0">
             <widget class="QLabel" name="lbl_consentement">
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>0</height>
+              </size>
+             </property>
              <property name="text">
               <string>Consentement photo : </string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_2">
-             <property name="text">
-              <string>Appelation : </string>
              </property>
             </widget>
            </item>
@@ -644,43 +792,6 @@
               <string>La participante consent à être prise en photo</string>
              </property>
             </widget>
-           </item>
-           <item row="7" column="0">
-            <widget class="QLabel" name="label_12">
-             <property name="text">
-              <string>Courriel : </string>
-             </property>
-            </widget>
-           </item>
-           <item row="7" column="1">
-            <layout class="QHBoxLayout" name="horizontalLayout_14">
-             <item>
-              <widget class="QLineEdit" name="txt_email">
-               <property name="minimumSize">
-                <size>
-                 <width>200</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="placeholderText">
-                <string>Courriel</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_12">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
            </item>
           </layout>
          </item>
