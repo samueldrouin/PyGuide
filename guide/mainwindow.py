@@ -157,7 +157,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.act_consult_participante.setIcon(QIcon(":/mainwindow/Participante.png"))
         self.act_consult_activite.setIcon(QIcon(":/mainwindow/Activite.png"))
         self.act_consult_lieu.setIcon(QIcon(":/mainwindow/Lieu.png"))
-        self.act_consult_categorie_activite.setIcon(QIcon(":/mainwindow/TypeActivite.png"))
+        self.act_consult_categorie_activite.setIcon(QIcon(":/mainwindow/CategorieActivite.png"))
         self.act_inscription.setIcon(QIcon(":/mainwindow/Inscription.png"))
         self.act_facturation.setIcon(QIcon(":/mainwindow/Facture.png"))
         self.act_groupe.setIcon(QIcon(":/mainwindow/Groupe.png"))
