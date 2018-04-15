@@ -1,3 +1,3 @@
 @echo off
-python %cd%\guide\main.py %*
+python %~dp0\guide\main.py %*
 pause
