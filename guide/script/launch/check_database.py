@@ -44,10 +44,6 @@ def check_database_exist(database):
     """
     Vérifie si la base de donnée enregistrée existe
     """
-
-    print(database)
-    print(os.path.isfile(database))
-
     # Vérifier si le fichier de base de donnée existe
     if os.path.isfile(database):
         # Continuer la vérification de la base de donnée

@@ -19,8 +19,9 @@ from script.database import DatabaseError
 PAGE_DESCRIPTION = 0
 PAGE_SELECTION = 1
 PAGE_INFORMATIONS = 2
-PAGE_MODULE = 3
-PAGE_FIN = 4
+PAGE_CONTACT = 3
+PAGE_MODULE = 4
+PAGE_FIN = 5
 
 # Définition des chemins par défaut
 PATH_STATS = str(os.path.join(Path.home(), 'Documents', 'GUIDE', 'Statistics'))
@@ -506,6 +507,8 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
             else:
                 return PAGE_INFORMATIONS
         elif id == PAGE_INFORMATIONS:
+            return PAGE_CONTACT
+        elif id == PAGE_CONTACT:
             return PAGE_MODULE
         elif id == PAGE_MODULE:
             return PAGE_FIN
@@ -518,10 +521,12 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
             - Créer une nouvelle base de données
             - Connecter une base de données existante au programme
         """
+        # Obtenir les informations sur les emplacements
+        db_dir = self.pgs_selection.field("emplacementDB")
+        stats_dir = self.pgs_selection.field("emplacementStats")
+
         if self.rbt_nouvelle_db.isChecked():
             # Obtenir les informations des champs de l'assistant
-            db_dir = self.pgs_selection.field("emplacementDB")
-            stats_dir = self.pgs_selection.field("emplacementStats")
             nom = self.pgs_informations.field("nom")
             departement = self.pgs_informations.field("departement")
             adresse1 = self.pgs_informations.field("adresse1")
