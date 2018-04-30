@@ -1,4 +1,4 @@
-# GUIDE-CFR
+# GUIDE-CFHR
 
 Le programme GUIDE-CFR est une version adaptée pour le Centre de femmes du Haut-Richelieu du programme C++ GUIDE. Le programme permet la gestion des activités, des membres et comporte un module de facturation.
 
