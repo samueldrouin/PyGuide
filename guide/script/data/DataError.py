@@ -1,8 +1,6 @@
 """
 Module contenant les messages d'erreur concernant les données entrées par l'utilisateur
 
-Les messages d'erreur de la base de donnée sont gérés par la classe DatabaseError
-
 Méthodes : 
     numero_telephone_inexistant : Affiche un message d'erreur qui indique à l'utilisateur qu'il n'existe pas de compte avec ce numero
     numero_telephone_invalide : Affiche un message d'erreur qui indique à l'utilisateur que le numero de telephone est invalide

@@ -8,13 +8,13 @@
         <file>Participante.png</file>
         <file>CategorieActivite.png</file>
     </qresource>
-    <qresource prefix="/setting">
-        <file>Folder.png</file>
-    </qresource>
     <qresource prefix="/statistique">
         <file>DropDownArrow.png</file>
     </qresource>
     <qresource prefix="/global">
         <file>Logo.png</file>
+        <file>Banniere.png</file>
+        <file>Copyrights.png</file>
+        <file>Folder.png</file>
     </qresource>
 </RCC>

@@ -14,7 +14,6 @@ Classes
 
 # Python import
 import os
-import pathlib
 import xml.etree.ElementTree as ET
 
 # PyQt import
@@ -103,7 +102,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         afficher_liste_statistique : Afficher la liste des statistiques enregistrées dans une fenêtre de sélection
         ouvrir_statistique : Exécuter un fichier de statistique et afficher le résultat
         verifier_path_statistique : Obtenir le chemin vers le folder contenant les statistiques
-        check_database_status : Obtient le chemin vers la base de donnée à partir des réglages
         statistiques : Ouvre le dialog des statistiques
         inscription : Ouvre un dialog pour entrer une nouvelle inscription
         facturation : Ouvre un dialog pour entrer une nouvelle facture
@@ -137,12 +135,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         update_liste_lieu : Met à jour la liste des lieux lorsque les options de tri sont modifiées
     """
 
-    def __init__(self):
+    def __init__(self, database):
         super(MainWindow, self).__init__()
         self.setupUi(self)
 
         # Connection à la base de données
-        self.DATABASE = self.check_database_status()
+        self.DATABASE = database
 
         # Charger les réglages
         self.read_settings()
@@ -337,42 +335,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 settings.setValue("Statistique", statistique)
 
         return statistique
-
-    def check_database_status(self):
-        """
-        Obtient le chemin vers la base de donnée à partir des réglages
-
-        Return :
-            Path to database
-        """
-        settings = QSettings("Samuel Drouin", "GUIDE-CFR")
-        database = settings.value("Database")
-
-        # Vérifier si le chemin vers la base de donnée existe 
-        # et si le fichier existe
-        if not database or not pathlib.Path(database).is_file():
-            # Indique à l'utilisateur que la base de donnée n'existe pas et
-            # qu'elle doit être créée
-            ret = DatabaseError.aucune_database()
-
-            # Ouvre les réglages pour entrer le chemin vers la base de donnée
-            if ret == QMessageBox.Ok:
-                setting = Setting()
-                setting.accepted.connect(self.check_database_status)
-                setting.exec()
-        else:
-            # Ajouter la base de donnée
-            db = QSqlDatabase.addDatabase("QSQLITE")
-            db.setDatabaseName(database)
-
-            # Vérifier si la base de donnée ouvre
-            if not db.open():
-                # Avertit l'utilisateur d'une erreur de connection et ferme le programme
-                DatabaseError.sql_error_handler(db.lastError())
-                self.close()
-            else:
-                # Si la base de donnée est ouverte, retourne le chemin vers la base de donnée
-                return db
 
     def statistiques(self):
         """

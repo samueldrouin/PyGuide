@@ -21,8 +21,8 @@ class Setting(QDialog, Ui_Setting):
         self.setupUi(self)
 
         # Afficher les images des boutons
-        self.btn_fichier.setIcon(QIcon(":/setting/Folder.png"))
-        self.btn_statistique.setIcon(QIcon(":/setting/Folder.png"))
+        self.btn_fichier.setIcon(QIcon(":/global/Folder.png"))
+        self.btn_statistique.setIcon(QIcon(":/global/Folder.png"))
 
         # Slots
         self.btn_cancel.clicked.connect(self.close)

@@ -90,13 +90,14 @@ ERREUR_CONNECTION_INFORMATION = "La connection avec la base de données n'a pas 
 # Les définitions suivants incluent tous les messages qui ne sont pas gérés par
 # la fonction sql_error_handler
 
-AUCUNE_DATABASE = "Aucune base de donnée"
-AUCUNE_DATABASE_INFORMATION = "Vous devez sélectionner la base de donnée dans les réglages "\
-                              "avant de pouvoir utiliser le programme. "
+AUCUNE_DATABASE = "Aucune base de donnée au chemin indiqué"
+AUCUNE_DATABASE_INFORMATION = "La base de donnée n'existe plus au chemin indiqué dans les réglages. "\
+                              "Veuillez sélectionner le nouvel emplacement de la base de données ou "\
+                              "en créer une nouvelle."
 
-INEXISTANT_DATABASE = "Base de donnée inexistante"
-INEXISTANT_DATABASE_INFORMATION = "Vous devez sélectionner la base de donnée existante dans les réglages avant de "\
-                                  "pouvoir utiliser le programme. "
+ANCIENNE_VERSION = "Impossible d'ouvrir la base de données"
+ANCIENNE_VERSION_INFORMATION = "La base de données est une ancienne version et ne peut être ouverte avec cette version du programme. " \
+                               "Vous devez créer une nouvelle base de données pour continuer d'utiliser ce programme."
 
 def sql_error_handler(err):
     """
@@ -207,18 +208,18 @@ def aucune_database():
     msgbox.setDefaultButton(QMessageBox.Ok)
     return msgbox.exec()
 
-def inexistant_erreur():
+def ancienne_version():
     """
-    Affiche un message d'erreur qui indique à l'utilisateur que la base de donnée sélectionnée dans
-    les réglages n'existe plus
+    Affiche un message d'erreur qui indique à l'utilisateur que la base de données enregistrée est une ancienne
+    version qui ne peut être ouverte avec cette version du programme
 
     Return :
         Sélection de l'utilisateur
     """
     msgbox = QMessageBox()
     msgbox.setWindowTitle(BOX_TITLE)
-    msgbox.setText(INEXISTANT_DATABASE)
-    msgbox.setInformativeText(INEXISTANT_DATABASE_INFORMATION)
+    msgbox.setText(ANCIENNE_VERSION)
+    msgbox.setInformativeText(ANCIENNE_VERSION_INFORMATION)
     msgbox.setIcon(QMessageBox.Critical)
     msgbox.setStandardButtons(QMessageBox.Ok)
     msgbox.setDefaultButton(QMessageBox.Ok)
