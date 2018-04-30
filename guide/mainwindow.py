@@ -20,7 +20,7 @@ import xml.etree.ElementTree as ET
 
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTableWidget, QMessageBox, QTableWidgetItem, \
     QAbstractItemView, QHeaderView, QAction, QMenu
-from PyQt5.QtCore import QSettings, QDate, QTime
+from PyQt5.QtCore import QSettings, QDate, QTime, QByteArray
 from PyQt5.Qt import QApplication, QDialog
 from PyQt5.QtGui import QIcon
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
@@ -182,7 +182,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         # Restaurer la taille de la fenêtre
         settings = QSettings("Samuel Drouin", "GUIDE-CFR")
-        self.restoreGeometry(settings.value("MainWindow/Geometry"))
+        self.restoreGeometry(settings.value("MainWindow/Geometry", QByteArray()))
 
         # Restaurer le central widget
         if settings.value("MainWindow/CentralWidget") == ACTIVITE:
