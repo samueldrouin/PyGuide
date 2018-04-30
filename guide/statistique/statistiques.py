@@ -1120,7 +1120,7 @@ class Statistiques(QDialog):
                 tree = ET.ElementTree(stat)
 
                 # Obtenir le chemin vers la folder pour enregistrer des réglages
-                settings = QSettings("Samuel Drouin", "GUIDE-CFR")
+                settings = QSettings("SDR Soft", "PyGUIDE")
                 statistique = settings.value("Statistique")
 
                 filename = self.txt_titre.text() + ".gxml"

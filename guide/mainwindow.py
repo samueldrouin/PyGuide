@@ -181,7 +181,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         Lecture des réglages et affichage de l'interface enregistrée dans les réglages
         """
         # Restaurer la taille de la fenêtre
-        settings = QSettings("Samuel Drouin", "GUIDE-CFR")
+        settings = QSettings("SDR Soft", "PyGUIDE")
         self.restoreGeometry(settings.value("MainWindow/Geometry", QByteArray()))
 
         # Restaurer le central widget
@@ -198,7 +198,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         Enregistre l'état de la fenêtre principale à la fermeture
         """
-        settings = QSettings("Samuel Drouin", "GUIDE-CFR")
+        settings = QSettings("SDR Soft", "PyGUIDE")
         settings.setValue("MainWindow/Geometry", self.saveGeometry())
 
         if isinstance(self.dock_widget.widget(), DockWidgetActivite):
@@ -319,7 +319,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             Chemin vers la folder des statistiques
         """
         # Obtenir le chemin dans les réglages
-        settings = QSettings("Samuel Drouin", "GUIDE-CFR")
+        settings = QSettings("SDR Soft", "PyGUIDE")
         statistique = settings.value("Statistique")
 
         # Vérifier s'il existe une valeur

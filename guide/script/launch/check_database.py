@@ -28,7 +28,7 @@ def check_database_created():
 
     Si aucune base de données n'existe, demande à l'utilisateur d'en créer une nouvelle. 
     """
-    settings = QSettings("Samuel Drouin", "GUIDE-CFR")
+    settings = QSettings("SDR Soft", "PyGUIDE")
     database = settings.value("Database")
 
     # Vérifier si une base de donnée à déjà été créée dans les réglages

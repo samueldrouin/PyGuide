@@ -37,7 +37,7 @@ class Setting(QDialog, Ui_Setting):
         """
         Charge les réglages
         """
-        settings = QSettings("Samuel Drouin", "GUIDE-CFR")
+        settings = QSettings("SDR Soft", "PyGUIDE")
         database = settings.value("Database")
         statistique = settings.value("Statistique")
         self.txt_base_donnee.setText(database)
@@ -64,7 +64,7 @@ class Setting(QDialog, Ui_Setting):
         """
         Enregistre les reglages
         """
-        settings = QSettings("Samuel Drouin", "GUIDE-CFR")
+        settings = QSettings("SDR Soft", "PyGUIDE")
         settings.setValue("Database", self.txt_base_donnee.text())
         settings.setValue("Statistique", self.txt_statistique.text())
         self.close()

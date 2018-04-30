@@ -661,7 +661,7 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
                 db.rollback() # Annuler la transaction
                 return # Empêche la fermeture du dialog
 
-        settings = QSettings("Samuel Drouin", "GUIDE-CFR")
+        settings = QSettings("SDR Soft", "PyGUIDE")
         settings.setValue("Database", db_dir)
         settings.setValue("Statistique", stats_dir)
 
