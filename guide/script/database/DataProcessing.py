@@ -35,10 +35,10 @@ def check_int(value):
     Return : 
         Int ou None (si le string est vide)
     """
-    if str == "":
+    if value == "":
         return None
     else:
-        return int(str)
+        return int(value)
 
 def check_phone_number(value):
     """
