@@ -402,6 +402,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Affichage du DockWidget
         self.dock_widget.setWidget(DockWidgetParticipante())
 
+        # Deconnection des signaux existants
+        self.table_widget.disconnect()
+
         # Vider le table widget
         self.table_widget.setRowCount(0)
 
@@ -552,6 +555,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Affichage du DockWidget
         self.dock_widget.setWidget(DockWidgetActivite())
 
+        # Deconnection des signaux existants
+        self.table_widget.disconnect()
+
         # Vider le table widget
         self.table_widget.setRowCount(0)
 
@@ -698,6 +704,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Affichage du DockWidget
         self.dock_widget.setWidget(DockWidgetCategorieActivite())
 
+        # Deconnection des signaux existants
+        self.table_widget.disconnect()
+
         # Table widget parameters
         self.table_widget.setColumnCount(7)
         self.table_widget.setColumnHidden(0, True)
@@ -828,6 +837,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         # Affichage du DockWidget
         self.dock_widget.setWidget(DockWidgetLieu())
+
+        # Deconnection des signaux existants
+        self.table_widget.disconnect()
 
         # Table widget parameters
         self.table_widget.setColumnCount(5)
