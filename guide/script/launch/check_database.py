@@ -5,7 +5,10 @@ Ce module n'est responsable que de la vérification. Les modifications et des r�
 sont effectuées par d'autre modules. 
 
 Methode : 
-    check_database_status : Vérifie qu'une base de donnée est enregistrée dans les réglages
+    check_database_created : Vérifie qu'une base de donnée est enregistrée dans les réglages
+    check_database_exist : Vérifie si la base de donnée enregistrée existe
+    check_database_open : Vérifie si la base de données peut ouvrir
+    check_table_module : Vérifier si la base de données contient la table de modules installés
     preparation_wizard : Ouvre l'assistant de préparation du programme GUIDE
 """
 
