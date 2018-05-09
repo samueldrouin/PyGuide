@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/Volumes/[C] Windows 10/Users/samueldrouin/source/repos/GUIDE-CFR/guide/interface/ui/participante.ui'
+# Form implementation generated from reading ui file '/Volumes/[C] Windows 10/Users/samueldrouin/source/repos/PyGUIDE/guide/interface/ui/participante.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -250,8 +250,8 @@ class Ui_Participante(object):
         self.lbl_annee_naissance = QtWidgets.QLabel(Participante)
         self.lbl_annee_naissance.setMinimumSize(QtCore.QSize(150, 0))
         font = QtGui.QFont()
-        font.setBold(True)
-        font.setWeight(75)
+        font.setBold(False)
+        font.setWeight(50)
         self.lbl_annee_naissance.setFont(font)
         self.lbl_annee_naissance.setObjectName("lbl_annee_naissance")
         self.lay_informations.addWidget(self.lbl_annee_naissance, 10, 0, 1, 1)
