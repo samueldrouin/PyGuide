@@ -157,7 +157,10 @@ class NouvelleActivite(QDialog, Ui_NouvelleActivite):
             query.bindValue(':heure_fin', self.tim_fin.time().toString('HH:mm'))
 
             # Date limite inscription
-            value_date = self.ded_unique.date().toString('yyyy-MM-dd') - self.sbx_fin_inscription.value()
+            # Le passage par julianDay est nécessaire pour permettre d'effectuer la soustraction
+            date_limite = self.ded_unique.date().toJulianDay() - self.sbx_fin_inscription.value()
+            value_date = date_limite.fromJulianDay().toString('yyyy-MM-dd') 
+
             query.bindValue(':date_limite_inscription', value_date)
 
             query.exec_()
