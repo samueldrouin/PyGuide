@@ -10,12 +10,12 @@ from PyQt5.QtCore import QTime, QDate
 from PyQt5.QtGui import QColor, QBrush
 
 # Project import
-from script.database import DatabaseError
+from script.database import database_error
 import script.interface.selection
-from script.interface import Validator
-from script.database import DataProcessing
-from script.data import DataError
-from script.data import Parsing
+from script.interface import validator
+from script.database import data_processing
+from script.data import data_error
+from script.data import parsing
 
 # Interface import
 from interface.facturation import Ui_Facturation
@@ -76,7 +76,7 @@ class Facture(QDialog):
             query.exec_()
 
             # Affichage d'un message d'erreur si la requete echoue
-            DatabaseError.sql_error_handler(query.lastError())
+            database_error.sql_error_handler(query.lastError())
 
             resultat = []
 
@@ -159,7 +159,7 @@ class Facture(QDialog):
         query.exec_(sql)
 
         # Affichage d'un message d'erreur si la requete echoue
-        DatabaseError.sql_error_handler(query.lastError())
+        database_error.sql_error_handler(query.lastError())
 
         table.setRowCount(0)
         while query.next():
@@ -229,7 +229,7 @@ class Facture(QDialog):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        DatabaseError.sql_error_handler(query.lastError())
+        database_error.sql_error_handler(query.lastError())
 
         # Préparer les données de la requete
         resultat = []
@@ -282,7 +282,7 @@ class Facture(QDialog):
         query.exec_()
 
         # Affiche un message en cas d'erreur dans la requete
-        if DatabaseError.sql_error_handler(query.lastError()):
+        if database_error.sql_error_handler(query.lastError()):
             return # Empeche de continuer la fonction avec des donnees incompletes
 
         # Affichage de l'information sur la place libérée
@@ -299,7 +299,7 @@ class Facture(QDialog):
         query.exec_()
 
         # Affiche un message en cas d'erreur dans la requete
-        if DatabaseError.sql_error_handler(query.lastError()):
+        if database_error.sql_error_handler(query.lastError()):
             return # Empeche de continuer la fonction avec des donnees incompletes
 
         # Obtenir le nombre de participante
@@ -316,7 +316,7 @@ class Facture(QDialog):
         query.exec_()
 
         # Affiche un message en cas d'erreur dans la requete
-        if DatabaseError.sql_error_handler(query.lastError()):
+        if database_error.sql_error_handler(query.lastError()):
             return # Empeche de continuer la fonction avec des donnees incompletes
 
         # Preparation des donnees
@@ -398,7 +398,7 @@ class Facturation(Facture, Ui_Facturation):
                 query.exec_()
 
                 # Affiche un message en cas d'erreur dans la requete
-                if DatabaseError.sql_error_handler(query.lastError()):
+                if database_error.sql_error_handler(query.lastError()):
                     return # Empeche de continuer la fonction avec des donnees incompletes
 
                 # Liste d'attente
@@ -416,7 +416,7 @@ class Facturation(Facture, Ui_Facturation):
                 query.exec_()
 
                 # Affiche un message en cas d'erreur dans la requete
-                if DatabaseError.sql_error_handler(query.lastError()):
+                if database_error.sql_error_handler(query.lastError()):
                     return # Empeche de continuer la fonction avec des donnees incompletes
 
                 # Preparation des donnees
@@ -502,7 +502,7 @@ class Facturation(Facture, Ui_Facturation):
         query.exec_()
 
         # Affiche un message en cas d'erreur dans la requete
-        if DatabaseError.sql_error_handler(query.lastError()):
+        if database_error.sql_error_handler(query.lastError()):
             return # Empeche de continuer la fonction avec des donnees incompletes
 
         query.first()
@@ -612,7 +612,7 @@ class Facturation(Facture, Ui_Facturation):
         self.DATABASE.transaction()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if DatabaseError.sql_error_handler(self.DATABASE.lastError()):
+        if database_error.sql_error_handler(self.DATABASE.lastError()):
             return # Empêche la fermeture du dialog
 
         # Ajouter une facture
@@ -627,7 +627,7 @@ class Facturation(Facture, Ui_Facturation):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if DatabaseError.sql_error_handler(query.lastError()):
+        if database_error.sql_error_handler(query.lastError()):
             self.DATABASE.rollback() # Annuler la transaction
             return # Empêche la fermeture du dialog
 
@@ -636,7 +636,7 @@ class Facturation(Facture, Ui_Facturation):
         query.exec("SELECT last_insert_rowid()")
 
         # Affichage d'un message d'erreur si la requete echoue
-        if DatabaseError.sql_error_handler(query.lastError()):
+        if database_error.sql_error_handler(query.lastError()):
             self.DATABASE.rollback() # Annuler la transaction
             return # Empêche la fermeture du dialog
 
@@ -662,7 +662,7 @@ class Facturation(Facture, Ui_Facturation):
             query.exec_()
 
             # Affichage d'un message d'erreur si la requete echoue
-            if DatabaseError.sql_error_handler(query.lastError()):
+            if database_error.sql_error_handler(query.lastError()):
                 self.DATABASE.rollback() # Annuler la transaction
                 return # Empêche la fermeture du dialog
 
@@ -687,7 +687,7 @@ class Facturation(Facture, Ui_Facturation):
                 query.exec_()
 
                 # Vérifier s'il y a violation de la contraint de la primary key
-                if query.lastError().nativeErrorCode() == str(DatabaseError.SQLITE_CONSTRAINT): 
+                if query.lastError().nativeErrorCode() == str(database_error.SQLITE_CONSTRAINT): 
                     # Vérifier si une transaction a deja ete annulee
                     query = QSqlQuery(self.DATABASE)
                     query.prepare("SELECT status "
@@ -698,7 +698,7 @@ class Facturation(Facture, Ui_Facturation):
                     query.exec_()
 
                     # Affichage d'un message d'erreur si la requete echoue
-                    if DatabaseError.sql_error_handler(query.lastError()):
+                    if database_error.sql_error_handler(query.lastError()):
                         self.DATABASE.rollback() # Annuler la transaction
                         return # Empêche la fermeture du dialog
 
@@ -723,7 +723,7 @@ class Facturation(Facture, Ui_Facturation):
                         query.exec_()
 
                         # Affichage d'un message d'erreur si la requete echoue
-                        if DatabaseError.sql_error_handler(query.lastError()):
+                        if database_error.sql_error_handler(query.lastError()):
                             self.DATABASE.rollback() # Annuler la transaction
                             return # Empêche la fermeture du dialog
                     else:
@@ -742,12 +742,12 @@ class Facturation(Facture, Ui_Facturation):
                         query.exec_()
 
                         # Affichage d'un message d'erreur si la requete echoue
-                        if DatabaseError.sql_error_handler(query.lastError()):
+                        if database_error.sql_error_handler(query.lastError()):
                             self.DATABASE.rollback() # Annuler la transaction
                             return # Empêche la fermeture du dialog
                 # Affichage d'un message d'erreur
                 else:
-                    if DatabaseError.sql_error_handler(query.lastError()):
+                    if database_error.sql_error_handler(query.lastError()):
                         self.DATABASE.rollback() # Annuler la transaction
                         return # Empêche la fermeture du dialog
 
@@ -769,7 +769,7 @@ class Facturation(Facture, Ui_Facturation):
                 query.exec_()
 
                 #Affichage d'un message d'erreur si la requete echoue
-                if DatabaseError.sql_error_handler(query.lastError()):
+                if database_error.sql_error_handler(query.lastError()):
                     self.DATABASE.rollback() # Annuler la transaction
                     return # Empêche la fermeture du dialog
 
@@ -777,7 +777,7 @@ class Facturation(Facture, Ui_Facturation):
         self.DATABASE.commit()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if DatabaseError.sql_error_handler(self.DATABASE.lastError()):
+        if database_error.sql_error_handler(self.DATABASE.lastError()):
             self.DATABASE.rollback() # Annuler la transaction
             return # Empêche la fermeture du dialog
 
@@ -789,7 +789,7 @@ class Facturation(Facture, Ui_Facturation):
         query.exec_("SELECT MAX(id_facture) FROM facture")
 
         # Affichage d'un message d'erreur si la requete echoue
-        DatabaseError.sql_error_handler(query.lastError())
+        database_error.sql_error_handler(query.lastError())
         query.first()
 
         # S'il existe deja des facture dans la base de donnees
@@ -913,7 +913,7 @@ class Inscription(Facture, Ui_Inscription):
         self.DATABASE.transaction()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if DatabaseError.sql_error_handler(self.DATABASE.lastError()):
+        if database_error.sql_error_handler(self.DATABASE.lastError()):
             return # Empêche la fermeture du dialog
 
         for row in range(self.tbl_panier.rowCount()):
@@ -935,7 +935,7 @@ class Inscription(Facture, Ui_Inscription):
                 query.exec_()
 
                 # Vérifier s'il y a violation de la contraint de la primary key
-                if query.lastError().nativeErrorCode() == str(DatabaseError.SQLITE_CONSTRAINT):
+                if query.lastError().nativeErrorCode() == str(database_error.SQLITE_CONSTRAINT):
                     # Vérifier si une transaction a deja ete annulee
                     query = QSqlQuery(self.DATABASE)
                     query.prepare("SELECT status "
@@ -946,7 +946,7 @@ class Inscription(Facture, Ui_Inscription):
                     query.exec_()
 
                     # Affichage d'un message d'erreur si la requete echoue
-                    if DatabaseError.sql_error_handler(query.lastError()):
+                    if database_error.sql_error_handler(query.lastError()):
                         self.DATABASE.rollback() # Annuler la transaction
                         return # Empêche la fermeture du dialog
 
@@ -972,7 +972,7 @@ class Inscription(Facture, Ui_Inscription):
                         query.exec_()
 
                         # Affichage d'un message d'erreur si la requete echoue
-                        if DatabaseError.sql_error_handler(query.lastError()):
+                        if database_error.sql_error_handler(query.lastError()):
                             self.DATABASE.rollback() # Annuler la transaction
                             return # Empêche la fermeture du dialog
                     else:
@@ -991,13 +991,13 @@ class Inscription(Facture, Ui_Inscription):
                         query.exec_()
 
                         # Affichage d'un message d'erreur si la requete echoue
-                        if DatabaseError.sql_error_handler(query.lastError()):
+                        if database_error.sql_error_handler(query.lastError()):
                             self.DATABASE.rollback() # Annuler la transaction
                             return # Empêche la fermeture du dialog
 
                 # Affichage d'un message d'erreur
                 else:
-                    if DatabaseError.sql_error_handler(query.lastError()):
+                    if database_error.sql_error_handler(query.lastError()):
                         self.DATABASE.rollback() # Annuler la transaction
                         return # Empêche la fermeture du dialog
 
@@ -1019,7 +1019,7 @@ class Inscription(Facture, Ui_Inscription):
                 query.exec_()
 
                 #Affichage d'un message d'erreur si la requete echoue
-                if DatabaseError.sql_error_handler(query.lastError()):
+                if database_error.sql_error_handler(query.lastError()):
                     self.DATABASE.rollback() # Annuler la transaction
                     return # Empêche la fermeture du dialog
 
@@ -1027,7 +1027,7 @@ class Inscription(Facture, Ui_Inscription):
         self.DATABASE.commit()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if DatabaseError.sql_error_handler(self.DATABASE.lastError()):
+        if database_error.sql_error_handler(self.DATABASE.lastError()):
             self.DATABASE.rollback() # Annuler la transaction
             return # Empêche la fermeture du dialog
 

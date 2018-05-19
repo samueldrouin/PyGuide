@@ -22,7 +22,7 @@ from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 
 # Project import
 from script.launch.preparation_wizard import PreparationWizard
-from script.database import DatabaseError
+from script.database import database_error
 
 
 def check_database_created():
@@ -53,7 +53,7 @@ def check_database_exist(database):
         return check_database_open(database)
     else:
         # Indique à l'utilisateur que la base de donnée n'existe plus
-        ret = DatabaseError.aucune_database()
+        ret = database_error.aucune_database()
 
         # Ouvre l'assistance de préparation GUIDE pour modifier le chemin de la base de donnée
         if ret == QMessageBox.Ok:
@@ -75,7 +75,7 @@ def check_database_open(database):
         return check_table_module(db)
     else:
         # Avertit l'utilisateur d'une erreur de connection et ferme le programme
-        DatabaseError.sql_error_handler(db.lastError())
+        database_error.sql_error_handler(db.lastError())
         
 
 def check_table_module(db):
@@ -91,7 +91,7 @@ def check_table_module(db):
     query.exec_()
 
     # Affichage d'un message d'erreur si la requete echoue
-    DatabaseError.sql_error_handler(query.lastError())
+    database_error.sql_error_handler(query.lastError())
 
     # Obtenir les informations
     query.first()
@@ -103,7 +103,7 @@ def check_table_module(db):
         return db
     else:
         # Indique à l'utilisateur qu'il s'agit d'une ancienne version de la base de donnée
-        ret = DatabaseError.ancienne_version()
+        ret = database_error.ancienne_version()
 
         # Ouvre l'assistance de préparation GUIDE pour créer une nouvelle base de données
         if ret == QMessageBox.Ok:

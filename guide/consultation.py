@@ -15,7 +15,7 @@ from PyQt5.QtSql import QSqlQuery
 # Project import
 from activite.responsable import NouveauResponsable, ModifierResponsable
 from activite.type_activite import NouveauTypeActivite, ModifierTypeActivite
-from script.database import DatabaseError
+from script.database import database_error
 
 # Interface import
 from interface.consultation import Ui_Consultation
@@ -91,7 +91,7 @@ class Consultation(QDialog, Ui_Consultation):
         query.exec_(sql)
 
         # Affichage d'un message d'erreur si la requete echoue
-        DatabaseError.sql_error_handler(query.lastError())
+        database_error.sql_error_handler(query.lastError())
 
         # Afficher la liste des reponsables dans le tableau
         while query.next():
@@ -142,7 +142,7 @@ class Consultation(QDialog, Ui_Consultation):
         query.exec_(sql)
 
         # Affichage d'un message d'erreur si la requete echoue
-        DatabaseError.sql_error_handler(query.lastError())
+        database_error.sql_error_handler(query.lastError())
 
         # Afficher la liste des types d'activite
         while query.next():

@@ -11,9 +11,9 @@ from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 
 # Project import
 from interface.preparation_wizard import Ui_PreparationWizard
-from script.interface import Validator
-from script.data import FileError
-from script.database import DatabaseError
+from script.interface import validator
+from script.data import file_error
+from script.database import database_error
 
 # Définition des ID des pages
 PAGE_DESCRIPTION = 0
@@ -578,7 +578,7 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
 
             # Afficher une erreur si la base de données ne peut pas être créer
             if not db.open():
-                DatabaseError.sql_error_handler(db.lastError())
+                database_error.sql_error_handler(db.lastError())
                 return # Empêche de continuer la création de la base de données
 
             # Créer les tableaux de la base de données
@@ -586,7 +586,7 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
             db.transaction()
 
             # Affichage d'un message d'erreur si la requete echoue
-            if DatabaseError.sql_error_handler(db.lastError()):
+            if database_error.sql_error_handler(db.lastError()):
                 return # Empêche de continuer la création de la base de données
 
             # Créer les tables
@@ -594,7 +594,7 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
             QSqlQuery().exec_(GUIDE['query'])
 
             # Affichage d'un message d'erreur si la requete echoue
-            if DatabaseError.sql_error_handler(QSqlQuery().lastError()):
+            if database_error.sql_error_handler(QSqlQuery().lastError()):
                 db.rollback() # Annuler la transaction
                 return # Empêche de continuer la création de la base de données
 
@@ -606,7 +606,7 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
             query.bindValue(':version', GUIDE['version'])
             query.exec_()
             # Affichage d'un message d'erreur si la requete echoue
-            if DatabaseError.sql_error_handler(query.lastError()):
+            if database_error.sql_error_handler(query.lastError()):
                 db.rollback() # Annuler la transaction
                 return # Empêche de continuer la création de la base de données
 
@@ -642,7 +642,7 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
                 QSqlQuery().exec_(table['query'])
 
                 # Affichage d'un message d'erreur si la requete echoue
-                if DatabaseError.sql_error_handler(query.lastError()):
+                if database_error.sql_error_handler(query.lastError()):
                     db.rollback() # Annuler la transaction
                     return # Empêche de continuer la création de la base de données
 
@@ -654,7 +654,7 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
                 query.bindValue(':version', table['version'])
                 query.exec_()
                 # Affichage d'un message d'erreur si la requete echoue
-                if DatabaseError.sql_error_handler(query.lastError()):
+                if database_error.sql_error_handler(query.lastError()):
                     db.rollback() # Annuler la transaction
                     return # Empêche de continuer la création de la base de données
 
@@ -662,7 +662,7 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
             db.commit()
 
             # Affichage d'un message d'erreur si la requete echoue
-            if DatabaseError.sql_error_handler(db.lastError()):
+            if database_error.sql_error_handler(db.lastError()):
                 db.rollback() # Annuler la transaction
                 return # Empêche la fermeture du dialog
 

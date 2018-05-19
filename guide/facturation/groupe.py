@@ -10,7 +10,7 @@ from PyQt5.QtCore import QTime, QDate
 from PyQt5.QtSql import QSqlQuery
 
 # Project import
-from script.database import DatabaseError
+from script.database import database_error
 
 # Interface import
 from interface.groupe import Ui_Groupe
@@ -91,7 +91,7 @@ class Groupe(QDialog, Ui_Groupe):
             query.exec_()
 
             # Affichage d'un message d'erreur si la requete echoue
-            if not DatabaseError.sql_error_handler(query.lastError()):
+            if not database_error.sql_error_handler(query.lastError()):
                 self.accept() # Fermer le dialog seulement si la requete reussie
         else:
             Error.DataError.aucun_article_selectionne()
@@ -122,7 +122,7 @@ class Groupe(QDialog, Ui_Groupe):
         query.exec_(sql)
 
         # Affichage d'un message d'erreur si la requete echoue
-        DatabaseError.sql_error_handler(query.lastError())
+        database_error.sql_error_handler(query.lastError())
 
         self.tbl_activite.setRowCount(0)
         while query.next():

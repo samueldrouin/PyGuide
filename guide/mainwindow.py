@@ -37,8 +37,8 @@ from facturation.facturation import Facturation, Inscription
 from statistique.statistiques import Statistiques, StatistiquesDialog
 from script.interface.selection import SelectionStatistique
 from facturation.groupe import Groupe
-from script.database import DatabaseError
-from script.database import DataProcessing
+from script.database import database_error
+from script.database import data_processing
 from script.interface.a_propos import APropos
 
 # Interface import
@@ -512,7 +512,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         query.exec_(sql)
 
         # Affichage d'un message d'erreur si la requete echoue
-        DatabaseError.sql_error_handler(query.lastError())
+        database_error.sql_error_handler(query.lastError())
 
         # Vider la table des éléments existants
         self.table_widget.setRowCount(0)
@@ -669,7 +669,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         query.exec_(sql)
 
         # Affichage d'un message d'erreur si la requete echoue
-        DatabaseError.sql_error_handler(query.lastError())
+        database_error.sql_error_handler(query.lastError())
 
         # Show data in table widget
         self.table_widget.setRowCount(0)
@@ -806,7 +806,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         query.exec_(sql)
 
         # Affichage d'un message d'erreur si la requete echoue
-        DatabaseError.sql_error_handler(query.lastError())
+        database_error.sql_error_handler(query.lastError())
 
         # Show data in table widget
         self.table_widget.setRowCount(0)
@@ -919,7 +919,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         query.exec_(sql)
 
         # Affichage d'un message d'erreur si la requete echoue
-        DatabaseError.sql_error_handler(query.lastError())
+        database_error.sql_error_handler(query.lastError())
 
         # Show data in table widget
         self.table_widget.setRowCount(0)

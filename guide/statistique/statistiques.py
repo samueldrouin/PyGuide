@@ -28,10 +28,10 @@ from pylatex import Document, Command, PageStyle, simple_page_number, MiniPage, 
 from pylatex.utils import bold
 
 # Project import
-from script.database import DatabaseError
+from script.database import database_error
 from facturation import facturation
-from script.interface import Validator
-from script.data import DataError
+from script.interface import validator
+from script.data import data_error
 
 # Interface import
 from interface.statistique import Ui_Statistique
@@ -791,7 +791,7 @@ class Statistiques(QDialog):
         query.exec_(sql)
 
         # S'il y a une erreur dans la requete
-        if DatabaseError.sql_error_handler(query.lastError()):
+        if database_error.sql_error_handler(query.lastError()):
             return # Ne pas continuer avec des données incomplètes
 
         liste_valeur = []
@@ -852,7 +852,7 @@ class Statistiques(QDialog):
             query.exec_(sql)
 
             # S'il y a une erreur lors de l'exécution de la requête
-            if not DatabaseError.sql_error_handler(query.lastError()):
+            if not database_error.sql_error_handler(query.lastError()):
                 temp_dir = tempfile.mkdtemp()
                 file = str(uuid.uuid4()) + ".csv"
                 filename = os.path.join(temp_dir, file)
@@ -900,7 +900,7 @@ class Statistiques(QDialog):
             query.exec_(sql)
 
             # S'il y a une erreur lors de l'exécution de la requête
-            if not DatabaseError.sql_error_handler(query.lastError()):
+            if not database_error.sql_error_handler(query.lastError()):
                 # Générer le fichier PDF
                 geometry_options = {"margin": "1in"}
                 doc = Document(page_numbers=True, geometry_options=geometry_options)

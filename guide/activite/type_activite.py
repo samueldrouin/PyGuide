@@ -18,9 +18,9 @@ from PyQt5.QtSql import QSqlQuery
 from PyQt5.QtWidgets import QDialog
 
 # Project import
-from script.database import DatabaseError
-from script.interface import Validator
-from script.data import DataError
+from script.database import database_error
+from script.interface import validator
+from script.data import data_error
 
 # Interface import
 from interface.type_activite import Ui_TypeActivite
@@ -99,7 +99,7 @@ class NouveauTypeActivite(TypeActivite):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if not DatabaseError.sql_error_handler(query.lastError()):
+        if not database_error.sql_error_handler(query.lastError()):
             self.accept() # Fermer le dialog seulement si la requete reussie
 
 
@@ -138,7 +138,7 @@ class ModifierTypeActivite(TypeActivite):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        DatabaseError.sql_error_handler(query.lastError())
+        database_error.sql_error_handler(query.lastError())
 
         # Afficher les informations
         query.first()
@@ -159,5 +159,5 @@ class ModifierTypeActivite(TypeActivite):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if not DatabaseError.sql_error_handler(query.lastError()):
+        if not database_error.sql_error_handler(query.lastError()):
             self.accept() # Fermer le dialog seulement si la requete reussie

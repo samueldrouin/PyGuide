@@ -8,12 +8,12 @@ from PyQt5.QtSql import QSqlQuery
 from PyQt5.QtWidgets import QDialog
 
 # Project import
-from script.database import DatabaseError
-from script.interface import Validator
-from script.interface import Completer
-from script.database import DataProcessing
-from script.data import DataError
-from script.data import Parsing
+from script.database import database_error
+from script.interface import validator
+from script.interface import completer
+from script.database import data_processing
+from script.data import data_error
+from script.data import parsing
 
 # Interface import
 from interface.lieu import Ui_Lieu
@@ -95,7 +95,7 @@ class NouveauLieu(Lieu):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if not DatabaseError.sql_error_handler(query.lastError()):
+        if not database_error.sql_error_handler(query.lastError()):
             self.accept() # Fermer le dialog seulement si la requete reussie
 
 
@@ -134,7 +134,7 @@ class ModifierLieu(Lieu):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        DatabaseError.sql_error_handler(query.lastError())
+        database_error.sql_error_handler(query.lastError())
 
         # Afficher les informations
         query.first()
@@ -171,5 +171,5 @@ class ModifierLieu(Lieu):
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
-        if not DatabaseError.sql_error_handler(query.lastError()):
+        if not database_error.sql_error_handler(query.lastError()):
             self.accept() # Fermer le dialog seulement si la requete reussie
