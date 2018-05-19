@@ -636,16 +636,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             else:
                 sql = sql + "WHERE lieu.nom LIKE '%{}%' ".format(search)
 
-            sql = sql + "AND activite.date >= " + \
-                        str(self.dock_widget.widget().ded_start.date().toString('yyyy-MM-dd')) + \
-                        " AND activite.date <= " + \
-                        str(self.dock_widget.widget().ded_end.date().toString('yyyy-MM-dd')) + " " + \
+            sql = sql + "AND strftime('%s', activite.date) >= " + \
+                        "strftime('%s', '" + str(self.dock_widget.widget().ded_start.date().toString('yyyy-MM-dd')) + "')" + \
+                        " AND strftime('%s', activite.date) <= strftime('%s', '" + \
+                        "strftime('%s', '" + str(self.dock_widget.widget().ded_end.date().toString('yyyy-MM-dd')) + "') " + \
                         " AND activite.status = 1 "
         else:
-            sql = sql + "WHERE activite.date >= " + \
-                        str(self.dock_widget.widget().ded_start.date().toString('yyyy-MM-dd')) + \
-                        " AND activite.date <= " + \
-                        str(self.dock_widget.widget().ded_end.date().toString('yyyy-MM-dd')) + " " + \
+            sql = sql + "WHERE strftime('%s', activite.date) >= " + \
+                        "strftime('%s', '" + str(self.dock_widget.widget().ded_start.date().toString('yyyy-MM-dd')) + "')" + \
+                        " AND strftime('%s', activite.date) <= " + \
+                        "strftime('%s', '"+ str(self.dock_widget.widget().ded_end.date().toString('yyyy-MM-dd')) + "') " + \
                         " AND activite.status = 1 "
 
         # Ajouter les options de tri
@@ -665,7 +665,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             sql = sql + "DESC "
         else:
             sql = sql + "ASC "
-
+        print(sql)
         query.exec_(sql)
 
         # Affichage d'un message d'erreur si la requete echoue
