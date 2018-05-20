@@ -23,7 +23,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>GUIDE - Centre de femmes du Haut-Richelieu </string>
+   <string>PyGuide</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">

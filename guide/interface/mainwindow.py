@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/Volumes/[C] Windows 10/Users/samueldrouin/source/repos/GUIDE-CFR/guide/interface/ui/mainwindow.ui'
+# Form implementation generated from reading ui file '/Volumes/[C] Windows 10/Users/samueldrouin/source/repos/PyGUIDE/guide/interface/ui/mainwindow.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -132,7 +132,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "GUIDE - Centre de femmes du Haut-Richelieu "))
+        MainWindow.setWindowTitle(_translate("MainWindow", "PyGuide"))
         self.menuGestion.setTitle(_translate("MainWindow", "Gestion"))
         self.menuStatistiques.setTitle(_translate("MainWindow", "Statistiques"))
         self.menuAide.setTitle(_translate("MainWindow", "Aide"))
