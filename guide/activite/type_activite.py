@@ -61,7 +61,7 @@ class TypeActivite(QDialog, Ui_TypeActivite):
         self.DATABASE = database
 
         # Validator
-        self.txt_nom.setValidator(Validator.name_validator())
+        self.txt_nom.setValidator(validator.name_validator())
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)

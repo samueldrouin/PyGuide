@@ -1152,7 +1152,7 @@ class StatistiquesDialog(Statistiques, Ui_Statistique):
         self.setupUi(self)
 
         # Ajouter les validator
-        self.txt_titre.setValidator(Validator.file_name_validator())
+        self.txt_titre.setValidator(validator.file_name_validator())
 
         # Afficher la premier ligne
         self.ajouter_ligne_champ()

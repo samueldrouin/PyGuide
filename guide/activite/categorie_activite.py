@@ -42,7 +42,7 @@ class CategorieActivite(QDialog, Ui_CategorieActivite):
         self.DATABASE = database
 
         # Validator
-        self.txt_nom.setValidator(Validator.address_validator())
+        self.txt_nom.setValidator(validator.address_validator())
 
         # Affiche le contenu des combobox
         self.afficher_responsable()

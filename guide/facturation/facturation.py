@@ -60,7 +60,7 @@ class Facture(QDialog):
         :param old: Old cursor position
         :param new: New cursor position
         """
-        phone_number = Parsing.phone_number_parsing(old, new, self.sender().text())
+        phone_number = parsing.phone_number_parsing(old, new, self.sender().text())
         self.sender().setText(phone_number)
 
     def information_participante(self, numero_telephone):
@@ -358,7 +358,7 @@ class Facturation(Facture, Ui_Facturation):
         self.setupUi(self)
 
         # Validator
-        self.txt_numero.setValidator(Validator.phone_validator())
+        self.txt_numero.setValidator(validator.phone_validator())
 
         # Table widget parameters
         self.tbl_activite.setColumnHidden(0, True)
@@ -821,7 +821,7 @@ class Inscription(Facture, Ui_Inscription):
         self.setupUi(self)
 
         # Validator
-        self.txt_numero.setValidator(Validator.phone_validator())
+        self.txt_numero.setValidator(validator.phone_validator())
 
         # Table widget parameters
         self.tbl_activite.setColumnHidden(0, True)

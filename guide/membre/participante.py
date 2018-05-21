@@ -65,20 +65,20 @@ class Participante(QDialog, Ui_Participante):
         self.DATABASE = database
 
         # Validator
-        self.txt_prenom.setValidator(Validator.name_validator())
-        self.txt_nom.setValidator(Validator.name_validator())
-        self.txt_adresse1.setValidator(Validator.address_validator())
-        self.txt_adresse2.setValidator(Validator.address_validator())
-        self.txt_ville.setValidator(Validator.name_validator())
-        self.txt_code_postal.setValidator(Validator.zip_code_validator())
-        self.txt_telephone1.setValidator(Validator.phone_validator())
-        self.txt_poste1.setValidator(Validator.poste_validator())
-        self.txt_telephone2.setValidator(Validator.phone_validator())
-        self.txt_poste2.setValidator(Validator.poste_validator())
-        self.txt_email.setValidator(Validator.email_validator())
+        self.txt_prenom.setValidator(validator.name_validator())
+        self.txt_nom.setValidator(validator.name_validator())
+        self.txt_adresse1.setValidator(validator.address_validator())
+        self.txt_adresse2.setValidator(validator.address_validator())
+        self.txt_ville.setValidator(validator.name_validator())
+        self.txt_code_postal.setValidator(validator.zip_code_validator())
+        self.txt_telephone1.setValidator(validator.phone_validator())
+        self.txt_poste1.setValidator(validator.poste_validator())
+        self.txt_telephone2.setValidator(validator.phone_validator())
+        self.txt_poste2.setValidator(validator.poste_validator())
+        self.txt_email.setValidator(validator.email_validator())
 
         # Completer
-        self.txt_ville.setCompleter(Completer.ville_completer())
+        self.txt_ville.setCompleter(completer.ville_completer())
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
@@ -275,7 +275,7 @@ class Participante(QDialog, Ui_Participante):
         :param old: Old cursor position
         :param new: New cursor position
         """
-        code_postal = Parsing.zip_code_parsing(old, new, self.sender().text())
+        code_postal = parsing.zip_code_parsing(old, new, self.sender().text())
         self.sender().setText(code_postal)
 
     def set_parsed_phone_number(self, old, new):
@@ -284,7 +284,7 @@ class Participante(QDialog, Ui_Participante):
         :param old: Old cursor position
         :param new: New cursor position
         """
-        phone_number = Parsing.phone_number_parsing(old, new, self.sender().text())
+        phone_number = parsing.phone_number_parsing(old, new, self.sender().text())
         self.sender().setText(phone_number)
 
     def show_member_informations(self):
@@ -339,7 +339,7 @@ class Participante(QDialog, Ui_Participante):
             layout_numero = QHBoxLayout()
 
             txt_numero_membre = QLineEdit(str(query.value(1)))
-            txt_numero_membre.setValidator(Validator.numero_membre_validator())
+            txt_numero_membre.setValidator(validator.numero_membre_validator())
             txt_numero_membre.setMinimumWidth(100)
             txt_numero_membre.setReadOnly(True)
 

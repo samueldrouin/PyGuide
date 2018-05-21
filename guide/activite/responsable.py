@@ -41,8 +41,8 @@ class Responsable(QDialog, Ui_Responsable):
         self.DATABASE = database
 
         # Validator
-        self.txt_prenom.setValidator(Validator.name_validator())
-        self.txt_nom.setValidator(Validator.name_validator())
+        self.txt_prenom.setValidator(validator.name_validator())
+        self.txt_nom.setValidator(validator.name_validator())
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)

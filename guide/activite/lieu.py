@@ -44,14 +44,14 @@ class Lieu(QDialog, Ui_Lieu):
         self.DATABASE = database
 
         # Validator
-        self.txt_nom.setValidator(Validator.name_validator())
-        self.txt_adresse1.setValidator(Validator.address_validator())
-        self.txt_adresse2.setValidator(Validator.address_validator())
-        self.txt_ville.setValidator(Validator.name_validator())
-        self.txt_code_postal.setValidator(Validator.zip_code_validator())
+        self.txt_nom.setValidator(validator.name_validator())
+        self.txt_adresse1.setValidator(validator.address_validator())
+        self.txt_adresse2.setValidator(validator.address_validator())
+        self.txt_ville.setValidator(validator.name_validator())
+        self.txt_code_postal.setValidator(validator.zip_code_validator())
 
         # Completer
-        self.txt_ville.setCompleter(Completer.ville_completer())
+        self.txt_ville.setCompleter(completer.ville_completer())
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
@@ -64,7 +64,7 @@ class Lieu(QDialog, Ui_Lieu):
         :param old: Old cursor position
         :param new: New cursor position
         """
-        code_postal = Parsing.zip_code_parsing(old, new, self.sender().text())
+        code_postal = parsing.zip_code_parsing(old, new, self.sender().text())
         self.sender().setText(code_postal)
 
     def check_fields(self):
