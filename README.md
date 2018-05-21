@@ -19,7 +19,7 @@ Once Python 3 is installed, open the Command Prompt and execute the following li
 pip3 install PyQt5
 ```
 
-Certain module (i.e statistics PDF generation) also need a LaTeX distribution installed. If you are not familiar with LaTeX the use of the MikTex distribution for Windows is recommended (https://miktex.org). The base installation should be enough to use this software however it might not include all the required packages therefore the option to install missing packages sould be actived. 
+Some module (i.e statistics PDF generation) also need a LaTeX distribution installed. If you are not familiar with LaTeX the use of the MikTex distribution for Windows is recommended (https://miktex.org). The base installation should be enough to use this software however it might not include all the required packages therefore the option to install missing packages sould be actived. 
 
 ### Installation
 
