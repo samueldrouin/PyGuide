@@ -13,8 +13,8 @@
     </qresource>
     <qresource prefix="/global">
         <file>Logo.png</file>
-        <file>Banniere.png</file>
         <file>Copyrights.png</file>
         <file>Folder.png</file>
+        <file>Banniere.png</file>
     </qresource>
 </RCC>
