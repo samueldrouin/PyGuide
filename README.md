@@ -1,46 +1,41 @@
-# GUIDE-CFHR
+# PyGuide
 
-Le programme GUIDE-CFR est une version adaptée pour le Centre de femmes du Haut-Richelieu du programme C++ GUIDE. Le programme permet la gestion des activités, des membres et comporte un module de facturation.
+The PyGuide software is the Python version of the original Guide software written in C++. Python was choosen in order to speed up developement process compared to C++, however, right now only a few of the original fonctionnalities where migrated to Python. Those include : activity management, membreship management and a simplified facturation module. 
 
-## Pour commencer
+## Getting started
 
-Le programme est basé sur PyQt et Python 3.6 afin de permettre l'installation sur une grande variété de système d'exploitation. Cependant, seul le système Microsoft Windows est pleinement supporté. Pour cette raison, même si l'installation et l'opération du programme sur Linux et MacOS est possible, seule les instruction d'installation sur Windows seront fournies. 
+This software is programmed with PyQt5 and Python 3.6 in order to make it portable however only Microsoft Window 10 is fully supported and tested. For this reason, only the windows installation instructions are provided even if it should be possible to install and run this software on Linux or MacOS. 
 
-### Prérequis
+### Prerequisites
 
-Le programme nécessite l'installation des programmes suivants pour fonctionner : 
-* Python 3.6 et plus récent
-* PyQt 5.10.0 et plus récent
+This software require the following software to be installed : 
+* Python 3.6 or newer
+* PyQt 5.10.0 or newer
 
-Installer d'abord la distribution Python 3 pour Windows la plus récente (https://www.python.org).
+The Windows Python 3 distribution can be downloaded there : https://www.python.org.
 
-Pour installer PyQt5, ouvrez le Terminal puis entrez le code :
+Once Python 3 is installed, open the Command Prompt and execute the following line : 
 ```
 pip3 install PyQt5
 ```
 
-Pour utiliser certains modules de l'application tel que la génération de rapports, il est aussi nécessaire d'installer une distribution LaTeX. 
-
-La distribution LaTeX recommandé pour les utilisateurs qui n'ont jamais utilisés LaTeX est MikTeX (https://miktex.org). L'installation de base est suffisante, cependant, elle n'inclue pas tout les paquets qui seront utilisés par le programme. Pour cette raison, il est recommandé de garder l'option d'installer des paquets manquants active.
+Certain module (i.e statistics PDF generation) also need a LaTeX distribution installed. If you are not familiar with LaTeX the use of the MikTex distribution for Windows is recommended (https://miktex.org). The base installation should be enough to use this software however it might not include all the required packages therefore the option to install missing packages sould be actived. 
 
 ### Installation
 
-Le programme ne nécessite aucune étape d'installation. Il est possible de l'exécuter à partir de n'importe localisation sur le disque. 
-
-Une fois le fichier téléchargé et installé dans la localisation où il doit être exécuté, lancer la commande terminal suivante pour l'exécuter. 
+When all the prerequisites are installed this software does not need any installation steps. It is possible to execute the software directly from any location on the computer with the following Command Prompt command :  
 ```
 python3 /path/to/main.py
 ```
-Si l'installation est correcte, le programme devrait s'ouvrir. 
 
-## Contribuer
+## Contribute
 
-Ce programme devrait servir uniquement à l'usage interne du Centre de femmes du Haut-Richelieu. Les individus ou corporations mendatés pour modifier le programme par le Centre de femmes du Haut-Richelieu peuvent créer de nouvelle branches pour modifier le programmes.
+Feel free to contribute to this software. 
 
-## Auteur
+## Author
 
 **Samuel Prince-Drouin** 2017-2018
 
 ## License
 
-Le projet est sous license GPL 3 - référez vous au fichier [LICENSE.md](LICENSE.md) pour les détails. 
+This project is made available under GPL 3 - see [LICENSE.md](LICENSE.md) file for details. 
