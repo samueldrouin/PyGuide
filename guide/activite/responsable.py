@@ -28,7 +28,7 @@ from script.interface import validator
 from script.data import data_error
 
 # Interface import
-from interface.responsable import Ui_Responsable
+from interface.ui_responsable import Ui_Responsable
 
 
 class Responsable(QDialog, Ui_Responsable):
@@ -56,7 +56,7 @@ class Responsable(QDialog, Ui_Responsable):
         if self.txt_prenom.text() != "":
             self.process()
         else:
-            DataError.message_box_missing_information("Le prénom du responsable doit être remplis")
+            data_error.message_box_missing_information("Le prénom du responsable doit être remplis")
 
     def process(self):
         """

@@ -24,7 +24,7 @@ from PyQt5.QtCore import QSettings, QSize
 from PyQt5.QtGui import QIcon
 
 # Interface import
-from interface.setting import Ui_Setting
+from interface.ui_setting import Ui_Setting
 
 # Resource import 
 import resources
@@ -70,7 +70,7 @@ class Setting(QDialog, Ui_Setting):
         """
         Chemin vers le dossier statistiques
         """
-        dialog = QFileDialog.getExistingDirectory(self, "Dossier pour enregistrer les fichers statistique", 
+        folder = QFileDialog.getExistingDirectory(self, "Dossier pour enregistrer les fichers statistique", 
                                                   str(os.path.join(Path.home(), 'Documents')))
 
         self.txt_statistique.setText(os.path.abspath(folder))

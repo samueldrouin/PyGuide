@@ -33,7 +33,7 @@ from activite.type_activite import NouveauTypeActivite, ModifierTypeActivite
 from script.database import database_error
 
 # Interface import
-from interface.consultation import Ui_Consultation
+from interface.ui_consultation import Ui_Consultation
 
 
 class Consultation(QDialog, Ui_Consultation):

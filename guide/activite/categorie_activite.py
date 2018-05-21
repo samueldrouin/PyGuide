@@ -29,7 +29,7 @@ from script.database import data_processing
 from script.data import data_error
 
 # Interface import
-from interface.categorie_activite import Ui_CategorieActivite
+from interface.ui_categorie_activite import Ui_CategorieActivite
 
 
 class CategorieActivite(QDialog, Ui_CategorieActivite):
@@ -125,7 +125,7 @@ class CategorieActivite(QDialog, Ui_CategorieActivite):
             self.process()
             return True
         else:
-            DataError.message_box_missing_information("Le nom de la catégorie d'activité "\
+            data_error.message_box_missing_information("Le nom de la catégorie d'activité "\
                                                  "doit être remplis")
         return False
 
@@ -169,7 +169,7 @@ class NouvelleCategorieActivite(CategorieActivite):
                         ":id_responsable, "
                         ":id_type_activite, "
                         ":id_lieu)")
-        query.bindValue(':nom', DataProcessing.check_string(self.txt_nom.text()))
+        query.bindValue(':nom', data_processing.check_string(self.txt_nom.text()))
         query.bindValue(':prix_membre', self.sbx_prix_membre.value())
         query.bindValue(':prix_non_membre', self.sbx_prix_non_membre.value())
         query.bindValue(':participante_minimum', self.sbx_participante_minimum.value())
@@ -254,7 +254,7 @@ class ModifierCategorieActivite(CategorieActivite):
                         "id_lieu = :id_lieu "
                       "WHERE "
                         "id_categorie_activite = :id_categorie_activite")
-        query.bindValue(':nom', DataProcessing.check_string(self.txt_nom.text()))
+        query.bindValue(':nom', data_processing.check_string(self.txt_nom.text()))
         query.bindValue(':prix_membre', self.sbx_prix_membre.value())
         query.bindValue(':prix_non_membre', self.sbx_prix_non_membre.value())
         query.bindValue(':participante_minimum', self.sbx_participante_minimum.value())

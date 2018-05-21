@@ -16,8 +16,8 @@
 """
 Module permettant la création et l'affichage des activités
 
-Le module est responsable de l'ajout et de la modification des activité dans la base de donnée. Contrairement à la majorité des modules, 
-se module ne comporte pas de classe de base puis les besoins pour la création et l'affichage des activités sont très différents. 
+Le module est responsable de l'ajout et de la modification des activité dans la base de donnée. Contrairement à la majorité des modules,
+se module ne comporte pas de classe de base puis les besoins pour la création et l'affichage des activités sont très différents.
 
 Classes
     NouvelleActivite : Dialog permettant la création d'une nouvelle activité dans la base de données
@@ -37,7 +37,7 @@ from PyQt5.QtCore import QDate, QTime, Qt, QDateTime
 from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 
 # PyLaTeX import
-from pylatex import Document, Command, PageStyle, simple_page_number, MiniPage, LineBreak, MediumText, LargeText, Head, LongTabu
+from pylatex import Document, Command, PageStyle, MiniPage, LineBreak, MediumText, LargeText, Head, LongTabu
 from pylatex.utils import bold
 
 # Project import
@@ -45,14 +45,14 @@ from script.database import database_error
 from facturation import facturation
 
 # Interface import
-from interface.nouvelle_activite import Ui_NouvelleActivite
-from interface.afficher_activite import Ui_AfficherActivite
+from interface.ui_nouvelle_activite import Ui_NouvelleActivite
+from interface.ui_afficher_activite import Ui_AfficherActivite
 
 
 class NouvelleActivite(QDialog, Ui_NouvelleActivite):
     """
     Dialog permettant la création d'une nouvelle activité dans la base de données
-    
+
     Méthodes
         vider_date_exclusion : Vide la liste des date d'exclusion
         ajout_date_exclusion : Ajouter une date à la liste d'exclusion
@@ -65,7 +65,7 @@ class NouvelleActivite(QDialog, Ui_NouvelleActivite):
         self.setupUi(self)
 
         # Instance variable definition
-        self.DATABASE= database
+        self.DATABASE = database
 
         # Afficher les dates et heure par defaut
         current_date = QDate.currentDate()
@@ -174,7 +174,7 @@ class NouvelleActivite(QDialog, Ui_NouvelleActivite):
             # Date limite inscription
             # Le passage par julianDay est nécessaire pour permettre d'effectuer la soustraction
             date_limite = self.ded_unique.date().toJulianDay() - self.sbx_fin_inscription.value()
-            value_date = QDate.fromJulianDay(date_limite).toString('yyyy-MM-dd') 
+            value_date = QDate.fromJulianDay(date_limite).toString('yyyy-MM-dd')
 
             query.bindValue(':date_limite_inscription', value_date)
 
@@ -212,7 +212,7 @@ class NouvelleActivite(QDialog, Ui_NouvelleActivite):
                 current_date = current_date + timedelta(weeks=1)
 
             # Ajouter les informations a la base de donnees
-            
+
             QSqlDatabase(self.DATABASE).transaction()
 
             for date_activite in liste_date:
@@ -240,7 +240,7 @@ class NouvelleActivite(QDialog, Ui_NouvelleActivite):
                 # Le passage par julianDay est nécessaire pour permettre d'effectuer la soustraction
                 date_limite = QDate(date_activite.year, date_activite.month,
                                    date_activite.day).toJulianDay() - self.sbx_fin_inscription.value()
-                value_date = QDate.fromJulianDay(date_limite).toString('yyyy-MM-dd') 
+                value_date = QDate.fromJulianDay(date_limite).toString('yyyy-MM-dd')
 
                 query.bindValue(':date_limite_inscription', value_date)
                 query.exec_()
@@ -261,7 +261,7 @@ class AfficherActivite(QDialog, Ui_AfficherActivite):
         self.setupUi(self)
 
         # Instance variable definition
-        self.DATABASE= database
+        self.DATABASE = database
         self.ID_ACTIVITE = id_activite
 
         # Afficher les informations sur l'activite
@@ -271,7 +271,7 @@ class AfficherActivite(QDialog, Ui_AfficherActivite):
         # Affichage des dates
         self.ded_date.setMinimumDate(QDate().currentDate())
         self.ded_limite.setMinimumDate(QDate().currentDate())
-        
+
         # Parametres du table widget
         self.tbl_inscriptions.setColumnHidden(0, True)
 
@@ -312,7 +312,7 @@ class AfficherActivite(QDialog, Ui_AfficherActivite):
                 # Affichage d'un message d'erreur si la requete echoue
                 if database_error.sql_error_handler(query.lastError()):
                     return # Ne pas continuer si la requete échoue
-    
+
     def liste_presence(self):
         """Afficher la liste des présences"""
         geometry_options = {"margin": "1in"}
@@ -522,7 +522,7 @@ class AfficherActivite(QDialog, Ui_AfficherActivite):
         msgbox.setIcon(QMessageBox.Information)
         msgbox.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
         msgbox.setDefaultButton(QMessageBox.No)
-        
+
         # L'annulation est confirmée
         if msgbox.exec() == QMessageBox.Yes:
             query = QSqlQuery(self.DATABASE)

@@ -26,7 +26,7 @@ Méthodes :
     check_phone_number : convertit un numéro de téléphone en nombre entier
 """
 
-def check_string(str):
+def check_string(string):
     """
     Vérifie si un string le contenu d'un string. 
     
@@ -36,9 +36,9 @@ def check_string(str):
     Return : 
         String ou None (si le string est vide)
     """
-    if not str:
+    if not string:
         return None
-    return str
+    return string
 
 def check_int(value):
     """

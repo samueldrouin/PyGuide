@@ -33,8 +33,8 @@ from script.data import data_error
 from script.data import parsing
 
 # Interface import
-from interface.facturation import Ui_Facturation
-from interface.inscription import Ui_Inscription
+from interface.ui_facturation import Ui_Facturation
+from interface.ui_inscription import Ui_Inscription
 
 
 # Définition de constantes
@@ -72,7 +72,7 @@ class Facture(QDialog):
         if len(numero_telephone) == 12:
 
             # Preparation du numero de telephone
-            phone_number = int(DataProcessing.check_phone_number(numero_telephone))
+            phone_number = int(data_processing.check_phone_number(numero_telephone))
 
             query = QSqlQuery()
             query.prepare("SELECT "
@@ -110,12 +110,12 @@ class Facture(QDialog):
 
             # La requête ne contient aucune information
             if not resultat:
-                DataError.numero_telephone_inexistant()
+                data_error.numero_telephone_inexistant()
             # La requête contient plusieurs comptes
             elif len(resultat) != 1:
-                selection = Selection.SelectionParticipante(resultat)
-                if selection.exec() == QDialog.Accepted:
-                    index = int(selection.get_value())
+                selection_participante = selection.SelectionParticipante(resultat)
+                if selection_participante.exec() == QDialog.Accepted:
+                    index = int(selection_participante.get_value())
                     self.activer_facturation()
                     return [element for element in resultat if element["index"] == index][0]
             else:
@@ -123,7 +123,7 @@ class Facture(QDialog):
                 return resultat[0]
         # Le numéro de téléphone est invalide
         else:
-            DataError.numero_telephone_invalide()
+            data_error.numero_telephone_invalide()
         return False
 
     def activer_facturation(self):
@@ -159,7 +159,7 @@ class Facture(QDialog):
               "INNER JOIN categorie_activite "\
                 "ON activite.id_categorie_activite = categorie_activite.id_categorie_activite " \
               "WHERE activite.date_limite_inscription >= {} ".format(QDate.currentDate().toString('yyyy-MM-dd'))
-        
+
         # Afficher les activités qui ne sont pas annulées
         if not annule:
             sql = sql + "AND activite.status = 1 "
@@ -309,7 +309,8 @@ class Facture(QDialog):
         query = QSqlQuery(self.DATABASE)
         query.prepare("SELECT COUNT(inscription.id_inscription) "
                       "FROM inscription "
-                      "WHERE (inscription.id_activite = :id_activite) AND (inscription.status = 1) ")
+                      "WHERE (inscription.id_activite = :id_activite) "
+                      "AND (inscription.status = 1) ")
         query.bindValue(':id_activite', id_activite)
         query.exec_()
 
@@ -512,7 +513,7 @@ class Facturation(Facture, Ui_Facturation):
                         "(id_activite = :id_activite) AND "
                         "(id_participante = :id_participante)")
         query.bindValue(':status', STATUS_FACTURE)
-        query.bindValue(':id_activite' , self.tbl_activite.item(row, 0).text())
+        query.bindValue(':id_activite', self.tbl_activite.item(row, 0).text())
         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
         query.exec_()
 
@@ -529,12 +530,12 @@ class Facturation(Facture, Ui_Facturation):
 
             # Si l'activite a deja ete facturee
             if count:
-                DataError.facturation_impossible()
+                data_error.facturation_impossible()
                 return
 
             # Avertissement si l'activité est complète
             if int(self.tbl_activite.item(row, 1).text()):
-                resultat = DataError.activite_complete()
+                resultat = data_error.activite_complete()
                 if resultat == QMessageBox.No:
                     return # Ne pas ajouter l'article
 
@@ -548,7 +549,7 @@ class Facturation(Facture, Ui_Facturation):
 
             # Si l'activite n'a jamais ete facturee
             if not count:
-                DataError.remboursement_impossible()
+                data_error.remboursement_impossible()
                 return
 
         if row != -1:
@@ -579,7 +580,7 @@ class Facturation(Facture, Ui_Facturation):
                     self.liberation_liste_attente(int(self.tbl_activite.item(row, 0).text()))
 
         else:
-            DataError.aucun_article_selectionne()
+            data_error.aucun_article_selectionne()
 
     def ajout_inscription(self):
         """Ajouter une inscription a la facture"""
@@ -604,7 +605,7 @@ class Facturation(Facture, Ui_Facturation):
 
             self.afficher_total(self.tbl_inscription.item(row, 2).text())
         else:
-            DataError.aucun_article_selectionne()
+            data_error.aucun_article_selectionne()
 
     def retirer_activite(self):
         """Retirer une activite du panier"""
@@ -619,7 +620,7 @@ class Facturation(Facture, Ui_Facturation):
             # Effacer l'article de la facture 
             self.tbl_article.removeRow(row)
         else:
-            DataError.aucun_article_selectionne()
+            data_error.aucun_article_selectionne()
 
     def process(self):
         """Traitement des donnees pour la base de données"""
@@ -636,7 +637,7 @@ class Facturation(Facture, Ui_Facturation):
                         "(numero_recu, id_participante, total) "
                       "VALUES "
                         "(:numero_recu, :id_participante, :total)")
-        query.bindValue(':numero_recu', DataProcessing.check_string(self.txt_recu.text()))
+        query.bindValue(':numero_recu', data_processing.check_string(self.txt_recu.text()))
         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
         query.bindValue(':total', float(self.txt_total.text()[:-1]))
         query.exec_()
@@ -668,7 +669,7 @@ class Facturation(Facture, Ui_Facturation):
             query = QSqlQuery(self.DATABASE)
             query.prepare("INSERT INTO article "
                           "(id_facture, prix, description) "
-                          "VALUES " 
+                          "VALUES "
                           "(:id_facture, :prix, :description)")
             query.bindValue(':id_facture', id_facture)
             query.bindValue(':prix', prix)
@@ -702,7 +703,7 @@ class Facturation(Facture, Ui_Facturation):
                 query.exec_()
 
                 # Vérifier s'il y a violation de la contraint de la primary key
-                if query.lastError().nativeErrorCode() == str(database_error.SQLITE_CONSTRAINT): 
+                if query.lastError().nativeErrorCode() == str(database_error.SQLITE_CONSTRAINT):
                     # Vérifier si une transaction a deja ete annulee
                     query = QSqlQuery(self.DATABASE)
                     query.prepare("SELECT status "
@@ -878,10 +879,10 @@ class Inscription(Facture, Ui_Inscription):
         if activite_row != -1:
             # Avertissement si l'activité est complète
             if int(self.tbl_activite.item(activite_row, 1).text()):
-                resultat = DataError.activite_complete()
+                resultat = data_error.activite_complete()
                 if resultat == QMessageBox.No:
                     return # Ne pas ajouter l'article
-            
+
             # Préparation du tableau
             self.tbl_panier.insertRow(self.tbl_panier.rowCount())
             r = self.tbl_panier.rowCount() - 1
@@ -898,7 +899,7 @@ class Inscription(Facture, Ui_Inscription):
             self.tbl_panier.resizeColumnsToContents()
         # Avertissement qu'il est nécessaire de choisir un article
         else:
-            DataError.aucun_article_selectionne()
+            data_error.aucun_article_selectionne()
 
     def retirer_activite(self):
         """Retirer une activite du panier"""
@@ -909,7 +910,7 @@ class Inscription(Facture, Ui_Inscription):
                 # Avertissement si une place de la liste d'attente est libérée
                 if int(self.tbl_panier.item(row, 2).text()):
                     # Avertissement de perte de priorité
-                    if DataError.activite_contingentee() == QMessageBox.No:
+                    if data_error.activite_contingentee() == QMessageBox.No:
                         return
                     self.liberation_liste_attente(int(self.tbl_panier.item(row, 0).text()))
 
@@ -920,7 +921,7 @@ class Inscription(Facture, Ui_Inscription):
             elif self.tbl_panier.item(row, 1).text() == "1":
                 self.tbl_panier.removeRow(row)
         else:
-            DataError.aucun_article_selectionne()
+            data_error.aucun_article_selectionne()
 
     def process(self):
         """Traitement des donnees pour la base de données"""

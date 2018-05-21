@@ -26,9 +26,10 @@ from PyQt5.QtSql import QSqlQuery
 
 # Project import
 from script.database import database_error
+from script.data import data_error
 
 # Interface import
-from interface.groupe import Ui_Groupe
+from interface.ui_groupe import Ui_Groupe
 
 class Groupe(QDialog, Ui_Groupe):
     """Dialog pour la création de l'inscription d'un nouveau groupe"""
@@ -109,7 +110,7 @@ class Groupe(QDialog, Ui_Groupe):
             if not database_error.sql_error_handler(query.lastError()):
                 self.accept() # Fermer le dialog seulement si la requete reussie
         else:
-            Error.DataError.aucun_article_selectionne()
+            data_error.aucun_article_selectionne()
 
     def afficher_liste_activite(self):
         """

@@ -49,19 +49,19 @@ from activite.categorie_activite import NouvelleCategorieActivite, ModifierCateg
 from setting import Setting
 from consultation import Consultation
 from facturation.facturation import Facturation, Inscription
+from facturation.groupe import Groupe
 from statistique.statistiques import Statistiques, StatistiquesDialog
 from script.interface.selection import SelectionStatistique
-from facturation.groupe import Groupe
+from script.interface.a_propos import APropos
 from script.database import database_error
 from script.database import data_processing
-from script.interface.a_propos import APropos
 
 # Interface import
-from interface.mainwindow import Ui_MainWindow
-from interface.central_widget.widget_activite import Ui_WidgetActivite
-from interface.central_widget.widget_categorie_activite import Ui_WidgetTypeActivite
-from interface.central_widget.widget_lieu import Ui_WidgetLieu
-from interface.central_widget.widget_participante import Ui_WidgetParticipante
+from interface.ui_main_window import Ui_MainWindow
+from interface.central_widget.ui_widget_activite import Ui_WidgetActivite
+from interface.central_widget.ui_widget_categorie_activite import Ui_WidgetTypeActivite
+from interface.central_widget.ui_widget_lieu import Ui_WidgetLieu
+from interface.central_widget.ui_widget_participante import Ui_WidgetParticipante
 
 # Resource import 
 import resources
@@ -316,11 +316,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         stat = tree.getroot()
 
         sql = stat.find('sql').text
-        type = stat.find('output').text
+        stat_type = stat.find('output').text
 
         # Exécuter la statistique
         statistiques = Statistiques(self.DATABASE)
-        if type == "csv":
+        if stat_type == "csv":
             statistiques.afficher_csv(sql)
         else:
             statistiques.afficher_pdf(sql)
@@ -502,7 +502,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             elif self.dock_widget.widget().cbx_search.currentText() == "Ville":
                 sql = sql + "WHERE participante.ville LIKE '{}%' ".format(search)
             else:
-                sql = sql + "WHERE participante.telephone_1 LIKE '{}%' ".format(DataProcessing.check_phone_number(search))
+                sql = sql + "WHERE participante.telephone_1 LIKE '{}%' ".format(data_processing.check_phone_number(search))
 
         # Ajouter les options de tri
         if self.dock_widget.widget().cbx_sort.currentText() == "Prénom":
@@ -735,7 +735,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Slots
         self.dock_widget.widget().btn_add.clicked.connect(self.nouvelle_categorie_activite)
         self.table_widget.clicked.connect(self.modifier_categorie_activite)
-        self.dock_widget.widget().txt_search.textEdited.connect(self.update_liste_categorie_activite)
+        self.dock_widget.widget().txt_search.textEdited.connect(
+            self.update_liste_categorie_activite)
         self.dock_widget.widget().cbx_sort.currentIndexChanged.connect(self.update_liste_categorie_activite)
         self.dock_widget.widget().chk_desc.toggled.connect(self.update_liste_categorie_activite)
 

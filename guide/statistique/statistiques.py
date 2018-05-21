@@ -39,7 +39,7 @@ from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 from PyQt5.QtGui import QPalette, QColor
 
 # PyLaTeX import
-from pylatex import Document, Command, PageStyle, simple_page_number, MiniPage, LineBreak, MediumText, LargeText, Head, LongTabu
+from pylatex import Document, Command, PageStyle, MiniPage, LineBreak, MediumText, LargeText, Head, LongTabu
 from pylatex.utils import bold
 
 # Project import
@@ -49,7 +49,7 @@ from script.interface import validator
 from script.data import data_error
 
 # Interface import
-from interface.statistique import Ui_Statistique
+from interface.ui_statistique import Ui_Statistique
 
 # Resource import
 import resources
@@ -382,7 +382,7 @@ class Statistiques(QDialog):
         mapper.setMapping(table, row)
         mapper.mapped[int].connect(method)
 
-    def remplire_combobox(self, cbx, dict, ajouter_vide = True):
+    def remplire_combobox(self, cbx, dict, ajouter_vide=True):
         """
         Ajoute la liste du dictionnaire à un combobox
 
@@ -568,7 +568,7 @@ class Statistiques(QDialog):
             last_table = self.tbl_champs.cellWidget(row-1, 0).currentData()
 
             # Créer la liste des tables ayant une référence vers ou de cette table
-            reference_dict =  self.DICT_REFERENCE_TABLE[last_table]
+            reference_dict = self.DICT_REFERENCE_TABLE[last_table]
             reference_to = reference_dict['to']
             reference_from = reference_dict['from']
             reference_self = reference_dict['self']
@@ -707,13 +707,13 @@ class Statistiques(QDialog):
 
             # Afficher les champs pour la colonne
             dict_colonne = self.dictionnaire_colonne(table)
-            self.remplire_combobox(self.tbl_tri.cellWidget(row, 1), dict_colonne, ajouter_vide = False)
+            self.remplire_combobox(self.tbl_tri.cellWidget(row, 1), dict_colonne, ajouter_vide=False)
 
             # Afficher les champs pour les opérateursqz et la valeur
             self.colonne_tri_selectionnee(row)
 
             # Afficher les champs pour la contrainte
-            self.remplire_combobox(self.tbl_tri.cellWidget(row, 4), self.DICT_CONTRAINTE_OPERATEUR, ajouter_vide = False)
+            self.remplire_combobox(self.tbl_tri.cellWidget(row, 4), self.DICT_CONTRAINTE_OPERATEUR, ajouter_vide=False)
 
             # Pour toute les rangees sauf la premiere
             if row != 0:
@@ -730,17 +730,17 @@ class Statistiques(QDialog):
         table = self.tbl_tri.cellWidget(row, 0).currentData()
         colonne = self.tbl_tri.cellWidget(row, 1).currentData()
         dict_colonne = self.dictionnaire_colonne(table)
-        type = dict_colonne[colonne]['type']
+        column_type = dict_colonne[colonne]['type']
 
         # Afficher les opérateurs selon le type de colonne
-        if type == self.TYPE_STRING:
+        if column_type == self.TYPE_STRING:
             self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['=']['nom'], '=')
             self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['contient']['nom'], 'contient')
             self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['commence']['nom'], 'commence')
             self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['termine']['nom'], 'termine')
-        elif type == self.TYPE_BOOLEAN:
+        elif column_type == self.TYPE_BOOLEAN:
             self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['=']['nom'], '=')
-        elif type == self.TYPE_STATUS_INSCRIPTION:
+        elif column_type == self.TYPE_STATUS_INSCRIPTION:
             self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['=']['nom'], '=')
         else:
             self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['=']['nom'], '=')
@@ -750,35 +750,35 @@ class Statistiques(QDialog):
             self.tbl_tri.cellWidget(row, 2).addItem(self.DICT_OPERATEUR['>=']['nom'], '>=')
 
         # Afficher le widget pour la valeur selon le type de valeur
-        if type == self.TYPE_STRING:
+        if column_type == self.TYPE_STRING:
             # Créer un nouveau LineEdit
             widget = QLineEdit()
             widget.setFrame(False)
             completer = QCompleter()
             completer.setModel(QStringListModel(self.get_field_list(row)))
             widget.setCompleter(completer)
-        elif type == self.TYPE_INTEGER:
+        elif column_type == self.TYPE_INTEGER:
             widget = QSpinBox()
             widget.setFrame(False)
             widget.setMaximum(10000)
             widget.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        elif type == self.TYPE_DATE:
+        elif column_type == self.TYPE_DATE:
             widget = QDateEdit()
             widget.setFrame(False)
             widget.setCalendarPopup(True)
             widget.setDate(QDate.currentDate())
-        elif type == self.TYPE_TIME:
+        elif column_type == self.TYPE_TIME:
             widget = QTimeEdit()
             widget.setFrame(False)
             widget.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        elif type == self.TYPE_BOOLEAN:
+        elif column_type == self.TYPE_BOOLEAN:
             widget = QCheckBox()
-        elif type == self.TYPE_DATETIME:
+        elif column_type == self.TYPE_DATETIME:
             widget = QDateTimeEdit()
             widget.setFrame(False)
             widget.setCalendarPopup(True)
             widget.setDate(QDate.currentDate())
-        elif type == self.TYPE_PRIX:
+        elif column_type == self.TYPE_PRIX:
             widget = QDoubleSpinBox()
             widget.setFrame(False)
             widget.setButtonSymbols(QAbstractSpinBox.NoButtons)
@@ -851,7 +851,7 @@ class Statistiques(QDialog):
         for key, value in sorted(dict_colonne.items()):
             self.cbx_colonne.addItem(value['nom'], key)
 
-    def afficher_csv(self, sql = None):
+    def afficher_csv(self, sql=None):
         """
         Effectuer la requete et afficher les résultats dans MS Excel
 
@@ -873,14 +873,13 @@ class Statistiques(QDialog):
                 filename = os.path.join(temp_dir, file)
         
                 column_count = query.record().count()
-                with open(filename,'w') as file:
+                with open(filename, 'w') as file:
                     # Ajouter les headers
                     line = ""
                     for i in range(column_count):
                         table = query.record().field(i).tableName() 
                         colonne = query.record().field(i).name()
                         dict_colonne = self.dictionnaire_colonne(table)
-                        dict_colonne[colonne]['nom']
                         line = line + dict_colonne[colonne]['nom'] + ","
                     line[:-1]
                     file.write(line)
@@ -897,9 +896,9 @@ class Statistiques(QDialog):
 
                 os.startfile(os.path.normpath(filename))
         else:
-            DataError.requete_vide()
+            data_error.requete_vide()
 
-    def afficher_pdf(self, sql = None):
+    def afficher_pdf(self, sql=None):
         """
         Effectuer la requete et afficher les résultats dans un fichier PDF
 
@@ -942,7 +941,7 @@ class Statistiques(QDialog):
 
                 # Continuer seulement si le nombre de colonne est de moins de 4
                 if column_count > 4:
-                    DataError.trop_champs()
+                    data_error.trop_champs()
                 else:
                     # Generer le tableau
                     with doc.create(LongTabu("X[l]"*column_count)) as data_table:
@@ -952,7 +951,6 @@ class Statistiques(QDialog):
                             table = query.record().field(i).tableName() 
                             colonne = query.record().field(i).name()
                             dict_colonne = self.dictionnaire_colonne(table)
-                            dict_colonne[colonne]['nom']
                             header_row1.append(dict_colonne[colonne]['nom'])
 
                         data_table.add_row(header_row1, mapper=[bold])
@@ -980,7 +978,7 @@ class Statistiques(QDialog):
                     filename_ext = os.path.join(temp_dir, file_ext)
                     os.startfile(os.path.normpath(filename_ext))
         else:
-            DataError.requete_vide()
+            data_error.requete_vide()
 
     def generer_requete(self):
         """
@@ -1052,21 +1050,21 @@ class Statistiques(QDialog):
         table = self.tbl_tri.cellWidget(row, 0).currentData()
         colonne = self.tbl_tri.cellWidget(row, 1).currentData()
         dict_colonne = self.dictionnaire_colonne(table)
-        type = dict_colonne[colonne]['type']
+        column_type = dict_colonne[colonne]['type']
 
-        if type == self.TYPE_STRING:
+        if column_type == self.TYPE_STRING:
             return "'" + self.tbl_tri.cellWidget(row, 3).text() + "'"
-        elif type == self.TYPE_INTEGER:
+        elif column_type == self.TYPE_INTEGER:
             return self.tbl_tri.cellWidget(row, 3).value()
-        elif type == self.TYPE_DATE:
+        elif column_type == self.TYPE_DATE:
             return self.tbl_tri.cellWidget(row, 3).date().toString('yyyy-MM-dd')
-        elif type == self.TYPE_TIME:
+        elif column_type == self.TYPE_TIME:
             return self.tbl_tri.cellWidget(row, 3).time().toString('HH:mm')
-        elif type == self.TYPE_BOOLEAN:
+        elif column_type == self.TYPE_BOOLEAN:
             return self.tbl_tri.cellWidget(row, 3).checked()
-        elif type == self.TYPE_DATETIME:
+        elif column_type == self.TYPE_DATETIME:
             return self.tbl_tri.cellWidget(row, 3).dateTime().toString('yyyy-MM-dd hh:mm:ss')
-        elif type == self.TYPE_PRIX:
+        elif column_type == self.TYPE_PRIX:
             return self.tbl_tri.cellWidget(row, 3).value()
         else: # TYPE_STATUS_INSCRIPTION
             if self.tbl_tri.cellWidget(row, 3).currentText() == 'Active':
@@ -1114,7 +1112,7 @@ class Statistiques(QDialog):
         """
         # Vérifier que la statistique a un nom
         if not self.txt_titre.text():
-            DataError.aucun_nom_statistique()
+            data_error.aucun_nom_statistique()
         else:
             # Obtenir la requête
             requete = self.generer_requete()
@@ -1142,7 +1140,7 @@ class Statistiques(QDialog):
                 tree.write(os.path.join(statistique, filename))
                 self.accept()
             else:
-                DataError.requete_vide()
+                data_error.requete_vide()
 
 class StatistiquesDialog(Statistiques, Ui_Statistique):
     """Dialog pour les statistiques"""

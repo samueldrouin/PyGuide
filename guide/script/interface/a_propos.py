@@ -17,7 +17,7 @@
 from PyQt5.QtWidgets import QDialog
 
 # Project import
-from interface.a_propos import Ui_APropos
+from interface.ui_a_propos import Ui_APropos
 
 class APropos(QDialog, Ui_APropos):
     def __init__(self):

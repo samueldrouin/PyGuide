@@ -22,7 +22,7 @@ from pathlib import Path
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView, QDialog
 
 # Interface import
-from interface.selection import Ui_Selection
+from interface.ui_selection import Ui_Selection
 
 
 class Selection(QDialog, Ui_Selection):
@@ -47,17 +47,17 @@ class Selection(QDialog, Ui_Selection):
     def afficher_liste(self, lst):
         """
         Afficher la liste d'items dans le TableWidget
-        :param dict: Liste de dictionnaire (la liste ne doit pas être vide)
+        :param lst: Liste de dictionnaire (la liste ne doit pas être vide)
         """
 
         # Paramètres du table widget
         self.table_widget.setRowCount(len(lst))
 
         row = 0
-        for dict in lst:
+        for dictionary in lst:
             column = 0
-            for item in dict:
-                self.table_widget.setItem(row, column, QTableWidgetItem(str(dict[item])))
+            for item in dictionary:
+                self.table_widget.setItem(row, column, QTableWidgetItem(str(dictionary[item])))
                 column = column + 1
             row = row + 1
 

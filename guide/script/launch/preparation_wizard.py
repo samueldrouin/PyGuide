@@ -25,7 +25,7 @@ from PyQt5.QtCore import Qt, QSettings
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 
 # Project import
-from interface.preparation_wizard import Ui_PreparationWizard
+from interface.ui_preparation_wizard import Ui_PreparationWizard
 from script.interface import validator
 from script.data import file_error
 from script.database import database_error
@@ -53,7 +53,7 @@ VERSION_GUIDE = 2
 MODULE_GUIDE = 0
 GUIDE = {'query' : QUERY_GUIDE, 'version' : VERSION_GUIDE, 'module' : MODULE_GUIDE}
 
-QUERY_ACTIVITE=" \
+QUERY_ACTIVITE = " \
 CREATE TABLE activite ( \
     id_activite             INTEGER, \
     id_categorie_activite   INTEGER NOT NULL, \
@@ -71,7 +71,7 @@ VERSION_ACTIVITE = 1
 MODULE_ACTIVITE = 1
 ACTIVITE = {'query' : QUERY_ACTIVITE, 'version' : VERSION_ACTIVITE, 'module' : MODULE_ACTIVITE}
 
-QUERY_ARTICLE=" \
+QUERY_ARTICLE = " \
 CREATE TABLE article ( \
     id_article  INTEGER, \
     id_facture  INTEGER, \
@@ -513,19 +513,19 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
         """
         Modifier l'ordre d'affichage des pages de l'assistant selon les sélections de l'utilisateur
         """
-        id = self.currentId()
-        if id == PAGE_DESCRIPTION:
+        current_id = self.currentId()
+        if current_id == PAGE_DESCRIPTION:
             return PAGE_SELECTION
-        elif id == PAGE_SELECTION:
+        elif current_id == PAGE_SELECTION:
             if self.rbt_db_existante.isChecked():
                 return PAGE_FIN
             else:
                 return PAGE_INFORMATIONS
-        elif id == PAGE_INFORMATIONS:
+        elif current_id == PAGE_INFORMATIONS:
             return PAGE_CONTACT
-        elif id == PAGE_CONTACT:
+        elif current_id == PAGE_CONTACT:
             return PAGE_MODULE
-        elif id == PAGE_MODULE:
+        elif current_id == PAGE_MODULE:
             return PAGE_FIN
         else:
             return -1
@@ -573,17 +573,17 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
 
             # Créer le chemin vers la base de données
             try:
-               os.makedirs(db_dir)
+                os.makedirs(db_dir)
             except OSError as error:
                 if error.errno != errno.EEXIST:
-                    FileError.db_creation(error.errno, error.strerror)
+                    file_error.db_creation(error.errno, error.strerror)
 
             # Créer le chemin vers le dossier pour les statistiques
             try:
-               os.makedirs(stats_dir)
+                os.makedirs(stats_dir)
             except OSError as error:
                 if error.errno != errno.EEXIST:
-                    FileError.db_creation(error.errno, error.strerror)
+                    file_error.db_creation(error.errno, error.strerror)
 
             # Créer la base de données
             filename = nom + '.guide'

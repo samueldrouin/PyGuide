@@ -31,7 +31,7 @@ from script.data import data_error
 from script.data import parsing
 
 # Interface import
-from interface.lieu import Ui_Lieu
+from interface.ui_lieu import Ui_Lieu
 
 
 class Lieu(QDialog, Ui_Lieu):
@@ -75,7 +75,7 @@ class Lieu(QDialog, Ui_Lieu):
         if self.txt_nom.text() != "":
             self.process()
         else:
-            DataError.message_box_missing_information("Le nom du lieu doit être remplis")
+            data_error.message_box_missing_information("Le nom du lieu doit être remplis")
 
     def process(self):
         """
@@ -101,12 +101,12 @@ class NouveauLieu(Lieu):
         query = QSqlQuery(self.DATABASE)
         query.prepare("INSERT INTO lieu (nom, adresse_1, adresse_2, ville, province, code_postal) "
                       "VALUES (:nom, :adresse_1, :adresse_2, :ville, :province, :code_postal)")
-        query.bindValue(':nom', DataProcessing.check_string(self.txt_nom.text()))
-        query.bindValue(':adresse_1', DataProcessing.check_string(self.txt_adresse1.text()))
-        query.bindValue(':adresse_2', DataProcessing.check_string(self.txt_adresse2.text()))
-        query.bindValue(':ville', DataProcessing.check_string(self.txt_ville.text()))
-        query.bindValue(':province', DataProcessing.check_string(self.cbx_province.currentText()))
-        query.bindValue(':code_postal', DataProcessing.check_string(self.txt_code_postal.text()))
+        query.bindValue(':nom', data_processing.check_string(self.txt_nom.text()))
+        query.bindValue(':adresse_1', data_processing.check_string(self.txt_adresse1.text()))
+        query.bindValue(':adresse_2', data_processing.check_string(self.txt_adresse2.text()))
+        query.bindValue(':ville', data_processing.check_string(self.txt_ville.text()))
+        query.bindValue(':province', data_processing.check_string(self.cbx_province.currentText()))
+        query.bindValue(':code_postal', data_processing.check_string(self.txt_code_postal.text()))
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue
@@ -176,12 +176,12 @@ class ModifierLieu(Lieu):
                         "code_postal = :code_postal "
                       "WHERE "
                         "id_lieu = :id_lieu")
-        query.bindValue(':nom', DataProcessing.check_string(self.txt_nom.text()))
-        query.bindValue(':adresse_1', DataProcessing.check_string(self.txt_adresse1.text()))
-        query.bindValue(':adresse_2', DataProcessing.check_string(self.txt_adresse2.text()))
-        query.bindValue(':ville', DataProcessing.check_string(self.txt_ville.text()))
-        query.bindValue(':province', DataProcessing.check_string(self.cbx_province.currentText()))
-        query.bindValue(':code_postal', DataProcessing.check_string(self.txt_code_postal.text()))
+        query.bindValue(':nom', data_processing.check_string(self.txt_nom.text()))
+        query.bindValue(':adresse_1', data_processing.check_string(self.txt_adresse1.text()))
+        query.bindValue(':adresse_2', data_processing.check_string(self.txt_adresse2.text()))
+        query.bindValue(':ville', data_processing.check_string(self.txt_ville.text()))
+        query.bindValue(':province', data_processing.check_string(self.cbx_province.currentText()))
+        query.bindValue(':code_postal', data_processing.check_string(self.txt_code_postal.text()))
         query.bindValue(':id_lieu', self.id_lieu)
         query.exec_()
 

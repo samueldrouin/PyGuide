@@ -16,7 +16,7 @@
 """
 Module permettant le traitement des types d'activité
 
-Le module est responsable de l'ajout et de la modification des types d'activité dans la base de donnée. 
+Le module est responsable de l'ajout et de la modification des types d'activité dans la base de donnée.
 
 Classes
     TypeActivité : Base des dialog permettant la modification ou la création de type d'activité
@@ -38,19 +38,19 @@ from script.interface import validator
 from script.data import data_error
 
 # Interface import
-from interface.type_activite import Ui_TypeActivite
+from interface.ui_type_activite import Ui_TypeActivite
 
 
 class TypeActivite(QDialog, Ui_TypeActivite):
     """
-    Base des dialog permettant la modification ou la création de type d'activité. 
-    
-    Cette classe est responsable de l'affichage de l'interface et de la connection des slots à l'interface. 
-    Les sous classes doivent override la méthode process qui traite les données dans la base de donnée lorsque le dialog est accepté. 
+    Base des dialog permettant la modification ou la création de type d'activité.
+
+    Cette classe est responsable de l'affichage de l'interface et de la connection des slots à l'interface.
+    Les sous classes doivent override la méthode process qui traite les données dans la base de donnée lorsque le dialog est accepté.
 
     Méthodes
         check_fields: Vérifie que tout les champs nécessaires sont remplis
-        process : Traitement de donnée dans la base de donnée. Doit être implantée dans les sous classes. 
+        process : Traitement de donnée dans la base de donnée. Doit être implantée dans les sous classes.
     """
     def __init__(self, database):
         super(TypeActivite, self).__init__()
@@ -77,7 +77,7 @@ class TypeActivite(QDialog, Ui_TypeActivite):
         if self.txt_nom.text():
             self.process()
         else:
-            DataError.message_box_missing_information("Le nom du type d'activité doit être remplis")
+            data_error.message_box_missing_information("Le nom du type d'activité doit être remplis")
 
     def process(self):
         """
@@ -91,7 +91,7 @@ class TypeActivite(QDialog, Ui_TypeActivite):
 class NouveauTypeActivite(TypeActivite):
     """
     Specificité du dialog permettant la création de nouveau type d'activité dans la base de donnée
-    
+
     Méthodes
         process : Traitement de l'ajout du type d'activité dans la base de données
     """
@@ -121,7 +121,7 @@ class NouveauTypeActivite(TypeActivite):
 class ModifierTypeActivite(TypeActivite):
     """
     Spécificité du dialog permettant la modificaton de type d'activité existant dans la base de donnée
-    
+
     Méthodes
         show_informations : Affiche les informations sur le type d'activité
         process : Modifier le type d'activite dans la base de donnees

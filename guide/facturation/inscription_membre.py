@@ -28,7 +28,7 @@ from script.database import database_error
 from script.database import data_processing
 
 # Interface import
-from interface.inscription_membre import Ui_InscriptionMembre
+from interface.ui_inscription_membre import Ui_InscriptionMembre
 
 
 class InscriptionMembre(QDialog, Ui_InscriptionMembre):
@@ -241,7 +241,7 @@ class NouvelleInscription(InscriptionMembre):
                           ":id_participante, "
                           ":total "
                         ")")
-        query.bindValue(':numero_recu', DataProcessing.check_string(self.txt_recu.text()))
+        query.bindValue(':numero_recu', data_processing.check_string(self.txt_recu.text()))
         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
         query.bindValue(':total', self.tbl_commande.item(0, 1).text())
 
@@ -372,7 +372,7 @@ class RenouvelerInscription(InscriptionMembre):
         query.bindValue(':id_participante', self.ID_PARTICIPANTE)
         query.bindValue(':article', self.tbl_commande.item(0, 0).text())
         query.bindValue(':prix', self.tbl_commande.item(0, 1).text())
-        query.bindValue(':numero_recu', DataProcessing.check_string(self.txt_recu.text()))
+        query.bindValue(':numero_recu', data_processing.check_string(self.txt_recu.text()))
         query.exec_()
 
         # Affichage d'un message d'erreur si la requete echoue

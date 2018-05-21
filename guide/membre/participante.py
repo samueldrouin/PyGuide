@@ -32,16 +32,16 @@ from PyQt5.QtSql import QSqlQuery
 
 # Project import
 from facturation.inscription_membre import NouvelleInscription, RenouvelerInscription
+from facturation import facturation
 from script.database import database_error
+from script.database import data_processing
 from script.interface import validator
 from script.interface import completer
-from facturation import facturation
-from script.database import data_processing
 from script.data import data_error
 from script.data import parsing
 
 # Interface import
-from interface.participante import Ui_Participante
+from interface.ui_participante import Ui_Participante
 
 
 class Participante(QDialog, Ui_Participante):
@@ -156,13 +156,13 @@ class Participante(QDialog, Ui_Participante):
                 self.prepare_data()
                 return True
             else:
-                DataError.message_box_missing_information("Le premier numéro de téléphone doit être valide")
+                data_error.message_box_missing_information("Le premier numéro de téléphone doit être valide")
         else:
             if self.txt_prenom.text() == "" and len(self.txt_telephone1.text()) != 12:
                 informative_text = "Le prénom et le premier numéro de téléphone doivent être valide"
             else:
                 informative_text = "Le prénom doit être valide"
-            DataError.message_box_missing_information(informative_text)
+            data_error.message_box_missing_information(informative_text)
         return False
 
     def prepare_data(self):
@@ -171,46 +171,46 @@ class Participante(QDialog, Ui_Participante):
         """
         fields = {}
 
-        appelation = DataProcessing.check_string(self.cbx_appelation.currentText())
+        appelation = data_processing.check_string(self.cbx_appelation.currentText())
         fields['Appelation'] = appelation
 
-        prenom = DataProcessing.check_string(self.txt_prenom.text())
+        prenom = data_processing.check_string(self.txt_prenom.text())
         fields['Prenom'] = prenom
 
-        nom = DataProcessing.check_string(self.txt_nom.text())
+        nom = data_processing.check_string(self.txt_nom.text())
         fields['Nom'] = nom
 
-        address1 = DataProcessing.check_string(self.txt_adresse1.text())
+        address1 = data_processing.check_string(self.txt_adresse1.text())
         fields['Address1'] = address1
 
-        address2 = DataProcessing.check_string(self.txt_adresse2.text())
+        address2 = data_processing.check_string(self.txt_adresse2.text())
         fields['Address2'] = address2
 
-        ville = DataProcessing.check_string(self.txt_ville.text())
+        ville = data_processing.check_string(self.txt_ville.text())
         fields['Ville'] = ville
 
-        province = DataProcessing.check_string(self.cbx_province.currentText())
+        province = data_processing.check_string(self.cbx_province.currentText())
         fields['Province'] = province
 
-        code_postal = DataProcessing.check_string(self.txt_code_postal.text())
+        code_postal = data_processing.check_string(self.txt_code_postal.text())
         fields['Code Postal'] = code_postal
 
-        courriel = DataProcessing.check_string(self.txt_email.text())
+        courriel = data_processing.check_string(self.txt_email.text())
         fields['Courriel'] = courriel
 
-        phone_number1 = DataProcessing.check_phone_number(self.txt_telephone1.text())
+        phone_number1 = data_processing.check_phone_number(self.txt_telephone1.text())
         fields['Phone Number 1'] = phone_number1
 
-        poste1 = DataProcessing.check_int(self.txt_poste1.text())
+        poste1 = data_processing.check_int(self.txt_poste1.text())
         fields['Poste 1'] = poste1
 
-        phone_number2 = DataProcessing.check_phone_number(self.txt_telephone2.text())
+        phone_number2 = data_processing.check_phone_number(self.txt_telephone2.text())
         fields['Phone Number 2'] = phone_number2
 
-        poste2 = DataProcessing.check_int(self.txt_poste2.text())
+        poste2 = data_processing.check_int(self.txt_poste2.text())
         fields['Poste 2'] = poste2
 
-        annee_naissance = DataProcessing.check_int(self.sbx_annee_naissance.value())
+        annee_naissance = data_processing.check_int(self.sbx_annee_naissance.value())
         fields['Annee Naissance'] = annee_naissance
 
         personne_nourries = self.sbx_personnes_nourries.value()
@@ -513,7 +513,7 @@ class ModifierParticipante(Participante):
         if database_error.sql_error_handler(query.lastError()):
             return # Ne pas continuer avec des informations incompletes
 
-        while(query.next()):
+        while query.next():
             # Préparation du tableau
             self.tbl_transaction.insertRow(self.tbl_transaction.rowCount())
             r = self.tbl_transaction.rowCount() - 1
@@ -555,7 +555,7 @@ class ModifierParticipante(Participante):
         if database_error.sql_error_handler(query.lastError()):
             return # Ne pas continuer avec des informations incompletes
 
-        while(query.next()):
+        while query.next():
             # Préparation du tableau
             self.tbl_inscription.insertRow(self.tbl_inscription.rowCount())
             r = self.tbl_inscription.rowCount() - 1

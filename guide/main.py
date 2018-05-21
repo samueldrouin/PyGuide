@@ -34,15 +34,15 @@ QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
 QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    APP = QApplication(sys.argv)
 
     # Ajouter l'icon de l'application
-    app.setWindowIcon(QIcon(":/global/Logo.png"))
+    APP.setWindowIcon(QIcon(":/global/Logo.png"))
 
     # Vérifier l'état de la base de données
-    db = check_database_created()
+    DATABASE = check_database_created()
 
     # Afficher la fenêtre principale
-    main_window = MainWindow(db)
-    main_window.show()
-    sys.exit(app.exec_())
+    MAIN_WINDOW = MainWindow(DATABASE)
+    MAIN_WINDOW.show()
+    sys.exit(APP.exec_())
