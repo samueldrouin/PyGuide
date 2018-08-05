@@ -71,22 +71,19 @@ VERSION_ACTIVITE = 1
 MODULE_ACTIVITE = 1
 ACTIVITE = {'query' : QUERY_ACTIVITE, 'version' : VERSION_ACTIVITE, 'module' : MODULE_ACTIVITE}
 
-QUERY_ARTICLE = " \
-CREATE TABLE article ( \
-    id_article  INTEGER, \
-    id_facture  INTEGER, \
-    id_activite INTEGER REFERENCES activite (id_activite) ON DELETE RESTRICT \
-                                                          ON UPDATE CASCADE \
-                        NOT NULL, \
-    prix        REAL, \
-    description TEXT, \
-    PRIMARY KEY ( \
-        id_article \
-    ), \
-    FOREIGN KEY ( \
-        id_facture \
-    ) \
-    REFERENCES facture (id_facture)  \
+QUERY_ARTICLE = "\
+CREATE TABLE article (\
+    id_article  INTEGER PRIMARY KEY AUTOINCREMENT,\
+    id_facture  INTEGER,\
+    id_activite INTEGER REFERENCES activite (id_activite) ON DELETE RESTRICT\
+                                                          ON UPDATE CASCADE\
+                        NOT NULL,\
+    prix        REAL,\
+    description TEXT,\
+    FOREIGN KEY (\
+        id_facture\
+    )\
+    REFERENCES facture (id_facture) \
 )"
 VERSION_ARTICLE = 1
 MODULE_ARTICLE = 2

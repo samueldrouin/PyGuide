@@ -668,12 +668,14 @@ class Facturation(Facture, Ui_Facturation):
                 prix = float("-" + str(self.tbl_article.item(row, 2).text()[:-1]))
             query = QSqlQuery(self.DATABASE)
             query.prepare("INSERT INTO article "
-                          "(id_facture, prix, description) "
+                          "(id_facture, id_activite, prix, description) "
                           "VALUES "
-                          "(:id_facture, :prix, :description)")
+                          "(:id_facture, :id_activite, :prix, :description)")
             query.bindValue(':id_facture', id_facture)
             query.bindValue(':prix', prix)
-            description = str(self.tbl_article.item(row, 1).text()) + "(" + str(self.tbl_article.item(row, 3).text()) + ")"
+            print(str(self.tbl_article.item(row, 1).text()))
+            query.bindValue(':id_activite', str(self.tbl_article.item(row, 0).text()))
+            description = str(self.tbl_article.item(row, 1).text()) + " (" + str(self.tbl_article.item(row, 3).text()) + ")"
             query.bindValue(':description', description)
             query.exec_()
 
