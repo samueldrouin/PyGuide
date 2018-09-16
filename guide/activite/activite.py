@@ -159,18 +159,21 @@ class NouvelleActivite(QDialog, Ui_NouvelleActivite):
                               "date, "
                               "heure_debut, "
                               "heure_fin, "
-                              "date_limite_inscription) "
+                              "date_limite_inscription,"
+                              "nom) "
                           "VALUES "
                               "(:id_categorie_activite, "
                               ":date, "
                               ":heure_debut, "
                               ":heure_fin, "
-                              ":date_limite_inscription)")
+                              ":date_limite_inscription,"
+                              ":nom)")
             query.bindValue(':id_categorie_activite',
                             self.cbx_category_activite.itemData(self.cbx_category_activite.currentIndex()))
             query.bindValue(':date', self.ded_unique.date().toString('yyyy-MM-dd'))
             query.bindValue(':heure_debut', self.tim_debut.time().toString('HH:mm'))
             query.bindValue(':heure_fin', self.tim_fin.time().toString('HH:mm'))
+            query.bindValue(':nom', self.txt_nom.text())
 
             # Date limite inscription
             # Le passage par julianDay est nécessaire pour permettre d'effectuer la soustraction
@@ -223,19 +226,22 @@ class NouvelleActivite(QDialog, Ui_NouvelleActivite):
                                 "date, "
                                 "heure_debut, "
                                 "heure_fin, "
-                                "date_limite_inscription) "
+                                "date_limite_inscription,"
+                                "nom) "
                               "VALUES "
                                 "(:id_categorie_activite, "
                                 ":date_activite, "
                                 ":heure_debut, "
                                 ":heure_fin, "
-                                ":date_limite_inscription)")
+                                ":date_limite_inscription,"
+                                ":nom)")
                 query.bindValue(':id_categorie_activite',
                                 self.cbx_category_activite.itemData(self.cbx_category_activite.currentIndex()))
                 query.bindValue(':date_activite', QDate(date_activite.year, date_activite.month,
                                                         date_activite.day).toString('yyyy-MM-dd'))
                 query.bindValue(':heure_debut', self.tim_debut.time().toString('HH:mm'))
                 query.bindValue(':heure_fin', self.tim_fin.time().toString('HH:mm'))
+                query.bindValue(':nom', self.txt_nom.text())
 
                 # Date limite inscription
                 # Le passage par julianDay est nécessaire pour permettre d'effectuer la soustraction

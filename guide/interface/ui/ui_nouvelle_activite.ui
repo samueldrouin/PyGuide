@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>480</width>
-    <height>454</height>
+    <height>487</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>480</width>
-    <height>454</height>
+    <height>487</height>
    </size>
   </property>
   <property name="font">
@@ -89,6 +89,30 @@
         </size>
        </property>
       </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_11">
+     <item>
+      <widget class="QLabel" name="label_5">
+       <property name="minimumSize">
+        <size>
+         <width>140</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Nom de l'activité : </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="txt_nom">
+       <property name="placeholderText">
+        <string>Nom de l'activité</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

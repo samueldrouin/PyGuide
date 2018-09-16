@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/Volumes/[C] Windows 10/Users/samueldrouin/source/repos/GUIDE-CFR/guide/interface/ui/nouvelle_activite.ui'
+# Form implementation generated from reading ui file 'C:\Users\samueldrouin\PycharmProjects\PyGuide\guide\interface\ui\ui_nouvelle_activite.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -11,8 +11,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_NouvelleActivite(object):
     def setupUi(self, NouvelleActivite):
         NouvelleActivite.setObjectName("NouvelleActivite")
-        NouvelleActivite.resize(480, 454)
-        NouvelleActivite.setMinimumSize(QtCore.QSize(480, 454))
+        NouvelleActivite.resize(480, 487)
+        NouvelleActivite.setMinimumSize(QtCore.QSize(480, 487))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(10)
@@ -54,6 +54,16 @@ class Ui_NouvelleActivite(object):
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
         self.verticalLayout_4.addLayout(self.horizontalLayout)
+        self.horizontalLayout_11 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_11.setObjectName("horizontalLayout_11")
+        self.label_5 = QtWidgets.QLabel(NouvelleActivite)
+        self.label_5.setMinimumSize(QtCore.QSize(140, 0))
+        self.label_5.setObjectName("label_5")
+        self.horizontalLayout_11.addWidget(self.label_5)
+        self.txt_nom = QtWidgets.QLineEdit(NouvelleActivite)
+        self.txt_nom.setObjectName("txt_nom")
+        self.horizontalLayout_11.addWidget(self.txt_nom)
+        self.verticalLayout_4.addLayout(self.horizontalLayout_11)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.label_2 = QtWidgets.QLabel(NouvelleActivite)
@@ -272,6 +282,8 @@ class Ui_NouvelleActivite(object):
         NouvelleActivite.setWindowTitle(_translate("NouvelleActivite", "Nouvelle activité"))
         self.lbl_titre.setText(_translate("NouvelleActivite", "Nouvelle activité"))
         self.label_8.setText(_translate("NouvelleActivite", "Catégorie d\'activité : "))
+        self.label_5.setText(_translate("NouvelleActivite", "Nom de l\'activité : "))
+        self.txt_nom.setPlaceholderText(_translate("NouvelleActivite", "Nom de l\'activité"))
         self.label_2.setText(_translate("NouvelleActivite", "Type d\'activité : "))
         self.rbt_unique.setText(_translate("NouvelleActivite", "Unique"))
         self.rbt_hebdomadaire.setText(_translate("NouvelleActivite", "Hebdomadaire"))

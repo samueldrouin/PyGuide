@@ -152,7 +152,8 @@ class Facture(QDialog):
                   "FROM inscription "\
                   "WHERE (inscription.id_activite = activite.id_activite) AND (inscription.status = 1) "\
                 ") nombre_participante, "\
-                "categorie_activite.participante_maximum "\
+                "categorie_activite.participante_maximum," \
+                "activite.nom "\
               "FROM activite " \
               "INNER JOIN categorie_activite "\
                 "ON activite.id_categorie_activite = categorie_activite.id_categorie_activite " \
@@ -180,7 +181,7 @@ class Facture(QDialog):
             r = table.rowCount() - 1
 
             table.setItem(r, 0, QTableWidgetItem(str(query.value(6))))
-            table.setItem(r, 2, QTableWidgetItem(str(query.value(0))))
+            table.setItem(r, 2, QTableWidgetItem(str(query.value(0)) + ' - ' + str(query.value(9))))
 
             if actif:
                 prix = "{0:.2f}$".format(query.value(1))

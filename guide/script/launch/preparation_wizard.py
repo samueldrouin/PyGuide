@@ -58,6 +58,7 @@ QUERY_ACTIVITE = " \
 CREATE TABLE activite ( \
     id_activite             INTEGER, \
     id_categorie_activite   INTEGER NOT NULL, \
+    nom                     VARCHAR(255),\
     date                    INTEGER NOT NULL, \
     heure_debut             INTEGER NOT NULL, \
     heure_fin               INTEGER NOT NULL, \

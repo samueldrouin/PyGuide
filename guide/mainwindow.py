@@ -633,7 +633,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 "categorie_activite.nom, "\
                 "lieu.nom, " \
                 "categorie_activite.prix_membre, "\
-                "categorie_activite.prix_non_membre " \
+                "categorie_activite.prix_non_membre, " \
+                "activite.nom " \
               "FROM activite " \
               "LEFT JOIN categorie_activite "\
                 "ON activite.id_categorie_activite = categorie_activite.id_categorie_activite " \
@@ -691,7 +692,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             r = self.table_widget.rowCount() - 1
 
             self.table_widget.setItem(r, 0, QTableWidgetItem(str(query.value(0))))
-            self.table_widget.setItem(r, 1, QTableWidgetItem(str(query.value(5))))
+
+            nom_activite = str(query.value(9))
+            if nom_activite:
+                self.table_widget.setItem(r, 1, QTableWidgetItem(str(query.value(5) + " - " + nom_activite)))
+            else:
+                self.table_widget.setItem(r, 1, QTableWidgetItem(str(query.value(5))))
             self.table_widget.setItem(r, 2, QTableWidgetItem(str(query.value(6))))
 
             prix = "Membre : {0:.2f}$".format(query.value(7)) + "\n" \
