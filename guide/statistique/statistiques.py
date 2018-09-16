@@ -1,17 +1,17 @@
-#This file is part of PyGuide.
+# This file is part of PyGuide.
 #
-#PyGuide is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# PyGuide is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#PyGuide is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# PyGuide is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-#You should have received a copy of the GNU General Public License
-#along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 Module permettant de créer des statistiques. 
@@ -43,16 +43,13 @@ from pylatex import Document, Command, PageStyle, MiniPage, LineBreak, MediumTex
 from pylatex.utils import bold
 
 # Project import
-from script.database import database_error
-from facturation import facturation
-from script.interface import validator
-from script.data import data_error
+from guide.script.database import database_error
+from guide.facturation import facturation
+from guide.script.interface import validator
+from guide.script.data import data_error
 
 # Interface import
-from interface.ui_statistique import Ui_Statistique
-
-# Resource import
-import resources
+from guide.interface.ui_statistique import Ui_Statistique
 
 
 class Statistiques(QDialog):
@@ -1097,7 +1094,6 @@ class Statistiques(QDialog):
             if current_table and contrainte:
                 if last_table != current_table:
                     # Déterminer l'identifiant pour la clause 'ON'
-                    id = None
                     if last_table in self.DICT_REFERENCE_TABLE[current_table]['to']:
                         id = self.DICT_TABLE[last_table]['id']
                     else:

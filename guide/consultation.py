@@ -49,7 +49,7 @@ class Consultation(QDialog, Ui_Consultation):
         self.DATABASE = database
 
         # Slots
-        self.btn_close.clicked.connect(self.close) # Close windows on "Close" button clicked
+        self.btn_close.clicked.connect(self.close)  # Close windows on "Close" button clicked
 
         # Table widget
         self.tbl_resultat.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)

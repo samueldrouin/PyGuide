@@ -16,8 +16,9 @@
 """
 Module permettant la création et l'affichage des activités
 
-Le module est responsable de l'ajout et de la modification des activité dans la base de donnée. Contrairement à la majorité des modules,
-se module ne comporte pas de classe de base puis les besoins pour la création et l'affichage des activités sont très différents.
+Le module est responsable de l'ajout et de la modification des activité dans la base de donnée. Contrairement à la
+majorité des modules, se module ne comporte pas de classe de base puis les besoins pour la création et l'affichage des
+activités sont très différents.
 
 Classes
     NouvelleActivite : Dialog permettant la création d'une nouvelle activité dans la base de données
@@ -119,7 +120,7 @@ class NouvelleActivite(QDialog, Ui_NouvelleActivite):
         # Fetch data from database
         query = QSqlQuery(self.DATABASE)
         query.exec_("SELECT "
-                      "id_categorie_activite, nom "
+                        "id_categorie_activite, nom "
                     "FROM "
                       "categorie_activite")
 
@@ -154,17 +155,17 @@ class NouvelleActivite(QDialog, Ui_NouvelleActivite):
         if self.rbt_unique.isChecked():
             query = QSqlQuery(self.DATABASE)
             query.prepare("INSERT INTO activite "
-                            "(id_categorie_activite, "
-                            "date, "
-                            "heure_debut, "
-                            "heure_fin, "
-                            "date_limite_inscription) "
+                              "(id_categorie_activite, "
+                              "date, "
+                              "heure_debut, "
+                              "heure_fin, "
+                              "date_limite_inscription) "
                           "VALUES "
-                            "(:id_categorie_activite, "
-                            ":date, "
-                            ":heure_debut, "
-                            ":heure_fin, "
-                            ":date_limite_inscription)")
+                              "(:id_categorie_activite, "
+                              ":date, "
+                              ":heure_debut, "
+                              ":heure_fin, "
+                              ":date_limite_inscription)")
             query.bindValue(':id_categorie_activite',
                             self.cbx_category_activite.itemData(self.cbx_category_activite.currentIndex()))
             query.bindValue(':date', self.ded_unique.date().toString('yyyy-MM-dd'))
@@ -182,7 +183,7 @@ class NouvelleActivite(QDialog, Ui_NouvelleActivite):
 
         # Affichage d'un message d'erreur si la requete echoue
             if not database_error.sql_error_handler(query.lastError()):
-                self.accept() # Fermer le dialog seulement si la requete est réussie
+                self.accept()  # Fermer le dialog seulement si la requete est réussie
         else:
             # Lecture des informations du formulaire
             q_date_debut = self.ded_debut.date()
@@ -206,7 +207,7 @@ class NouvelleActivite(QDialog, Ui_NouvelleActivite):
             current_date = debut
             while current_date <= fin:
                 # Ne pas ajouter une date exclue
-                if not current_date in exclusion_liste:
+                if current_date not in exclusion_liste:
                     liste_date.append(current_date)
 
                 current_date = current_date + timedelta(weeks=1)
@@ -247,10 +248,11 @@ class NouvelleActivite(QDialog, Ui_NouvelleActivite):
 
                 # Affichage d'un message d'erreur si la requete echoue
                 if database_error.sql_error_handler(query.lastError()):
-                    QSqlDatabase(self.DATABASE).rollback() # Annuler la transaction
-                    return # Empêche la fermeture du dialog
+                    QSqlDatabase(self.DATABASE).rollback()  # Annuler la transaction
+                    return  # Empêche la fermeture du dialog
             QSqlDatabase(self.DATABASE).commit()
         self.accept()
+
 
 class AfficherActivite(QDialog, Ui_AfficherActivite):
     """
@@ -298,7 +300,7 @@ class AfficherActivite(QDialog, Ui_AfficherActivite):
 
                 # Affichage d'un message d'erreur si la requete echoue
                 if database_error.sql_error_handler(query.lastError()):
-                    return # Ne pas continuer si la requete échoue
+                    return  # Ne pas continuer si la requete échoue
             # Entrer la personne comme abscente
             else:
                 query = QSqlQuery(self.DATABASE)
@@ -311,7 +313,7 @@ class AfficherActivite(QDialog, Ui_AfficherActivite):
 
                 # Affichage d'un message d'erreur si la requete echoue
                 if database_error.sql_error_handler(query.lastError()):
-                    return # Ne pas continuer si la requete échoue
+                    return  # Ne pas continuer si la requete échoue
 
     def liste_presence(self):
         """Afficher la liste des présences"""
@@ -378,7 +380,8 @@ class AfficherActivite(QDialog, Ui_AfficherActivite):
                       "FROM inscription "
                       "INNER JOIN participante ON participante.id_participante = inscription.id_participante "
                       "LEFT JOIN membre ON membre.id_participante = inscription.id_participante "
-                      "WHERE (inscription.id_activite = :id_activite) AND ((inscription.status = :inscription) OR (inscription.status = :facture))")
+                      "WHERE (inscription.id_activite = :id_activite) AND ((inscription.status = :inscription) "
+                      "OR (inscription.status = :facture))")
         query.bindValue(':id_activite', self.ID_ACTIVITE)
         query.bindValue(':inscription', facturation.STATUS_INSCRIPTION)
         query.bindValue(':facture', facturation.STATUS_FACTURE)

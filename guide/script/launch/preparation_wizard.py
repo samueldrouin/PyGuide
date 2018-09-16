@@ -1,17 +1,18 @@
-#This file is part of PyGuide.
+# This file is part of PyGuide.
 #
-#PyGuide is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# PyGuide is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#PyGuide is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# PyGuide is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-#You should have received a copy of the GNU General Public License
-#along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
+
 
 # Python import
 import os
@@ -25,10 +26,10 @@ from PyQt5.QtCore import Qt, QSettings
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 
 # Project import
-from interface.ui_preparation_wizard import Ui_PreparationWizard
-from script.interface import validator
-from script.data import file_error
-from script.database import database_error
+from guide.interface.ui_preparation_wizard import Ui_PreparationWizard
+from guide.script.interface import validator
+from guide.script.data import file_error
+from guide.script.database import database_error
 
 # Définition des ID des pages
 PAGE_DESCRIPTION = 0
@@ -51,7 +52,7 @@ CREATE TABLE guide ( \
 )"
 VERSION_GUIDE = 2
 MODULE_GUIDE = 0
-GUIDE = {'query' : QUERY_GUIDE, 'version' : VERSION_GUIDE, 'module' : MODULE_GUIDE}
+GUIDE = {'query': QUERY_GUIDE, 'version': VERSION_GUIDE, 'module': MODULE_GUIDE}
 
 QUERY_ACTIVITE = " \
 CREATE TABLE activite ( \
@@ -69,7 +70,7 @@ CREATE TABLE activite ( \
 )"
 VERSION_ACTIVITE = 1
 MODULE_ACTIVITE = 1
-ACTIVITE = {'query' : QUERY_ACTIVITE, 'version' : VERSION_ACTIVITE, 'module' : MODULE_ACTIVITE}
+ACTIVITE = {'query': QUERY_ACTIVITE, 'version': VERSION_ACTIVITE, 'module': MODULE_ACTIVITE}
 
 QUERY_ARTICLE = "\
 CREATE TABLE article (\
@@ -87,7 +88,7 @@ CREATE TABLE article (\
 )"
 VERSION_ARTICLE = 1
 MODULE_ARTICLE = 2
-ARTICLE = {'query' : QUERY_ARTICLE, 'version' : VERSION_ARTICLE, 'module' : MODULE_ARTICLE}
+ARTICLE = {'query': QUERY_ARTICLE, 'version': VERSION_ARTICLE, 'module': MODULE_ARTICLE}
 
 QUERY_CATEGORIE_ACTIVITE = "\
 CREATE TABLE categorie_activite ( \
@@ -114,7 +115,8 @@ CREATE TABLE categorie_activite ( \
 )"
 VERSION_CATEGORIE_ACTIVITE = 1
 MODULE_CATEGORIE_ACTIVITE = 3
-CATEGORIE_ACTIVITE = {'query' : QUERY_CATEGORIE_ACTIVITE, 'version' : VERSION_CATEGORIE_ACTIVITE, 'module' : MODULE_CATEGORIE_ACTIVITE}
+CATEGORIE_ACTIVITE = {'query': QUERY_CATEGORIE_ACTIVITE, 'version': VERSION_CATEGORIE_ACTIVITE,
+                      'module': MODULE_CATEGORIE_ACTIVITE}
 
 QUERY_FACTURE = "\
 CREATE TABLE facture ( \
@@ -131,7 +133,7 @@ CREATE TABLE facture ( \
 )"
 VERSION_FACTURE = 1
 MODULE_FACTURE = 4
-FACTURE = {'query' : QUERY_FACTURE, 'version' : VERSION_FACTURE, 'module' : MODULE_FACTURE}
+FACTURE = {'query': QUERY_FACTURE, 'version': VERSION_FACTURE, 'module': MODULE_FACTURE}
 
 QUERY_GROUPE = "\
 CREATE TABLE groupe ( \
@@ -155,7 +157,7 @@ CREATE TABLE groupe ( \
 )"
 VERSION_GROUPE = 1
 MODULE_GROUPE = 5
-GROUPE = {'query' : QUERY_GROUPE, 'version' : VERSION_GROUPE, 'module' : MODULE_GROUPE}
+GROUPE = {'query': QUERY_GROUPE, 'version': VERSION_GROUPE, 'module': MODULE_GROUPE}
 
 QUERY_INSCRIPTION = "\
 CREATE TABLE inscription ( \
@@ -178,7 +180,7 @@ CREATE TABLE inscription ( \
 )"
 VERSION_INSCRIPTION = 1
 MODULE_INSCRIPTION = 6
-INSCRIPTION = {'query' : QUERY_INSCRIPTION, 'version' : VERSION_INSCRIPTION, 'module' : MODULE_INSCRIPTION}
+INSCRIPTION = {'query': QUERY_INSCRIPTION, 'version': VERSION_INSCRIPTION, 'module': MODULE_INSCRIPTION}
 
 QUERY_LIEU = "\
 CREATE TABLE lieu ( \
@@ -197,7 +199,7 @@ CREATE TABLE lieu ( \
 )"
 VERSION_LIEU = 1
 MODULE_LIEU = 7
-LIEU = {'query' : QUERY_LIEU, 'version' : VERSION_LIEU, 'module' : MODULE_LIEU}
+LIEU = {'query': QUERY_LIEU, 'version': VERSION_LIEU, 'module': MODULE_LIEU}
 
 QUERY_MEMBRE = "\
 CREATE TABLE membre ( \
@@ -211,7 +213,7 @@ CREATE TABLE membre ( \
 )"
 VERSION_MEMBRE = 1
 MODULE_MEMBRE = 8
-MEMBRE = {'query' : QUERY_MEMBRE, 'version' : VERSION_MEMBRE, 'module' : MODULE_MEMBRE}
+MEMBRE = {'query': QUERY_MEMBRE, 'version': VERSION_MEMBRE, 'module': MODULE_MEMBRE}
 
 QUERY_PARTICIPANTE = "\
 CREATE TABLE participante ( \
@@ -241,7 +243,7 @@ CREATE TABLE participante ( \
 )"
 VERSION_PARTICIPANTE = 1
 MODULE_PARTICIPANTE = 9
-PARTICIPANTE = {'query' : QUERY_PARTICIPANTE, 'version' : VERSION_PARTICIPANTE, 'module' : MODULE_PARTICIPANTE}
+PARTICIPANTE = {'query': QUERY_PARTICIPANTE, 'version': VERSION_PARTICIPANTE, 'module': MODULE_PARTICIPANTE}
 
 QUERY_RESPONSABLE = "\
 CREATE TABLE responsable ( \
@@ -256,17 +258,17 @@ CREATE TABLE responsable ( \
 )"
 VERSION_RESPONSABLE = 1
 MODULE_RESPONSABLE = 10
-RESPONSABLE = {'query' : QUERY_RESPONSABLE, 'version' : VERSION_RESPONSABLE, 'module' : MODULE_RESPONSABLE}
+RESPONSABLE = {'query': QUERY_RESPONSABLE, 'version': VERSION_RESPONSABLE, 'module': MODULE_RESPONSABLE}
 
 QUERY_TYPE_ACTIVITE = "\
 CREATE TABLE type_activite ( \
     id_type_activite INTEGER PRIMARY KEY, \
     nom              TEXT    NOT NULL \
                              UNIQUE \
-)" 
+)"
 VERSION_TYPE_ACTIVITE = 1
 MODULE_TYPE_ACTIVITE = 11
-TYPE_ACTIVITE = {'query' : QUERY_TYPE_ACTIVITE, 'version' : VERSION_TYPE_ACTIVITE, 'module' : MODULE_TYPE_ACTIVITE}
+TYPE_ACTIVITE = {'query': QUERY_TYPE_ACTIVITE, 'version': VERSION_TYPE_ACTIVITE, 'module': MODULE_TYPE_ACTIVITE}
 
 QUERY_INFORMATIONS = "\
 CREATE TABLE informations ( \
@@ -288,7 +290,8 @@ CREATE TABLE informations ( \
 )"
 VERSION_INFORMATIONS = 1
 MODULE_INFORMATIONS = 12
-INFORMATIONS = {'query' : QUERY_INFORMATIONS, 'version' : VERSION_INFORMATIONS, 'module' : MODULE_INFORMATIONS}
+INFORMATIONS = {'query': QUERY_INFORMATIONS, 'version': VERSION_INFORMATIONS, 'module': MODULE_INFORMATIONS}
+
 
 class PreparationWizard(QWizard, Ui_PreparationWizard):
     def __init__(self):
@@ -307,7 +310,7 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
         pixmap = QGraphicsPixmapItem(QPixmap(":/global/Banniere.png").scaled(wb, hb, Qt.KeepAspectRatio))
         scene.addItem(pixmap)
         self.img_banniere.setScene(scene)
-        self.img_banniere.show()  
+        self.img_banniere.show()
 
         # Afficher les copyrights
         # Déterminer la dimension de l'image
@@ -591,7 +594,7 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
             # Afficher une erreur si la base de données ne peut pas être créer
             if not db.open():
                 database_error.sql_error_handler(db.lastError())
-                return # Empêche de continuer la création de la base de données
+                return  # Empêche de continuer la création de la base de données
 
             # Créer les tableaux de la base de données
             # Commencer une transaction
@@ -599,7 +602,7 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
 
             # Affichage d'un message d'erreur si la requete echoue
             if database_error.sql_error_handler(db.lastError()):
-                return # Empêche de continuer la création de la base de données
+                return  # Empêche de continuer la création de la base de données
 
             # Créer les tables
             # Créer la table guide
@@ -607,8 +610,8 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
 
             # Affichage d'un message d'erreur si la requete echoue
             if database_error.sql_error_handler(QSqlQuery().lastError()):
-                db.rollback() # Annuler la transaction
-                return # Empêche de continuer la création de la base de données
+                db.rollback()  # Annuler la transaction
+                return  # Empêche de continuer la création de la base de données
 
             # Ajouter le numéro de version
             query = QSqlQuery()
@@ -619,11 +622,11 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
             query.exec_()
             # Affichage d'un message d'erreur si la requete echoue
             if database_error.sql_error_handler(query.lastError()):
-                db.rollback() # Annuler la transaction
-                return # Empêche de continuer la création de la base de données
+                db.rollback()  # Annuler la transaction
+                return  # Empêche de continuer la création de la base de données
 
             # Déterminer les autres tables à ajouter
-            liste_table = []
+            liste_table = list()
             liste_table.append(INFORMATIONS)
 
             if activite:
@@ -655,8 +658,8 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
 
                 # Affichage d'un message d'erreur si la requete echoue
                 if database_error.sql_error_handler(query.lastError()):
-                    db.rollback() # Annuler la transaction
-                    return # Empêche de continuer la création de la base de données
+                    db.rollback()  # Annuler la transaction
+                    return  # Empêche de continuer la création de la base de données
 
                 # Ajouter le numéro de version
                 query = QSqlQuery()
@@ -667,16 +670,16 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
                 query.exec_()
                 # Affichage d'un message d'erreur si la requete echoue
                 if database_error.sql_error_handler(query.lastError()):
-                    db.rollback() # Annuler la transaction
-                    return # Empêche de continuer la création de la base de données
+                    db.rollback()  # Annuler la transaction
+                    return  # Empêche de continuer la création de la base de données
 
             # Terminer la transaction
             db.commit()
 
             # Affichage d'un message d'erreur si la requete echoue
             if database_error.sql_error_handler(db.lastError()):
-                db.rollback() # Annuler la transaction
-                return # Empêche la fermeture du dialog
+                db.rollback()  # Annuler la transaction
+                return  # Empêche la fermeture du dialog
 
         settings = QSettings("SDR Soft", "PyGUIDE")
         settings.setValue("Database", db_dir)

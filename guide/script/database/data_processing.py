@@ -16,9 +16,11 @@
 """
 Module permettant le traitement des données reçue ou envoyée à la base de donnée. 
 
-Ce module est responsable seulement des étapes de traitement simple. Par exemple, il est responsable de vérifier si un string est vide
-ou encore si une valeur doit être considérée comme nulle. Le traitement complexe des données ne soit pas être effectué par cette classe. 
-Si une fonction doit traiter plus qu'une donnée, elle ne doit pas être placée ici. 
+Ce module est responsable seulement des étapes de traitement simple. Par exemple, il est responsable de vérifier si un
+string est vide ou encore si une valeur doit être considérée comme nulle. Le traitement complexe des données ne soit
+pas être effectué par cette classe.
+
+Si une fonction doit traiter plus qu'une donnée, elle ne doit pas être placée ici.
 
 Méthodes : 
     check_string : Vérifie si un string le contenu d'un string

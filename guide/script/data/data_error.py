@@ -17,16 +17,24 @@
 Module contenant les messages d'erreur concernant les données entrées par l'utilisateur
 
 Méthodes : 
-    numero_telephone_inexistant : Affiche un message d'erreur qui indique à l'utilisateur qu'il n'existe pas de compte avec ce numero
-    numero_telephone_invalide : Affiche un message d'erreur qui indique à l'utilisateur que le numero de telephone est invalide
-    aucun_article_selectionne : Affiche un message d'erreur qui indique à l'utilisateur qu'aucun article n'est sélectionné
+    numero_telephone_inexistant : Affiche un message d'erreur qui indique à l'utilisateur qu'il n'existe pas de compte
+                                  avec ce numero
+    numero_telephone_invalide : Affiche un message d'erreur qui indique à l'utilisateur que le numero de telephone est
+                                invalide
+    aucun_article_selectionne : Affiche un message d'erreur qui indique à l'utilisateur qu'aucun article n'est
+                                sélectionné
     activite_complete : Affiche un message d'erreur qui indique a l'utilisateur que l'activité sélectionnée est complète
-    trop_champs : Affiche un message d'erreur qui indique a l'utilisateur qu'il y a trop de champs pour qu'ils puissent être affichés
-    aucun_nom_statistique : Affiche un message d'erreur qui indique a l'utilisateur qu'une statistique doit avoir un nom pour pouvoir être enregistrée
-    message_box_missing_information : Affiche un message d'erreur qui indique à l'utilisateur qu'une information est manquante dans un formulaire
-    facturation_impossible : Affiche un message d'erreur qui indique à l'utilisateur d'une activité ne peut pas être facturée à deux reprises
+    trop_champs : Affiche un message d'erreur qui indique a l'utilisateur qu'il y a trop de champs pour qu'ils puissent
+                  être affichés
+    aucun_nom_statistique : Affiche un message d'erreur qui indique a l'utilisateur qu'une statistique doit avoir un nom
+                            pour pouvoir être enregistrée
+    message_box_missing_information : Affiche un message d'erreur qui indique à l'utilisateur qu'une information est
+                                      manquante dans un formulaire
+    facturation_impossible : Affiche un message d'erreur qui indique à l'utilisateur d'une activité ne peut pas être
+                            facturée à deux reprises
     activite_contingentee : Affiche un message d'erreur qui indique à l'utilisateur que l'activité est contingentee
-    remboursement_impossible : Affiche un message d'erreur qui indique à l'utilisateur que le remboursement de l'activité est impossible
+    remboursement_impossible : Affiche un message d'erreur qui indique à l'utilisateur que le remboursement de
+                               l'activité est impossible
 """
 
 

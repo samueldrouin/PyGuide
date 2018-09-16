@@ -123,8 +123,8 @@ class CategorieActivite(QDialog, Ui_CategorieActivite):
             self.process()
             return True
         else:
-            data_error.message_box_missing_information("Le nom de la catégorie d'activité "\
-                                                 "doit être remplis")
+            data_error.message_box_missing_information("Le nom de la catégorie d'activité "
+                                                       "doit être remplis")
         return False
 
     def process(self):
@@ -180,7 +180,7 @@ class NouvelleCategorieActivite(CategorieActivite):
         query.exec_()
         # Affichage d'un message d'erreur si la requete echoue
         if not database_error.sql_error_handler(query.lastError()):
-            self.accept() # Fermer si dialog seulement si la requete reussie
+            self.accept()  # Fermer si dialog seulement si la requete reussie
 
 
 class ModifierCategorieActivite(CategorieActivite):
@@ -267,4 +267,4 @@ class ModifierCategorieActivite(CategorieActivite):
 
         # Affichage d'un message d'erreur si la requete echoue
         if not database_error.sql_error_handler(query.lastError()):
-            self.accept() # Fermer le dialog seulement si la requete reussie
+            self.accept()  # Fermer le dialog seulement si la requete reussie

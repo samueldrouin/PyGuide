@@ -1,17 +1,17 @@
-#This file is part of PyGuide.
+# This file is part of PyGuide.
 #
-#PyGuide is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# PyGuide is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#PyGuide is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# PyGuide is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-#You should have received a copy of the GNU General Public License
-#along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 Module responsable de la vérification de l'état de la base de données. 
@@ -27,7 +27,8 @@ Methode :
     preparation_wizard : Ouvre l'assistant de préparation du programme GUIDE
 """
 
-#Python import 
+
+# Python import
 import os.path
 
 # PyQt import
@@ -36,8 +37,8 @@ from PyQt5.QtCore import QSettings
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 
 # Project import
-from script.launch.preparation_wizard import PreparationWizard
-from script.database import database_error
+from guide.script.launch.preparation_wizard import PreparationWizard
+from guide.script.database import database_error
 
 
 def check_database_created():
@@ -103,8 +104,8 @@ def check_table_module(db):
 
     # Obtenir les informations de la base de donnees
     query = QSqlQuery(db)
-    query.prepare("SELECT count(*) "\
-                  "FROM sqlite_master "\
+    query.prepare("SELECT count(*) "
+                  "FROM sqlite_master "
                   "WHERE type='table' AND name='guide' ")
     query.exec_()
 

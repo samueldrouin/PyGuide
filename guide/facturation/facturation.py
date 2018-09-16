@@ -95,7 +95,7 @@ class Facture(QDialog):
 
             # Obtenir les informations de la requete
             while query.next():
-                informations = {}
+                informations = dict()
                 informations["index"] = int(query.value(0))
                 self.ID_PARTICIPANTE = int(query.value(0))
 
@@ -247,7 +247,7 @@ class Facture(QDialog):
         # Préparer les données de la requete
         resultat = []
         while query.next():
-            inscription = {}
+            inscription = dict()
             inscription["id"] = str(query.value(0))
             inscription["nom"] = str(query.value(1))
 
@@ -296,7 +296,7 @@ class Facture(QDialog):
 
         # Affiche un message en cas d'erreur dans la requete
         if database_error.sql_error_handler(query.lastError()):
-            return # Empeche de continuer la fonction avec des donnees incompletes
+            return  # Empeche de continuer la fonction avec des donnees incompletes
 
         # Affichage de l'information sur la place libérée
         lst = []
@@ -314,7 +314,7 @@ class Facture(QDialog):
 
         # Affiche un message en cas d'erreur dans la requete
         if database_error.sql_error_handler(query.lastError()):
-            return # Empeche de continuer la fonction avec des donnees incompletes
+            return  # Empeche de continuer la fonction avec des donnees incompletes
 
         # Obtenir le nombre de participante
         query.first()
@@ -324,14 +324,15 @@ class Facture(QDialog):
         query = QSqlQuery(self.DATABASE)
         query.prepare("SELECT categorie_activite.nom, categorie_activite.participante_maximum, activite.date "
                       "FROM activite "
-                      "LEFT JOIN categorie_activite ON categorie_activite.id_categorie_activite = activite.id_categorie_activite "
+                      "LEFT JOIN categorie_activite ON categorie_activite.id_categorie_activite = "
+                      "activite.id_categorie_activite "
                       "WHERE activite.id_activite = :id_activite")
         query.bindValue(':id_activite', id_activite)
         query.exec_()
 
         # Affiche un message en cas d'erreur dans la requete
         if database_error.sql_error_handler(query.lastError()):
-            return # Empeche de continuer la fonction avec des donnees incompletes
+            return  # Empeche de continuer la fonction avec des donnees incompletes
 
         # Preparation des donnees
         query.first()
@@ -343,12 +344,14 @@ class Facture(QDialog):
         if nombre_participante <= maximum:
             return
 
-        text = "Une place pour {} sera libérée dans l'activitée {} du {} lorsque vous enregistrerez ces inscriptions.".format(lst[maximum], nom_activite, date.toString('dd MMM yyyy'))
+        text = "Une place pour {} sera libérée dans l'activitée {} du {} lorsque vous enregistrerez ces inscriptions."\
+            .format(lst[maximum], nom_activite, date.toString('dd MMM yyyy'))
         msgbox.setInformativeText(text)
         msgbox.setIcon(QMessageBox.Information)
         msgbox.setStandardButtons(QMessageBox.Ok)
         msgbox.setDefaultButton(QMessageBox.Ok)
         msgbox.exec()
+
 
 class Facturation(Facture, Ui_Facturation):
     """Dialog pour la création de nouvelle facture"""
@@ -413,7 +416,7 @@ class Facturation(Facture, Ui_Facturation):
 
                 # Affiche un message en cas d'erreur dans la requete
                 if database_error.sql_error_handler(query.lastError()):
-                    return # Empeche de continuer la fonction avec des donnees incompletes
+                    return  # Empeche de continuer la fonction avec des donnees incompletes
 
                 # Liste d'attente
                 liste_attente = []
@@ -424,14 +427,15 @@ class Facturation(Facture, Ui_Facturation):
                 query = QSqlQuery(self.DATABASE)
                 query.prepare("SELECT categorie_activite.participante_maximum "
                               "FROM activite "
-                              "LEFT JOIN categorie_activite ON categorie_activite.id_categorie_activite = activite.id_categorie_activite "
+                              "LEFT JOIN categorie_activite ON categorie_activite.id_categorie_activite = "
+                              "activite.id_categorie_activite "
                               "WHERE activite.id_activite = :id_activite")
                 query.bindValue(':id_activite', inscription["id_activite"])
                 query.exec_()
 
                 # Affiche un message en cas d'erreur dans la requete
                 if database_error.sql_error_handler(query.lastError()):
-                    return # Empeche de continuer la fonction avec des donnees incompletes
+                    return  # Empeche de continuer la fonction avec des donnees incompletes
 
                 # Preparation des donnees
                 query.first()
@@ -517,7 +521,7 @@ class Facturation(Facture, Ui_Facturation):
 
         # Affiche un message en cas d'erreur dans la requete
         if database_error.sql_error_handler(query.lastError()):
-            return # Empeche de continuer la fonction avec des donnees incompletes
+            return  # Empeche de continuer la fonction avec des donnees incompletes
 
         query.first()
         count = int(query.value(0))
@@ -535,7 +539,7 @@ class Facturation(Facture, Ui_Facturation):
             if int(self.tbl_activite.item(row, 1).text()):
                 resultat = data_error.activite_complete()
                 if resultat == QMessageBox.No:
-                    return # Ne pas ajouter l'article
+                    return  # Ne pas ajouter l'article
 
             # Retirer l'activité de la liste d'inscription si elle y est
             id_activite = self.tbl_activite.item(row, 0).text()
@@ -627,7 +631,7 @@ class Facturation(Facture, Ui_Facturation):
 
         # Affichage d'un message d'erreur si la requete echoue
         if database_error.sql_error_handler(self.DATABASE.lastError()):
-            return # Empêche la fermeture du dialog
+            return  # Empêche la fermeture du dialog
 
         # Ajouter une facture
         query = QSqlQuery()
@@ -642,8 +646,8 @@ class Facturation(Facture, Ui_Facturation):
 
         # Affichage d'un message d'erreur si la requete echoue
         if database_error.sql_error_handler(query.lastError()):
-            self.DATABASE.rollback() # Annuler la transaction
-            return # Empêche la fermeture du dialog
+            self.DATABASE.rollback()  # Annuler la transaction
+            return  # Empêche la fermeture du dialog
 
         # Obtenir le numero de de la facture
         query = QSqlQuery(self.DATABASE)
@@ -651,8 +655,8 @@ class Facturation(Facture, Ui_Facturation):
 
         # Affichage d'un message d'erreur si la requete echoue
         if database_error.sql_error_handler(query.lastError()):
-            self.DATABASE.rollback() # Annuler la transaction
-            return # Empêche la fermeture du dialog
+            self.DATABASE.rollback()  # Annuler la transaction
+            return  # Empêche la fermeture du dialog
 
         query.first()
         id_facture = int(query.value(0))
@@ -673,14 +677,15 @@ class Facturation(Facture, Ui_Facturation):
             query.bindValue(':prix', prix)
             print(str(self.tbl_article.item(row, 1).text()))
             query.bindValue(':id_activite', str(self.tbl_article.item(row, 0).text()))
-            description = str(self.tbl_article.item(row, 1).text()) + " (" + str(self.tbl_article.item(row, 3).text()) + ")"
+            description = str(self.tbl_article.item(row, 1).text()) + " (" + \
+                          str(self.tbl_article.item(row, 3).text()) + ")"
             query.bindValue(':description', description)
             query.exec_()
 
             # Affichage d'un message d'erreur si la requete echoue
             if database_error.sql_error_handler(query.lastError()):
-                self.DATABASE.rollback() # Annuler la transaction
-                return # Empêche la fermeture du dialog
+                self.DATABASE.rollback()  # Annuler la transaction
+                return  # Empêche la fermeture du dialog
 
         # Gestion des inscriptions
         for row in range(self.tbl_article.rowCount()):
@@ -715,8 +720,8 @@ class Facturation(Facture, Ui_Facturation):
 
                     # Affichage d'un message d'erreur si la requete echoue
                     if database_error.sql_error_handler(query.lastError()):
-                        self.DATABASE.rollback() # Annuler la transaction
-                        return # Empêche la fermeture du dialog
+                        self.DATABASE.rollback()  # Annuler la transaction
+                        return  # Empêche la fermeture du dialog
 
                     # Obtenir le status
                     query.first()
@@ -740,8 +745,8 @@ class Facturation(Facture, Ui_Facturation):
 
                         # Affichage d'un message d'erreur si la requete echoue
                         if database_error.sql_error_handler(query.lastError()):
-                            self.DATABASE.rollback() # Annuler la transaction
-                            return # Empêche la fermeture du dialog
+                            self.DATABASE.rollback()  # Annuler la transaction
+                            return  # Empêche la fermeture du dialog
                     else:
                         query = QSqlQuery()
                         query.prepare("INSERT OR IGNORE INTO inscription "
@@ -759,13 +764,13 @@ class Facturation(Facture, Ui_Facturation):
 
                         # Affichage d'un message d'erreur si la requete echoue
                         if database_error.sql_error_handler(query.lastError()):
-                            self.DATABASE.rollback() # Annuler la transaction
-                            return # Empêche la fermeture du dialog
+                            self.DATABASE.rollback()  # Annuler la transaction
+                            return  # Empêche la fermeture du dialog
                 # Affichage d'un message d'erreur
                 else:
                     if database_error.sql_error_handler(query.lastError()):
-                        self.DATABASE.rollback() # Annuler la transaction
-                        return # Empêche la fermeture du dialog
+                        self.DATABASE.rollback()  # Annuler la transaction
+                        return  # Empêche la fermeture du dialog
 
             # Effacer une inscription
             else:
@@ -784,18 +789,18 @@ class Facturation(Facture, Ui_Facturation):
                 query.bindValue(':status', STATUS_REMBOURSE)
                 query.exec_()
 
-                #Affichage d'un message d'erreur si la requete echoue
+                # Affichage d'un message d'erreur si la requete echoue
                 if database_error.sql_error_handler(query.lastError()):
-                    self.DATABASE.rollback() # Annuler la transaction
-                    return # Empêche la fermeture du dialog
+                    self.DATABASE.rollback()  # Annuler la transaction
+                    return  # Empêche la fermeture du dialog
 
         # Terminer la transaction
         self.DATABASE.commit()
 
         # Affichage d'un message d'erreur si la requete echoue
         if database_error.sql_error_handler(self.DATABASE.lastError()):
-            self.DATABASE.rollback() # Annuler la transaction
-            return # Empêche la fermeture du dialog
+            self.DATABASE.rollback()  # Annuler la transaction
+            return  # Empêche la fermeture du dialog
 
         self.accept()
 
@@ -814,6 +819,7 @@ class Facturation(Facture, Ui_Facturation):
         # S'il s'agit de la première facture
         else:
             self.txt_facture.setText("1")
+
 
 class Inscription(Facture, Ui_Inscription):
     """Dialog pour la création de nouvelle inscriptions"""
@@ -881,7 +887,7 @@ class Inscription(Facture, Ui_Inscription):
             if int(self.tbl_activite.item(activite_row, 1).text()):
                 resultat = data_error.activite_complete()
                 if resultat == QMessageBox.No:
-                    return # Ne pas ajouter l'article
+                    return  # Ne pas ajouter l'article
 
             # Préparation du tableau
             self.tbl_panier.insertRow(self.tbl_panier.rowCount())
@@ -930,7 +936,7 @@ class Inscription(Facture, Ui_Inscription):
 
         # Affichage d'un message d'erreur si la requete echoue
         if database_error.sql_error_handler(self.DATABASE.lastError()):
-            return # Empêche la fermeture du dialog
+            return  # Empêche la fermeture du dialog
 
         for row in range(self.tbl_panier.rowCount()):
             # Ajouter une inscription

@@ -287,7 +287,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         for file in os.listdir(statistique):
             statname = os.path.splitext(file)[0]
 
-            dict_stat = {}
+            dict_stat = dict()
             dict_stat['fichier'] = file
             dict_stat['nom'] = statname
 
