@@ -89,7 +89,7 @@
               </size>
              </property>
              <property name="text">
-              <string>Appelation : </string>
+              <string>Appellation : </string>
              </property>
             </widget>
            </item>
@@ -809,7 +809,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Status de membre</string>
+            <string>Statut de membre</string>
            </property>
           </widget>
          </item>
