@@ -1,17 +1,17 @@
-#This file is part of PyGuide.
+# This file is part of PyGuide.
 #
-#PyGuide is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# PyGuide is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#PyGuide is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# PyGuide is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-#You should have received a copy of the GNU General Public License
-#along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 Module permettant le traitement des données reçue ou envoyée à la base de donnée. 
@@ -25,6 +25,7 @@ Méthodes :
     check_int : Convertit un string en entier 
     check_phone_number : convertit un numéro de téléphone en nombre entier
 """
+
 
 def check_string(string):
     """
@@ -40,6 +41,7 @@ def check_string(string):
         return None
     return string
 
+
 def check_int(value):
     """
     Convertit un string en entier. 
@@ -54,6 +56,7 @@ def check_int(value):
         return None
     else:
         return int(value)
+
 
 def check_phone_number(value):
     """

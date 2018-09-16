@@ -1,17 +1,18 @@
-#This file is part of PyGuide.
+# This file is part of PyGuide.
 #
-#PyGuide is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# PyGuide is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#PyGuide is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# PyGuide is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-#You should have received a copy of the GNU General Public License
-#along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
+
 
 """Modification des réglages du programme"""
 # Python import
@@ -20,14 +21,12 @@ from pathlib import Path
 
 # PyQt import
 from PyQt5.QtWidgets import QDialog, QFileDialog
-from PyQt5.QtCore import QSettings, QSize
+from PyQt5.QtCore import QSettings
 from PyQt5.QtGui import QIcon
 
 # Interface import
-from interface.ui_setting import Ui_Setting
+from guide.interface.ui_setting import Ui_Setting
 
-# Resource import 
-import resources
 
 class Setting(QDialog, Ui_Setting):
     """Dialog permettant de modifier les réglages du programme"""

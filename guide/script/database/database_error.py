@@ -1,21 +1,23 @@
-#This file is part of PyGuide.
+# This file is part of PyGuide.
 #
-#PyGuide is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# PyGuide is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#PyGuide is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# PyGuide is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-#You should have received a copy of the GNU General Public License
-#along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
+
 
 # PyQt import
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtSql import QSqlError
+
 
 # Liste des code d'erreur SQLite
 SQLITE_ERROR = 1 # Generic error
@@ -48,6 +50,7 @@ SQLITE_NOTICE = 27 # Notifications from sqlite3_log()
 SQLITE_WARNING = 28 # Warnings from sqlite3_log()
 SQLITE_ROW = 100 # sqlite3_step() has another row ready
 SQLITE_DONE = 101 # sqlite3_step() has finished executing
+
 
 # Définition du nom des fenêtres
 BOX_TITLE = "Erreur de base de donnée"
@@ -113,6 +116,7 @@ AUCUNE_DATABASE_INFORMATION = "La base de donnée n'existe plus au chemin indiqu
 ANCIENNE_VERSION = "Impossible d'ouvrir la base de données"
 ANCIENNE_VERSION_INFORMATION = "La base de données est une ancienne version et ne peut être ouverte avec cette version du programme. " \
                                "Vous devez créer une nouvelle base de données pour continuer d'utiliser ce programme."
+
 
 def sql_error_handler(err):
     """
@@ -207,6 +211,7 @@ def sql_error_handler(err):
         return True
     return False
 
+
 def aucune_database():
     """
     Affiche un message d'erreur qui indique à l'utilisateur qu'aucune base de donnée n'est sélectionnée
@@ -222,6 +227,7 @@ def aucune_database():
     msgbox.setStandardButtons(QMessageBox.Ok)
     msgbox.setDefaultButton(QMessageBox.Ok)
     return msgbox.exec()
+
 
 def ancienne_version():
     """

@@ -1,17 +1,17 @@
-#This file is part of PyGuide.
+# This file is part of PyGuide.
 #
-#PyGuide is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# PyGuide is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#PyGuide is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# PyGuide is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-#You should have received a copy of the GNU General Public License
-#along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 Module permettant la création et l'affichage des activités
@@ -37,16 +37,16 @@ from PyQt5.QtCore import QDate, QTime, Qt, QDateTime
 from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 
 # PyLaTeX import
-from pylatex import Document, Command, PageStyle, MiniPage, LineBreak, MediumText, LargeText, Head, LongTabu
+from pylatex import Document, PageStyle, MiniPage, LineBreak, MediumText, LargeText, Head, LongTabu
 from pylatex.utils import bold
 
 # Project import
-from script.database import database_error
-from facturation import facturation
+from guide.script.database import database_error
+from guide.facturation import facturation
 
 # Interface import
-from interface.ui_nouvelle_activite import Ui_NouvelleActivite
-from interface.ui_afficher_activite import Ui_AfficherActivite
+from guide.interface.ui_nouvelle_activite import Ui_NouvelleActivite
+from guide.interface.ui_afficher_activite import Ui_AfficherActivite
 
 
 class NouvelleActivite(QDialog, Ui_NouvelleActivite):

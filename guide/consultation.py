@@ -1,17 +1,17 @@
-#This file is part of PyGuide.
+# This file is part of PyGuide.
 #
-#PyGuide is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# PyGuide is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#PyGuide is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# PyGuide is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-#You should have received a copy of the GNU General Public License
-#along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 Dialog de consultation
@@ -19,21 +19,18 @@ Dialog de consultation
 Sert à afficher les éléments simples qui sont rarement modifié
 """
 
-# Python import
-import os
-
 # PyQt import
 
 from PyQt5.QtWidgets import QDialog, QHeaderView, QTableWidgetItem
 from PyQt5.QtSql import QSqlQuery
 
 # Project import
-from activite.responsable import NouveauResponsable, ModifierResponsable
-from activite.type_activite import NouveauTypeActivite, ModifierTypeActivite
-from script.database import database_error
+from guide.activite.responsable import NouveauResponsable, ModifierResponsable
+from guide.activite.type_activite import NouveauTypeActivite, ModifierTypeActivite
+from guide.script.database import database_error
 
 # Interface import
-from interface.ui_consultation import Ui_Consultation
+from guide.interface.ui_consultation import Ui_Consultation
 
 
 class Consultation(QDialog, Ui_Consultation):

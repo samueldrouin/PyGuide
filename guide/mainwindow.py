@@ -1,17 +1,17 @@
-#This file is part of PyGuide.
+# This file is part of PyGuide.
 #
-#PyGuide is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# PyGuide is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#PyGuide is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# PyGuide is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-#You should have received a copy of the GNU General Public License
-#along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 Module responsable de l'affichage de la fenêtre principale du programme
@@ -34,37 +34,34 @@ import xml.etree.ElementTree as ET
 
 # PyQt import
 
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTableWidget, QMessageBox, QTableWidgetItem, \
-    QAbstractItemView, QHeaderView, QAction, QMenu
+from PyQt5.QtWidgets import QMainWindow, QWidget, QTableWidgetItem, \
+    QAbstractItemView, QHeaderView
 from PyQt5.QtCore import QSettings, QDate, QTime, QByteArray
 from PyQt5.Qt import QApplication, QDialog
 from PyQt5.QtGui import QIcon
-from PyQt5.QtSql import QSqlDatabase, QSqlQuery
+from PyQt5.QtSql import QSqlQuery
 
 # Projet import
-from membre.participante import NouvelleParticipante, ModifierParticipante
-from activite.lieu import NouveauLieu, ModifierLieu
-from activite.activite import NouvelleActivite, AfficherActivite
-from activite.categorie_activite import NouvelleCategorieActivite, ModifierCategorieActivite
-from setting import Setting
-from consultation import Consultation
-from facturation.facturation import Facturation, Inscription
-from facturation.groupe import Groupe
-from statistique.statistiques import Statistiques, StatistiquesDialog
-from script.interface.selection import SelectionStatistique
-from script.interface.a_propos import APropos
-from script.database import database_error
-from script.database import data_processing
+from guide.membre.participante import NouvelleParticipante, ModifierParticipante
+from guide.activite.lieu import NouveauLieu, ModifierLieu
+from guide.activite.activite import NouvelleActivite, AfficherActivite
+from guide.activite.categorie_activite import NouvelleCategorieActivite, ModifierCategorieActivite
+from guide.setting import Setting
+from guide.consultation import Consultation
+from guide.facturation.facturation import Facturation, Inscription
+from guide.facturation.groupe import Groupe
+from guide.statistique.statistiques import Statistiques, StatistiquesDialog
+from guide.script.interface.selection import SelectionStatistique
+from guide.script.interface.a_propos import APropos
+from guide.script.database import database_error
+from guide.script.database import data_processing
 
 # Interface import
-from interface.ui_main_window import Ui_MainWindow
-from interface.central_widget.ui_widget_activite import Ui_WidgetActivite
-from interface.central_widget.ui_widget_categorie_activite import Ui_WidgetTypeActivite
-from interface.central_widget.ui_widget_lieu import Ui_WidgetLieu
-from interface.central_widget.ui_widget_participante import Ui_WidgetParticipante
-
-# Resource import 
-import resources
+from guide.interface.ui_main_window import Ui_MainWindow
+from guide.interface.central_widget.ui_widget_activite import Ui_WidgetActivite
+from guide.interface.central_widget.ui_widget_categorie_activite import Ui_WidgetTypeActivite
+from guide.interface.central_widget.ui_widget_lieu import Ui_WidgetLieu
+from guide.interface.central_widget.ui_widget_participante import Ui_WidgetParticipante
 
 # Global constante definition
 

@@ -1,17 +1,17 @@
-#This file is part of PyGuide.
+# This file is part of PyGuide.
 #
-#PyGuide is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# PyGuide is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#PyGuide is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# PyGuide is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-#You should have received a copy of the GNU General Public License
-#along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 Module permettant le traitement des participantes
@@ -22,26 +22,25 @@ Classes
     Participante : Base des dialog permettant la modification ou la création des participantes
 """
 
-# Python import
-import os
 
 # PyQt import
-from PyQt5.QtWidgets import QTableWidgetItem, QDialog, QHBoxLayout, QCheckBox, QLineEdit, QDateEdit, QPushButton, QSpacerItem, QSizePolicy, QLabel, QAbstractSpinBox
-from PyQt5.QtCore import QDate, QTime, QDateTime, Qt
+from PyQt5.QtWidgets import QTableWidgetItem, QDialog, QHBoxLayout, QCheckBox, QLineEdit, QDateEdit, QPushButton, \
+    QSpacerItem, QSizePolicy, QLabel, QAbstractSpinBox
+from PyQt5.QtCore import QDate, QTime, QDateTime
 from PyQt5.QtSql import QSqlQuery
 
 # Project import
-from facturation.inscription_membre import NouvelleInscription, RenouvelerInscription
-from facturation import facturation
-from script.database import database_error
-from script.database import data_processing
-from script.interface import validator
-from script.interface import completer
-from script.data import data_error
-from script.data import parsing
+from guide.facturation.inscription_membre import NouvelleInscription, RenouvelerInscription
+from guide.facturation import facturation
+from guide.script.database import database_error
+from guide.script.database import data_processing
+from guide.script.interface import validator
+from guide.script.interface import completer
+from guide.script.data import data_error
+from guide.script.data import parsing
 
 # Interface import
-from interface.ui_participante import Ui_Participante
+from guide.interface.ui_participante import Ui_Participante
 
 
 class Participante(QDialog, Ui_Participante):

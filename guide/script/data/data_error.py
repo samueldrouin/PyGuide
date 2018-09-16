@@ -1,17 +1,17 @@
-#This file is part of PyGuide.
+# This file is part of PyGuide.
 #
-#PyGuide is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# PyGuide is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#PyGuide is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# PyGuide is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-#You should have received a copy of the GNU General Public License
-#along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 Module contenant les messages d'erreur concernant les données entrées par l'utilisateur
@@ -29,8 +29,10 @@ Méthodes :
     remboursement_impossible : Affiche un message d'erreur qui indique à l'utilisateur que le remboursement de l'activité est impossible
 """
 
+
 # PyQt import
 from PyQt5.QtWidgets import QMessageBox
+
 
 # Définition des messages d'erreur
 ERREUR_DONNEE = "Donnée invalide"
@@ -66,6 +68,7 @@ ACTIVITE_CONTINGENTEE_INFORMATION = "En continuant l'annulation, vous allez reti
 REMBOURSEMENT_IMPOSSIBLE = "Remboursement impossible"
 REMBOURSEMENT_IMPOSSIBLE_INFORMATION = "Impossible de rembourser une activité qui n'a jamais été facturée"
 
+
 def numero_telephone_inexistant():
     """
     Affiche un message d'erreur qui indique à l'utilisateur qu'il n'existe pas de compte avec ce numero
@@ -81,6 +84,7 @@ def numero_telephone_inexistant():
     msgbox.setStandardButtons(QMessageBox.Ok)
     msgbox.setDefaultButton(QMessageBox.Ok)
     return msgbox.exec()
+
 
 def numero_telephone_invalide():
     """
@@ -98,6 +102,7 @@ def numero_telephone_invalide():
     msgbox.setDefaultButton(QMessageBox.Ok)
     return msgbox.exec()
 
+
 def aucun_article_selectionne():
     """
     Affiche un message d'erreur qui indique à l'utilisateur qu'aucun article n'est sélectionné
@@ -113,6 +118,7 @@ def aucun_article_selectionne():
     msgbox.setStandardButtons(QMessageBox.Ok)
     msgbox.setDefaultButton(QMessageBox.Ok)
     return msgbox.exec()
+
 
 def activite_complete():
     """
@@ -130,6 +136,7 @@ def activite_complete():
     msgbox.setDefaultButton(QMessageBox.Yes)
     return msgbox.exec()
 
+
 def trop_champs():
     """
     Affiche un message d'erreur qui indique a l'utilisateur qu'il y a trop de champs pour qu'ils puissent être affichés
@@ -145,6 +152,7 @@ def trop_champs():
     msgbox.setStandardButtons(QMessageBox.Ok)
     msgbox.setDefaultButton(QMessageBox.Ok)
     return msgbox.exec()
+
 
 def aucun_nom_statistique():
     """
@@ -162,6 +170,7 @@ def aucun_nom_statistique():
     msgbox.setDefaultButton(QMessageBox.Ok)
     return msgbox.exec()
 
+
 def requete_vide():
     """
     Affiche un message d'erreur qui indique a l'utilisateur que la requete est vide
@@ -177,6 +186,7 @@ def requete_vide():
     msgbox.setStandardButtons(QMessageBox.Ok)
     msgbox.setDefaultButton(QMessageBox.Ok)
     return msgbox.exec()
+
 
 def message_box_missing_information(text):
     """
@@ -197,6 +207,7 @@ def message_box_missing_information(text):
     msgbox.setDefaultButton(QMessageBox.Ok)
     return msgbox.exec()
 
+
 def facturation_impossible():
     """
     Affiche un message d'erreur qui indique à l'utilisateur d'une activité ne peut pas être facturée à deux reprises
@@ -213,6 +224,7 @@ def facturation_impossible():
     msgbox.setDefaultButton(QMessageBox.Ok)
     return msgbox.exec()
 
+
 def activite_contingentee():
     """
     Affiche un message d'erreur qui indique à l'utilisateur que l'activité est contingentee
@@ -228,6 +240,7 @@ def activite_contingentee():
     msgbox.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
     msgbox.setDefaultButton(QMessageBox.Yes)
     return msgbox.exec()
+
 
 def remboursement_impossible():
     """
