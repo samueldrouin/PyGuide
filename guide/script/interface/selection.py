@@ -76,6 +76,7 @@ class SelectionParticipante(Selection):
         # Afficher la liste
         self.afficher_liste(lst)
 
+
 class SelectionStatistique(Selection):
     """Dialog pour la sélection d'une statistique"""
     def __init__(self, lst):

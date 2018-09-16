@@ -25,16 +25,16 @@ from PyQt5.QtCore import QTime, QDate
 from PyQt5.QtGui import QColor, QBrush
 
 # Project import
-from script.database import database_error
-import script.interface.selection
-from script.interface import validator
-from script.database import data_processing
-from script.data import data_error
-from script.data import parsing
+from guide.script.database import database_error
+from guide.script.interface import selection
+from guide.script.interface import validator
+from guide.script.database import data_processing
+from guide.script.data import data_error
+from guide.script.data import parsing
 
 # Interface import
-from interface.ui_facturation import Ui_Facturation
-from interface.ui_inscription import Ui_Inscription
+from guide.interface.ui_facturation import Ui_Facturation
+from guide.interface.ui_inscription import Ui_Inscription
 
 
 # Définition de constantes
