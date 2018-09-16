@@ -46,33 +46,36 @@ def check_database_created():
 
     Si aucune base de données n'existe, demande à l'utilisateur d'en créer une nouvelle. 
     """
+
     settings = QSettings("SDR Soft", "PyGUIDE")
     database = settings.value("Database")
 
-    # Vérifier si une base de donnée à déjà été créée dans les réglages
-    if database:
-        # Continuer le vérification de la base de donnée
-        return check_database_exist(database)
-    else:
-        # Ouvrir un wizard pour créer une première base de donnée
+    # Ouvrir un wizard pour créer une première base de donnée
+    # si une base de donnée n'a pas déjà été créée dans les réglages
+    if not database:
         preparation_wizard()
+
+    # Continuer la vérification de la base de donnée
+    return check_database_exist(database)
             
 
 def check_database_exist(database):
     """
     Vérifie si la base de donnée enregistrée existe
     """
-    # Vérifier si le fichier de base de donnée existe
-    if os.path.isfile(database):
-        # Continuer la vérification de la base de donnée
-        return check_database_open(database)
-    else:
+
+    # Ouvrir un wizard pour créer une première base de donnée
+    # si le fichier de base de donnée n'existe plus
+    if not os.path.isfile(database):
         # Indique à l'utilisateur que la base de donnée n'existe plus
         ret = database_error.aucune_database()
 
         # Ouvre l'assistance de préparation GUIDE pour modifier le chemin de la base de donnée
         if ret == QMessageBox.Ok:
             preparation_wizard()
+
+    # Continuer la vérification de la base de donnée
+    return check_database_open(database)
 
 
 def check_database_open(database):
