@@ -165,13 +165,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.table_widget.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
 
         # Afficher les images des boutons
-        self.act_consult_participante.setIcon(QIcon(":/mainwindow/Participante.png"))
-        self.act_consult_activite.setIcon(QIcon(":/mainwindow/Activite.png"))
-        self.act_consult_lieu.setIcon(QIcon(":/mainwindow/Lieu.png"))
-        self.act_consult_categorie_activite.setIcon(QIcon(":/mainwindow/CategorieActivite.png"))
-        self.act_inscription.setIcon(QIcon(":/mainwindow/Inscription.png"))
-        self.act_facturation.setIcon(QIcon(":/mainwindow/Facture.png"))
-        self.act_groupe.setIcon(QIcon(":/mainwindow/Groupe.png"))
+        self.act_consult_participante.setIcon(QIcon(":/mainwindow/mainwindow/participant.png"))
+        self.act_consult_activite.setIcon(QIcon(":/mainwindow/mainwindow/activity.png"))
+        self.act_consult_lieu.setIcon(QIcon(":/mainwindow/mainwindow/place.png"))
+        self.act_consult_categorie_activite.setIcon(QIcon(":/mainwindow/mainwindow/activity_category.png"))
+        self.act_inscription.setIcon(QIcon(":/mainwindow/mainwindow/inscription.png"))
+        self.act_facturation.setIcon(QIcon(":/mainwindow/mainwindow/invoice.png"))
+        self.act_groupe.setIcon(QIcon(":/mainwindow/mainwindow/group.png"))
 
         # Actions
         self.act_consult_participante.triggered.connect(self.afficher_participante)

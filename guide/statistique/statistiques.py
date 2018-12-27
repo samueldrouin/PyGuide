@@ -430,7 +430,7 @@ class Statistiques(QDialog):
                         border: 0px; \
                      }\
                      QComboBox::down-arrow {\
-                        image: url(:statistique/DropDownArrow.png);\
+                        image: url(:/statistics/statistics/drop_down_arrow.png);\
                         width: 10px;\
                         height: 10px;\
                      }"
@@ -445,7 +445,7 @@ class Statistiques(QDialog):
                              border: 0px; \
                              }\
                              QDateTimeEdit::down-arrow {\
-                             image: url(:statistique/DropDownArrow.png);\
+                             image: url(:/statistics/statistics/drop_down_arrow.png);\
                              width: 10px;\
                              height: 10px;\
                              }"
@@ -476,7 +476,7 @@ class Statistiques(QDialog):
                         border: 0px; \
                      }\
                      QComboBox::down-arrow {\
-                        image: url(:statistique/DropDownArrow.png);\
+                        image: url(:/statistics/statistics/drop_down_arrow.png);\
                         width: 10px;\
                         height: 10px;\
                      }"
@@ -494,7 +494,7 @@ class Statistiques(QDialog):
                              border: 0px; \
                              }\
                              QDateTimeEdit::down-arrow {\
-                             image: url(:statistique/DropDownArrow.png);\
+                             image: url(:/statistics/statistics/drop_down_arrow.png);\
                              width: 10px;\
                              height: 10px;\
                              }"

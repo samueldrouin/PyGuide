@@ -28,7 +28,7 @@ from guide.mainwindow import MainWindow
 from guide.script.launch.check_database import check_database_created
 
 # Resource import
-import guide.resources
+import guide.rc_icons
 
 # Permettre les écrans High DPI avec PyQt5
 QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     APP = QApplication(sys.argv)
 
     # Ajouter l'icon de l'application
-    APP.setWindowIcon(QIcon(":/global/Logo.png"))
+    APP.setWindowIcon(QIcon(":/global/global/logo.png"))
 
     # Vérifier l'état de la base de données
     DATABASE = check_database_created()

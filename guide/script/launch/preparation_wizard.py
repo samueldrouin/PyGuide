@@ -308,7 +308,7 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
 
         # Charger l'image
         scene = QGraphicsScene()
-        pixmap = QGraphicsPixmapItem(QPixmap(":/global/Banniere.png").scaled(wb, hb, Qt.KeepAspectRatio))
+        pixmap = QGraphicsPixmapItem(QPixmap(":/global/global/banner.png").scaled(wb, hb, Qt.KeepAspectRatio))
         scene.addItem(pixmap)
         self.img_banniere.setScene(scene)
         self.img_banniere.show()
@@ -320,7 +320,7 @@ class PreparationWizard(QWizard, Ui_PreparationWizard):
 
         # Charger l'image
         scene = QGraphicsScene()
-        pixmap = QGraphicsPixmapItem(QPixmap(":/global/Copyrights.png").scaled(wc, hc, Qt.KeepAspectRatio))
+        pixmap = QGraphicsPixmapItem(QPixmap(":/global/global/copyrights.png").scaled(wc, hc, Qt.KeepAspectRatio))
         scene.addItem(pixmap)
         self.img_copyrights.setScene(scene)
         self.img_copyrights.show()
