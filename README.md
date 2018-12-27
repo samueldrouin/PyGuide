@@ -34,7 +34,7 @@ Feel free to contribute to this software.
 
 ## Author
 
-**Samuel Prince-Drouin** 2017-2018
+Samuel Prince-Drouin 2017-2019
 
 ## License
 
