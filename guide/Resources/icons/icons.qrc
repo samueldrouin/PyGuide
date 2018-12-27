@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/mainwindow">
+        <file>mainwindow/activity_category.png</file>
+        <file>mainwindow/activity.png</file>
+        <file>mainwindow/group.png</file>
+        <file>mainwindow/inscription.png</file>
+        <file>mainwindow/invoice.png</file>
+        <file>mainwindow/participant.png</file>
+        <file>mainwindow/place.png</file>
+    </qresource>
+    <qresource prefix="/statistics">
+        <file>statistics/drop_down_arrow.png</file>
+    </qresource>
+    <qresource prefix="/global">
+        <file>global/banner.png</file>
+        <file>global/copyrights.png</file>
+        <file>global/folder.png</file>
+        <file>global/logo.png</file>
+    </qresource>
+</RCC>
