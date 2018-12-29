@@ -116,19 +116,6 @@ def poste_validator():
     return validator
 
 
-def numero_membre_validator():
-    """
-    Création d'un QRegExpValidator pour le numéro de membre
-
-    Seul les numéro de membre contenant 6 chiffres ou moins sont acceptés. Cette limite est arbitraire et peut-être modifiée au besoins. 
-        
-    Return :
-        Member number QRegExpValidator
-    """
-    validator = QRegExpValidator(QRegExp(NUMERO_MEMBRE_REGEXP))
-    return validator
-
-
 def email_validator():
     """
     Création d'un QRegExpValidator pour les adresse courriel
