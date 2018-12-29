@@ -42,7 +42,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtSql import QSqlQuery
 
 # Projet import
-from guide.membre.participante import NouvelleParticipante, ModifierParticipante
+from guide.membre.participante import NewParticipant, UpdateParticipant
 from guide.activite.lieu import NouveauLieu, ModifierLieu
 from guide.activite.activite import NouvelleActivite, AfficherActivite
 from guide.activite.categorie_activite import NouvelleCategorieActivite, ModifierCategorieActivite
@@ -450,7 +450,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             index : Index de la colonne
         """
         participante_id = self.table_widget.item(index.row(), 0).text()
-        modifier_participante = ModifierParticipante(participante_id, self.DATABASE)
+        modifier_participante = UpdateParticipant(participante_id, self.DATABASE)
         modifier_participante.accepted.connect(self.update_liste_participante)
         modifier_participante.exec()
 
@@ -458,7 +458,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         Ouvre le dialog pour creer une nouvelle participante
         """
-        nouvelle_participante = NouvelleParticipante(self.DATABASE)
+        nouvelle_participante = NewParticipant(self.DATABASE)
         nouvelle_participante.accepted.connect(self.update_liste_participante)
         nouvelle_participante.exec()
 

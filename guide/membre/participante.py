@@ -14,12 +14,13 @@
 # along with PyGuide.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Module permettant le traitement des participantes
+This module contains three classes that handle participant creation and modification :
+    Participant: Base participant class that handle GUI function common to both subclasses
+    NewParticipant: Class that manage functions specific to the dialog to create new participants
+    UpdateParticipant: Class that manage functions specific to the dialog to update existing participants
 
-Le module est responsable de l'ajout et de la modification des types d'activité dans la base de donnée. 
-
-Classes
-    Participante : Base des dialog permettant la modification ou la création des participantes
+While this module handle the participant management functions, it does not manage the member status since it's an
+element of the billing module.
 """
 
 
@@ -38,24 +39,25 @@ from guide.script.interface import validator
 from guide.script.interface import completer
 from guide.script.data import data_error
 from guide.script.data import parsing
+from guide.script.database import sqlite_query
 
 # Interface import
 from guide.interface.ui_participante import Ui_Participante
 
 
-class Participante(QDialog, Ui_Participante):
+class _Participant(QDialog, Ui_Participante):
     """
-    Base des dialog permettant la modification ou la création des participantes
-    
-    Cette classe est responsable de l'affichage de l'interface et de la connection des slots à l'interface. 
-    Les sous classes doivent override la méthode process qui traite les données dans la base de donnée lorsque le dialog est accepté. 
+    Base participant class that handle GUI function common to both NewParticipant and UpdateParticipant subclasses
 
-    Méthodes
-        check_fields: Vérifie que tout les champs nécessaires sont remplis
-        process : Traitement de donnée dans la base de donnée. Doit être implantée dans les sous classes. 
+    This class should contain all the interface functions, signals/slots connections and database processing common
+    to both subclasses. This class can also contain context specific function that verify the called subclass to process
+    data accordingly.
+
+    This class should never be called directly.
     """
+
     def __init__(self, database):
-        super(Participante, self).__init__()
+        super(_Participant, self).__init__()
         # Affichage de l'interface graphique
         self.setupUi(self)
 
@@ -81,11 +83,11 @@ class Participante(QDialog, Ui_Participante):
 
         # Slots
         self.btn_cancel.clicked.connect(self.reject)
-        self.txt_code_postal.cursorPositionChanged.connect(self.afficher_code_postal)
+        self.txt_code_postal.cursorPositionChanged.connect(self.set_parsed_zip_code)
         self.txt_telephone1.cursorPositionChanged.connect(self.set_parsed_phone_number)
         self.txt_telephone2.cursorPositionChanged.connect(self.set_parsed_phone_number)
-        self.btn_inscription.clicked.connect(self.nouveau_membre)
-        self.btn_add.clicked.connect(self.check_fields)
+        self.btn_inscription.clicked.connect(self.add_membership)
+        self.btn_add.clicked.connect(self.process_data)
         self.cbx_appelation.currentTextChanged.connect(self.appellation_changed)
         self.resize(self.minimumSize())
 
@@ -147,251 +149,316 @@ class Participante(QDialog, Ui_Participante):
 
     def check_fields(self):
         """
-        Verifier si tout les champs requis sont completes
-        :return: True si les donnees sont valides
+        Verify that all the required fields are complete and valid
+
+        Returns :
+            True if all the required fields are valid and complete
         """
         if self.txt_prenom.text() != "":
             if len(self.txt_telephone1.text()) == 12:
-                self.prepare_data()
                 return True
             else:
-                data_error.message_box_missing_information("Le premier numéro de téléphone doit être valide")
+                data_error.message_box_missing_information("Le premier numéro de téléphone doit être valide.")
         else:
             if self.txt_prenom.text() == "" and len(self.txt_telephone1.text()) != 12:
-                informative_text = "Le prénom et le premier numéro de téléphone doivent être valide"
+                informative_text = "Le prénom et le premier numéro de téléphone doivent être valide."
             else:
-                informative_text = "Le prénom doit être valide"
+                informative_text = "Le prénom doit être valide."
             data_error.message_box_missing_information(informative_text)
         return False
 
     def prepare_data(self):
         """
-        Prepare des donnees du formulaire pour l'envoie a la base de donnees
+        Prepare the dialog form data to the format required for the database
+
+        Return:
+            Diactionary of the form data
         """
-        fields = {}
+        return {
+            'appellation': data_processing.check_string(self.cbx_appelation.currentText()),
+            'prenom': data_processing.check_string(self.txt_prenom.text()),
+            'nom': data_processing.check_string(self.txt_nom.text()),
+            'adresse_1': data_processing.check_string(self.txt_adresse1.text()),
+            'adresse_2': data_processing.check_string(self.txt_adresse2.text()),
+            'ville': data_processing.check_string(self.txt_ville.text()),
+            'province': data_processing.check_string(self.cbx_province.currentText()),
+            'code_postal': data_processing.check_string(self.txt_code_postal.text()),
+            'courriel': data_processing.check_string(self.txt_email.text()),
+            'telephone_1': data_processing.check_phone_number(self.txt_telephone1.text()),
+            'poste_telephone_1': data_processing.check_int(self.txt_poste1.text()),
+            'telephone_2': data_processing.check_phone_number(self.txt_telephone2.text()),
+            'poste_telephone_2': data_processing.check_int(self.txt_poste2.text()),
+            'date_naissance': data_processing.check_int(self.sbx_annee_naissance.value()),
+            'personne_nourrie': self.sbx_personnes_nourries.value(),
+            'consentement_photo': self.cbx_photo.isChecked()
+        }
 
-        appelation = data_processing.check_string(self.cbx_appelation.currentText())
-        fields['Appelation'] = appelation
-
-        prenom = data_processing.check_string(self.txt_prenom.text())
-        fields['Prenom'] = prenom
-
-        nom = data_processing.check_string(self.txt_nom.text())
-        fields['Nom'] = nom
-
-        address1 = data_processing.check_string(self.txt_adresse1.text())
-        fields['Address1'] = address1
-
-        address2 = data_processing.check_string(self.txt_adresse2.text())
-        fields['Address2'] = address2
-
-        ville = data_processing.check_string(self.txt_ville.text())
-        fields['Ville'] = ville
-
-        province = data_processing.check_string(self.cbx_province.currentText())
-        fields['Province'] = province
-
-        code_postal = data_processing.check_string(self.txt_code_postal.text())
-        fields['Code Postal'] = code_postal
-
-        courriel = data_processing.check_string(self.txt_email.text())
-        fields['Courriel'] = courriel
-
-        phone_number1 = data_processing.check_phone_number(self.txt_telephone1.text())
-        fields['Phone Number 1'] = phone_number1
-
-        poste1 = data_processing.check_int(self.txt_poste1.text())
-        fields['Poste 1'] = poste1
-
-        phone_number2 = data_processing.check_phone_number(self.txt_telephone2.text())
-        fields['Phone Number 2'] = phone_number2
-
-        poste2 = data_processing.check_int(self.txt_poste2.text())
-        fields['Poste 2'] = poste2
-
-        annee_naissance = data_processing.check_int(self.sbx_annee_naissance.value())
-        fields['Annee Naissance'] = annee_naissance
-
-        personne_nourries = self.sbx_personnes_nourries.value()
-        fields['Personne nourries'] = personne_nourries
-
-        consentement_photo = self.cbx_photo.isChecked()
-        fields['Consentement photo'] = consentement_photo
-
-        self.process_data(fields)
-
-    def process_data(self, prepared_data):
+    def process_data(self):
         """
-        Requete SQLite
-        Implante dans les subclass
-        :param prepared_data: Donnees pour la requete SQLite
-        """
-        pass
-
-    def renouveler_status_membre(self):
-        """
-        Ouvrir la fenetre pour renouveler le status de membre
+        Process the prepared form data in the database. This function support both creation and update depending on
+        the class name.
         """
         if self.check_fields():
-            # Préparation des parametres
+            prepared_data = self.prepare_data()
+
+            if prepared_data is not None:
+                if self.__class__.__name__ == 'NewParticipant':
+                    successfull_insert = sqlite_query.execute(
+                        ":/member/participant/member/participant/create_participant_insert.sql",
+                        prepared_data, self.DATABASE)
+
+                    successfull_update = sqlite_query.execute(
+                        ":/member/participant/member/participant/create_participant_update.sql",
+                        prepared_data, self.DATABASE)
+                    successfull = successfull_insert and successfull_update
+                elif self.__class__.__name__ == 'UpdateParticipant':
+                    successfull = sqlite_query.execute(":/member/participant/member/participant/update_participant.sql",
+                                                       prepared_data, self.DATABASE)
+                if successfull:
+                    if self.sender() == self.btn_add:
+                        self.accept()
+
+    def renew_membership(self):
+        """
+        Open the dialog to renew the participant membership.
+        """
+        if self.check_fields():
             nom = self.txt_prenom.text() + " " + self.txt_nom.text()
             phone = self.txt_telephone1.text()
 
-            # Ouverture de la fenetre d'inscription
             inscription_membre = RenouvelerInscription(nom, phone, self.ID_PARTICIPANTE,
                                                        self.DATABASE)
             inscription_membre.accepted.connect(self.show_member_informations)
             inscription_membre.exec()
 
-    def nouveau_membre(self):
+    def add_membership(self):
         """
-        Ouvre la fenetre pour inscrire un nouveau membre
+        Open the dialog to start the participant membership.
         """
-        # Inscription du participant
         if self.check_fields():
-            # Préparation des parametres
             nom = self.txt_prenom.text() + " " + self.txt_nom.text()
             phone = self.txt_telephone1.text()
 
-            # Ouverture de la fenetre d'inscription
             inscription_membre = NouvelleInscription(nom, phone, self.ID_PARTICIPANTE,
                                                      self.DATABASE)
             inscription_membre.accepted.connect(self.show_member_informations)
-            inscription_membre.rejected.connect(self.inscription_annulee)
+            inscription_membre.rejected.connect(self.member_inscription_canceled)
             inscription_membre.exec()
         else:
-            self.inscription_annulee()
+            self.member_inscription_canceled()
 
-    def inscription_annulee(self):
+    def member_inscription_canceled(self):
         """
-        Active le status de membre
+        Re-establish the non member state if the inscription is canceled
         """
         self.chk_membre.setChecked(False)
 
-    def afficher_code_postal(self, old, new):
+    def set_parsed_zip_code(self, old, new):
         """
-        Affiche le code postal formatté
-        :param old: Old cursor position
-        :param new: New cursor position
+        Parse the zip code and set the lineedit text to the parsed string.
+
+        Arguments :
+            old: Cursor old position
+            new: Cursor new position
         """
-        code_postal = parsing.zip_code_parsing(old, new, self.sender().text())
-        self.sender().setText(code_postal)
+        self.sender().setText(parsing.zip_code_parsing(old, new, self.sender().text()))
 
     def set_parsed_phone_number(self, old, new):
         """
-        Parsing phone number
-        :param old: Old cursor position
-        :param new: New cursor position
+        Parse the phone number and set the linedit text to the parsed string.
+
+        Arguments :
+            old: Cursor old position
+            new: Cursor new position
         """
-        phone_number = parsing.phone_number_parsing(old, new, self.sender().text())
-        self.sender().setText(phone_number)
+        self.sender().setText(parsing.phone_number_parsing(old, new, self.sender().text()))
 
     def show_member_informations(self):
         """
         Afficher les informations sur le membre
         """
         # Obtenir les informations de la base de données
-        query = QSqlQuery(self.DATABASE)
-        query.prepare("SELECT "
-                        "actif, "
-                        "numero_membre, "
-                        "membre_honoraire, "
-                        "date_renouvellement "
-                      "FROM "
-                        "membre "
-                      "WHERE "
-                        "id_participante = :id_participante")
-        query.bindValue(':id_participante', int(self.ID_PARTICIPANTE))
-        query.exec_()
+        successfull, query = sqlite_query.execute(":/member/participant/member/participant/member_informations.sql",
+                                                  {'id_participante': int(self.ID_PARTICIPANTE)}, self.DATABASE)
 
-        # Affichage d'un message d'erreur si la requete echoue
-        database_error.sql_error_handler(query.lastError())
+        if successfull and query.first() and int(query.value('actif')):
+            self.add_member_ui_elements(bool(query.value('membre_honoraire')))
+            self.chk_honoraire.setChecked(bool(query.value('membre_honoraire')))
+            self.txt_numero_membre.setText(str(query.value('numero_membre')))
 
-        if query.first() and int(query.value(0)):
-            # Retirer le bouton pour ajouter un membre
-            self.lay_status.removeItem(self.lay_membre)
-            self.btn_inscription.hide()
-            
-            # Afficher les champs du status de membre
-            self.chk_membre.setChecked(True)
-            self.chk_membre.setEnabled(False)
+            if not bool(query.value('membre_honoraire')):
+                date = QDate.fromString(query.value('date_renouvellement'), 'yyyy-MM-dd')
+                self.ded_renouvellement.setDate(date)
 
-            layout_membre = QHBoxLayout()
+    def add_member_ui_elements(self, honorary=False):
+        """
+        Add member ui elements to the dialog.
 
-            chk_actif = QCheckBox("Actif")
-            chk_actif.setEnabled(False)
-            chk_actif.setChecked(True)
+        Arguments :
+            honorary: Honorary member
+        """
 
-            chk_honoraire = QCheckBox("Honoraire")
-            chk_honoraire.setEnabled(False)
-            chk_honoraire.setChecked(int(query.value(2)))
+        # Remove the new member button
+        self.lay_status.removeItem(self.lay_membre)
+        self.btn_inscription.hide()
 
-            spacer_membre = QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
-            layout_membre.addWidget(chk_actif)
-            layout_membre.addWidget(chk_honoraire)
-            layout_membre.addItem(spacer_membre)
-            layout_membre.addStretch()
+        # Show the member status fields
+        self.chk_membre.setChecked(True)
+        self.chk_membre.setEnabled(False)
 
-            self.lay_status.addLayout(layout_membre, 0, 1)
+        self.chk_actif = QCheckBox("Actif")
+        self.chk_actif.setEnabled(False)
+        self.chk_actif.setChecked(True)
 
-            # Afficher les champs pour les numéro de membre
-            layout_numero = QHBoxLayout()
+        self.chk_honoraire = QCheckBox("Honoraire")
+        self.chk_honoraire.setEnabled(False)
 
-            txt_numero_membre = QLineEdit(str(query.value(1)))
-            txt_numero_membre.setValidator(validator.numero_membre_validator())
-            txt_numero_membre.setMinimumWidth(100)
-            txt_numero_membre.setReadOnly(True)
+        self.layout_membre = QHBoxLayout()
+        self.layout_membre.addWidget(self.chk_actif)
+        self.layout_membre.addWidget(self.chk_honoraire)
+        self.layout_membre.addItem(QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Expanding))
+        self.layout_membre.addStretch()
+        self.lay_status.addLayout(self.layout_membre, 0, 1)
 
-            lbl_numero_membre = QLabel("Numéro de membre :")
-            lbl_numero_membre.setMinimumWidth(150)
-            lbl_numero_membre.setMaximumWidth(150)
+        # Show the member number fields
+        self.layout_numero = QHBoxLayout()
+        self.txt_numero_membre = QLineEdit()
+        self.txt_numero_membre.setMinimumWidth(100)
+        self.txt_numero_membre.setReadOnly(True)
 
-            spacer_membre = QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
-            layout_numero.addWidget(txt_numero_membre)
-            layout_numero.addItem(spacer_membre)
-            layout_numero.addStretch()
+        self.lbl_numero_membre = QLabel("Numéro de membre :")
+        self.lbl_numero_membre.setMinimumWidth(150)
+        self.lbl_numero_membre.setMaximumWidth(150)
 
-            self.lay_status.addWidget(lbl_numero_membre, 1, 0)
-            self.lay_status.addLayout(layout_numero, 1, 1)
+        self.spacer_membre = QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.layout_numero.addWidget(self.txt_numero_membre)
+        self.layout_numero.addItem(self.spacer_membre)
+        self.layout_numero.addStretch()
 
-            # Afficher les champs pour la date de renouvellement
-            # Seulement si le membre n'est pas honoraire
-            if not int(query.value(2)):
-                # Afficher le champs de la date de renouvellement
-                layout_renouvellement = QHBoxLayout()
+        self.lay_status.addWidget(self.lbl_numero_membre, 1, 0)
+        self.lay_status.addLayout(self.layout_numero, 1, 1)
 
-                ded_renouvellement = QDateEdit()
-                ded_renouvellement.setReadOnly(True)
-                ded_renouvellement.setButtonSymbols(QAbstractSpinBox.NoButtons)
-                ded_renouvellement.setDisplayFormat("dd-MM-yyyy")
-                ded_renouvellement.setCalendarPopup(False)
-                date = QDate.fromString(query.value(3), 'yyyy-MM-dd')
-                ded_renouvellement.setDate(date)
+        # Show the renewal data fields
+        if not honorary:
+            self.ded_renouvellement = QDateEdit()
+            self.ded_renouvellement.setReadOnly(True)
+            self.ded_renouvellement.setButtonSymbols(QAbstractSpinBox.NoButtons)
+            self.ded_renouvellement.setDisplayFormat("dd-MM-yyyy")
+            self.ded_renouvellement.setCalendarPopup(False)
 
-                btn_renouvellement = QPushButton("Renouvellement")
-                btn_renouvellement.clicked.connect(self.renouveler_status_membre)
+            self.btn_renouvellement = QPushButton("Renouvellement")
+            self.btn_renouvellement.clicked.connect(self.renew_membership)
 
-                lbl_renouvellement = QLabel("Date de renouvellement :")
-                lbl_renouvellement.setMinimumWidth(150)
-                lbl_renouvellement.setMaximumWidth(150)
+            self.lbl_renouvellement = QLabel("Date de renouvellement :")
+            self.lbl_renouvellement.setMinimumWidth(150)
+            self.lbl_renouvellement.setMaximumWidth(150)
 
-                spacer_renouvellement = QSpacerItem(100, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
-                layout_renouvellement.addWidget(ded_renouvellement)
-                layout_renouvellement.addItem(spacer_renouvellement)
-                layout_renouvellement.addWidget(btn_renouvellement)
-                layout_renouvellement.addStretch()
+            self.layout_renouvellement = QHBoxLayout()
+            self.layout_renouvellement.addWidget(self.ded_renouvellement)
+            self.layout_renouvellement.addItem(QSpacerItem(100, 20, QSizePolicy.Minimum, QSizePolicy.Expanding))
+            self.layout_renouvellement.addWidget(self.btn_renouvellement)
+            self.layout_renouvellement.addStretch()
 
-                self.lay_status.addWidget(lbl_renouvellement, 2, 0)
-                self.lay_status.addLayout(layout_renouvellement, 2, 1)
+            self.lay_status.addWidget(self.lbl_renouvellement, 2, 0)
+            self.lay_status.addLayout(self.layout_renouvellement, 2, 1)
 
-        # Ajuster la taille du dialog
         self.resize(self.minimumSize())
 
+    def show_transaction(self):
+        """
+        Show transactions made by the participant.
+        """
+        successfull, query = sqlite_query.execute(":/member/participant/member/participant/participant_transactions.sql",
+                                                  {'id_participante': self.ID_PARTICIPANTE}, self.DATABASE)
 
-class NouvelleParticipante(Participante):
+        if successfull:
+            while query.next():
+                self.tbl_transaction.insertRow(self.tbl_transaction.rowCount())
+                r = self.tbl_transaction.rowCount() - 1
+
+                self.tbl_transaction.setItem(r, 0, QTableWidgetItem(str(query.value(1))))
+
+                prix = "{0:.2f}$".format(query.value(2))
+                self.tbl_transaction.setItem(r, 1, QTableWidgetItem(prix))
+
+                date = QDateTime().fromString(query.value(0), 'yyyy-MM-dd hh:mm:ss').date().toString('dd MMM yyyy')
+                self.tbl_transaction.setItem(r, 2, QTableWidgetItem(date))
+
+    def show_participante_informations(self):
+        """
+        Affiche les informations de la participante
+        """
+        successfull, query = sqlite_query.execute(":/member/participant/member/participant/participant_informations.sql",
+                                                  {'id_participante': int(self.ID_PARTICIPANTE)}, self.DATABASE)
+
+        query.first()
+
+        # Add informations to form
+        self.cbx_appelation.setCurrentText(query.value('appellation'))
+        self.txt_prenom.setText(query.value('prenom'))
+        self.txt_nom.setText(query.value('nom'))
+        self.txt_adresse1.setText(query.value('adresse_1'))
+        self.txt_adresse2.setText(query.value('adresse_2'))
+        self.txt_ville.setText(query.value('ville'))
+        self.cbx_province.setCurrentText(query.value('province'))
+        self.txt_code_postal.setText(query.value('code_postal'))
+        self.txt_email.setText(query.value('courriel'))
+
+        # Set phone number format
+        telephone1_str = str(query.value('telephone_1'))
+        telephone1 = telephone1_str[:3] + " " + telephone1_str[3:6] + "-" + telephone1_str[6:]
+
+        self.txt_telephone1.setText(telephone1)
+        self.txt_poste1.setText(str(query.value('poste_telephone_1')))
+
+        # Set phone number 2 format if the phone number exist only
+        if query.value('telephone_2'):
+            telephone2_str = str(query.value('telephone_2'))
+            telephone2 = telephone2_str[:3] + " " + telephone2_str[3:6] + "-" + telephone2_str[6:]
+            self.txt_telephone2.setText(telephone2)
+
+        self.txt_poste2.setText(str(query.value('poste_telephone_2')))
+        self.sbx_annee_naissance.setValue(int(query.value('date_naissance')))
+        self.sbx_personnes_nourries.setValue(int(query.value('personne_nourrie')))
+
+        if int(query.value('consentement_photo')):
+            self.cbx_photo.setChecked(True)
+        else:
+            self.cbx_photo.setChecked(False)
+
+        self.show_member_informations()
+
+    def show_inscription(self):
+        """
+        Show the participant inscriptions.
+        """
+        prepared_data = {
+            'id_participante': int(self.ID_PARTICIPANTE),
+            'current_date': QDate.currentDate().toString('yyyy-MM-dd'),
+            'status': facturation.STATUS_INSCRIPTION
+        }
+        successfull, query = sqlite_query.execute(":/member/participant/member/participant/participant_inscription.sql",
+                                                  prepared_data, self.DATABASE)
+
+        while query.next():
+            self.tbl_inscription.insertRow(self.tbl_inscription.rowCount())
+            r = self.tbl_inscription.rowCount() - 1
+
+            self.tbl_inscription.setItem(r, 0, QTableWidgetItem(str(query.value('categorie_activite.nom'))))
+
+            date = QDate().fromString(query.value('activite.date'), 'yyyy-MM-dd').toString('dd MMM yyyy')
+            self.tbl_inscription.setItem(r, 1, QTableWidgetItem(date))
+
+            heure_debut = QTime.fromString(query.value('activite.heure_debut'), 'HH:mm').toString('hh:mm')
+            heure_fin = QTime.fromString(query.value('activite.heure_fin'), 'HH:mm').toString('hh:mm')
+            heure = heure_debut + " à " + heure_fin
+            self.tbl_inscription.setItem(r, 2, QTableWidgetItem(heure))
+
+
+class NewParticipant(_Participant):
     """Dialog permettant la création de nouvelle participante"""
     def __init__(self, database):
-        super(NouvelleParticipante, self).__init__(database)
+        super(NewParticipant, self).__init__(database)
 
         # Titre de la fenetre
         self.setWindowTitle("Nouvelle participante")
@@ -405,76 +472,35 @@ class NouvelleParticipante(Participante):
         self.line.setHidden(True)
         self.resize(self.minimumSize())
 
-    def process_data(self, prepared_data):
-        # Insert data
-        query = QSqlQuery(self.DATABASE)
-        query.prepare("INSERT INTO participante "
-                        "(appellation, "
-                        "prenom, "
-                        "nom, "
-                        "adresse_1, "
-                        "adresse_2, "
-                        "ville, "
-                        "province, "
-                        "code_postal, "
-                        "courriel, "
-                        "telephone_1, "
-                        "poste_telephone_1, "
-                        "telephone_2, "
-                        "poste_telephone_2, "
-                        "date_naissance, "
-                        "personne_nourrie, "
-                        "consentement_photo) "
-                      "VALUES "
-                        "(:appelation, "
-                        ":prenom, "
-                        ":nom, "
-                        ":adresse1, "
-                        ":adresse2, "
-                        ":ville, "
-                        ":province, "
-                        ":codepostal, "
-                        ":courriel, "
-                        ":phone1, "
-                        ":poste1, "
-                        ":phone2, "
-                        ":poste2, "
-                      ":anneenaissance, :personnenourries, :consentementphoto)")
-        query.bindValue(':appelation', prepared_data['Appelation'])
-        query.bindValue(':prenom', prepared_data['Prenom'])
-        query.bindValue(':nom', prepared_data['Nom'])
-        query.bindValue(':adresse1', prepared_data['Address1'])
-        query.bindValue(':adresse2', prepared_data['Address2'])
-        query.bindValue(':ville', prepared_data['Ville'])
-        query.bindValue(':province', prepared_data['Province'])
-        query.bindValue(':codepostal', prepared_data['Code Postal'])
-        query.bindValue(':courriel', prepared_data['Courriel'])
-        query.bindValue(':phone1', prepared_data['Phone Number 1'])
-        query.bindValue(':poste1', prepared_data['Poste 1'])
-        query.bindValue(':phone2', prepared_data['Phone Number 2'])
-        query.bindValue(':poste2', prepared_data['Poste 2'])
-        query.bindValue(':anneenaissance', prepared_data['Annee Naissance'])
-        query.bindValue(':personnenourries', prepared_data['Personne nourries'])
-        query.bindValue(':consentementphoto', prepared_data['Consentement photo'])
-        query.exec_()
+    def add_membership(self):
+        """
+        Open the dialog to start the participant membership.
 
-        # Affichage d'un message d'erreur si la requete echoue
-        if not database_error.sql_error_handler(query.lastError()):
-            # Continuer le traitement seulement si la requete reussie
-            if self.sender() == self.btn_add:
-                self.accept()
-            else:
-                # Fetch inserted participante_id
-                query = QSqlQuery()
-                query.exec_("SELECT last_insert_rowid()")
-                database_error.sql_error_handler(query.lastError())
-                query.first()
-                self.ID_PARTICIPANTE = query.value(0)
+        This function is reimplanted to add the additionnal step to get the participant number after it's creation
+        in order to
+        """
+        if self.check_fields():
+            self.process_data()
+            successfull, query = sqlite_query.execute(":/global/global/last_insert_rowid.sql", None, self.DATABASE)
+            query.first()
 
-class ModifierParticipante(Participante):
+            nom = self.txt_prenom.text() + " " + self.txt_nom.text()
+            phone = self.txt_telephone1.text()
+
+            self.ID_PARTICIPANTE = query.value(0)
+
+            inscription_membre = NouvelleInscription(nom, phone, self.ID_PARTICIPANTE, self.DATABASE)
+            inscription_membre.accepted.connect(self.show_member_informations)
+            inscription_membre.rejected.connect(self.member_inscription_canceled)
+            inscription_membre.exec()
+        else:
+            self.member_inscription_canceled()
+
+
+class UpdateParticipant(_Participant):
     """Dialog permettant la modification de participante"""
     def __init__(self, participante_id, database):
-        super(ModifierParticipante, self).__init__(database)
+        super(UpdateParticipant, self).__init__(database)
 
         # Instance variable definition
         self.ID_PARTICIPANTE = participante_id
@@ -488,202 +514,5 @@ class ModifierParticipante(Participante):
 
         # Afficher les informations de la participante
         self.show_participante_informations()
-        self.afficher_transaction()
-        self.afficher_inscription()
-
-        # Affiche les informations du membre s'il y en a
-        self.show_member_informations()
-
-    def afficher_transaction(self):
-        """Afficher les transaction pour la participante"""
-        # Obtenir la liste des transactions 
-        query = QSqlQuery(self.DATABASE)
-        query.prepare("SELECT "
-                        "facture.date, "
-                        "article.description, "
-                        "article.prix "
-                      "FROM facture "
-                      "INNER JOIN article ON article.id_facture = facture.id_facture "
-                      "WHERE facture.id_participante = :id_participante")
-        query.bindValue(':id_participante', self.ID_PARTICIPANTE)
-        query.exec_()
-
-        # Affichage d'un message d'erreur si la requete echoue
-        if database_error.sql_error_handler(query.lastError()):
-            return # Ne pas continuer avec des informations incompletes
-
-        while query.next():
-            # Préparation du tableau
-            self.tbl_transaction.insertRow(self.tbl_transaction.rowCount())
-            r = self.tbl_transaction.rowCount() - 1
-
-            self.tbl_transaction.setItem(r, 0, QTableWidgetItem(str(query.value(1))))
-
-            prix = "{0:.2f}$".format(query.value(2))
-            self.tbl_transaction.setItem(r, 1, QTableWidgetItem(prix))
-
-            date = QDateTime().fromString(query.value(0), 'yyyy-MM-dd hh:mm:ss').date().toString('dd MMM yyyy')
-            self.tbl_transaction.setItem(r, 2, QTableWidgetItem(date))
-
-    def afficher_inscription(self):
-        """Afficher les inscription pour la participante"""
-        # Obtenir la liste des transactions 
-        query = QSqlQuery()
-        query.prepare("SELECT "
-                        "categorie_activite.nom, "
-                        "activite.date, "
-                        "activite.heure_debut, "
-                        "activite.heure_fin "
-                      "FROM inscription "
-                      "LEFT JOIN activite "
-                        "ON inscription.id_activite = activite.id_activite "
-                      "LEFT JOIN categorie_activite "
-                        "ON activite.id_categorie_activite = categorie_activite.id_categorie_activite "
-                      "WHERE "
-                        "(inscription.id_participante = :id_participante) "
-                        "AND (activite.date >= :current_date) "
-                        "AND (inscription.status = :status) "
-                        "AND (activite.status = 1)"
-                      "ORDER BY categorie_activite.nom ASC, activite.date ASC")
-        query.bindValue(':id_participante', self.ID_PARTICIPANTE)
-        query.bindValue(':current_date', QDate.currentDate().toString('yyyy-MM-dd'))
-        query.bindValue(':status', facturation.STATUS_INSCRIPTION)
-        query.exec_()
-
-        # Affichage d'un message d'erreur si la requete echoue
-        if database_error.sql_error_handler(query.lastError()):
-            return # Ne pas continuer avec des informations incompletes
-
-        while query.next():
-            # Préparation du tableau
-            self.tbl_inscription.insertRow(self.tbl_inscription.rowCount())
-            r = self.tbl_inscription.rowCount() - 1
-
-            self.tbl_inscription.setItem(r, 0, QTableWidgetItem(str(query.value(0))))
-
-            date = QDate().fromString(query.value(1), 'yyyy-MM-dd').toString('dd MMM yyyy')
-            self.tbl_inscription.setItem(r, 1, QTableWidgetItem(date))
-
-            heure_debut = QTime.fromString(query.value(2), 'HH:mm').toString('hh:mm')
-            heure_fin = QTime.fromString(query.value(3), 'HH:mm').toString('hh:mm')
-            heure = heure_debut + " à " + heure_fin
-            self.tbl_inscription.setItem(r, 2, QTableWidgetItem(heure))
-
-    def show_participante_informations(self):
-        """
-        Affiche les informations de la participante
-        """
-
-        # Get informations from database
-        query = QSqlQuery(self.DATABASE)
-        query.prepare("SELECT "
-                        "appellation, "
-                        "prenom, "
-                        "nom, "
-                        "adresse_1, "
-                        "adresse_2, "
-                        "ville, "
-                        "province, "
-                        "code_postal, "
-                        "courriel, "
-                        "telephone_1, "
-                        "poste_telephone_1, "
-                        "telephone_2, "
-                        "poste_telephone_2, "
-                        "date_naissance, "
-                        "personne_nourrie, "
-                        "consentement_photo "
-                      "FROM "
-                        "participante "
-                      "WHERE "
-                        "id_participante = :idparticipante")
-        query.bindValue(':idparticipante', int(self.ID_PARTICIPANTE))
-        query.exec_()
-
-        # Affichage d'un message d'erreur si la requete echoue
-        database_error.sql_error_handler(query.lastError())
-
-        query.first()
-
-        # Add informations to form
-        self.cbx_appelation.setCurrentText(query.value(0))
-        self.txt_prenom.setText(query.value(1))
-        self.txt_nom.setText(query.value(2))
-        self.txt_adresse1.setText(query.value(3))
-        self.txt_adresse2.setText(query.value(4))
-        self.txt_ville.setText(query.value(5))
-        self.cbx_province.setCurrentText(query.value(6))
-        self.txt_code_postal.setText(query.value(7))
-        self.txt_email.setText(query.value(8))
-
-        # Set phone number format
-        telephone1_str = str(query.value(9))
-        telephone1 = telephone1_str[:3] + " " + telephone1_str[3:6] + "-" + telephone1_str[6:]
-
-        self.txt_telephone1.setText(telephone1)
-        self.txt_poste1.setText(str(query.value(10)))
-
-        # Set phone number 2 format if the phone number exist only
-        if query.value(11):
-            telephone2_str = str(query.value(11))
-            telephone2 = telephone2_str[:3] + " " + telephone2_str[3:6] + "-" + telephone2_str[6:]
-            self.txt_telephone2.setText(telephone2)
-
-        self.txt_poste2.setText(str(query.value(12)))
-        self.sbx_annee_naissance.setValue(int(query.value(13)))
-        self.sbx_personnes_nourries.setValue(int(query.value(14)))
-
-        if int(query.value(15)):
-            self.cbx_photo.setChecked(True)
-        else:
-            self.cbx_photo.setChecked(False)
-
-        self.show_member_informations()
-
-    def process_data(self, prepared_data):
-        query = QSqlQuery(self.DATABASE)
-        query.prepare("UPDATE participante "
-                      "SET "
-                        "appellation = :appelation, "
-                        "prenom = :prenom, "
-                        "nom = :nom, "
-                        "adresse_1 = :adresse1, "
-                        "adresse_2 = :adresse2, "
-                        "ville = :ville, "
-                        "province = :province, "
-                        "code_postal = :codepostal, "
-                        "courriel = :courriel, "
-                        "telephone_1 = :phone1, "
-                        "poste_telephone_1 = :poste1, "
-                        "telephone_2 = :phone2, "
-                        "poste_telephone_2 = :poste2, "
-                        "date_naissance = :anneenaissance, "
-                        "personne_nourrie = :personnenourries, "
-                        "consentement_photo = :consentementphoto "
-                      "WHERE "
-                        "id_participante = :id_participante")
-        query.bindValue(':appelation', prepared_data['Appelation'])
-        query.bindValue(':prenom', prepared_data['Prenom'])
-        query.bindValue(':nom', prepared_data['Nom'])
-        query.bindValue(':adresse1', prepared_data['Address1'])
-        query.bindValue(':adresse2', prepared_data['Address2'])
-        query.bindValue(':ville', prepared_data['Ville'])
-        query.bindValue(':province', prepared_data['Province'])
-        query.bindValue(':codepostal', prepared_data['Code Postal'])
-        query.bindValue(':courriel', prepared_data['Courriel'])
-        query.bindValue(':phone1', prepared_data['Phone Number 1'])
-        query.bindValue(':poste1', prepared_data['Poste 1'])
-        query.bindValue(':phone2', prepared_data['Phone Number 2'])
-        query.bindValue(':poste2', prepared_data['Poste 2'])
-        query.bindValue(':anneenaissance', prepared_data['Annee Naissance'])
-        query.bindValue(':personnenourries', prepared_data['Personne nourries'])
-        query.bindValue(':consentementphoto', prepared_data['Consentement photo'])
-        query.bindValue(':id_participante', int(self.ID_PARTICIPANTE))
-        query.exec_()
-
-        # Affichage d'un message d'erreur si la requete echoue
-        if not database_error.sql_error_handler(query.lastError()):
-            # Fermeture du dialog seulement si la requete reussie
-            # et le signal vient du bouton add
-            if self.sender() == self.btn_add:
-                self.accept()
+        self.show_transaction()
+        self.show_inscription()

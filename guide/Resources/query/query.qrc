@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/member/participant">
+        <file>member/participant/member_informations.sql</file>
+        <file>member/participant/participant_transactions.sql</file>
+        <file>member/participant/participant_informations.sql</file>
+        <file>member/participant/update_participant.sql</file>
+        <file>member/participant/participant_inscription.sql</file>
+        <file>member/participant/create_participant_insert.sql</file>
+        <file>member/participant/create_participant_update.sql</file>
+    </qresource>
+    <qresource prefix="/global">
+        <file>global/last_insert_rowid.sql</file>
+    </qresource>
+</RCC>

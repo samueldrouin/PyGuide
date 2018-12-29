@@ -1,0 +1,21 @@
+SELECT 
+ appellation,
+ prenom,
+ nom,
+ adresse_1,
+ adresse_2,
+ ville,
+ province,
+ code_postal,
+ courriel,
+ telephone_1,
+ poste_telephone_1,
+ telephone_2,
+ poste_telephone_2,
+ date_naissance,
+ personne_nourrie,
+ consentement_photo
+FROM
+ participante
+WHERE
+ id_participante = :id_participante

@@ -267,7 +267,6 @@ class NouvelleInscription(InscriptionMembre):
 
         #Termine la transation
         QSqlDatabase(self.DATABASE).commit()
-
         self.accept()
 
 
