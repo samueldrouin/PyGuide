@@ -529,8 +529,7 @@ class UpdateParticipant(_Participant):
 
     def process_data(self):
         """
-        Process the prepared form data in the database. This function support both creation and update depending on
-        the class name.
+        Process the prepared form data for the record update in the database.
         """
         prepared_data = super(UpdateParticipant, self).process_data()
 

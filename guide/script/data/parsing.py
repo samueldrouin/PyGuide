@@ -35,16 +35,11 @@ def phone_number_parsing(old, new, value):
         Parsed phone number
     """
     # Ajouter le premier espace
-    if new == 4 and old == 3:
-        if value[3] != " ":
-            phone_number = value[:3] + " " + value[3:]
-            return phone_number
+    if new == 3 and old == 2:
+        value = value + " "
     # Ajouter le dash
-    if new == 8 and old == 7:
-        if value[7] != "-":
-            phone_number = value[:7] + "-" + value[7:]
-            return phone_number
-    # Aucune modification ne doit être effectuée
+    if new == 7 and old == 6:
+        value = value + "-"
     return value
 
 
@@ -60,9 +55,6 @@ def zip_code_parsing(old, new, value):
         Parsed zip code
     """
     # Ajouter l'espace au code postal
-    if new == 4 and old == 3:
-        if value[3] != " ":
-            value = value[:3] + " " + value[3:]
-
-    # Retourner le code postal en majuscules
+    if new == 3 and old == 2:
+        value = value + " "
     return value.upper()

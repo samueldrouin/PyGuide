@@ -36,8 +36,8 @@ from PyQt5.QtCore import QRegExp
 
 ADRESSE_REGEXP = "^[0-9a-zA-ZÀ-ÿ -.]+$"
 NAME_REGEXP = "^[a-zA-ZÀ-ÿ -]+$"
-ZIP_CODE_REGEXP = "^[A-Za-z]{1}[0-9]{1}[A-Za-z]{1}[0-9 ]{1}[0-9]{1}[A-Za-z]{1}[0-9]{1}$"
-PHONE_REGEXP = "^[0-9]{3}[0-9 ]{1}[0-9]{3}[0-9-]{1}[0-9]{4}$"
+ZIP_CODE_REGEXP = "^[A-Za-z]{1}[0-9]{1}[A-Za-z]{1}[ ]{1}[0-9]{1}[A-Za-z]{1}[0-9]{1}$"
+PHONE_REGEXP = "^[0-9]{3}[ ]{1}[0-9]{3}[-]{1}[0-9]{4}$"
 POSTE_REGEXP = "^[0-9]{0,6}$"
 NUMERO_MEMBRE_REGEXP = "^[0-9]{0,6}$"
 EMAIL_REGEXP = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,4}$"
