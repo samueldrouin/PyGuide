@@ -7,6 +7,7 @@
         <file>member/participant/participant_inscription.sql</file>
         <file>member/participant/create_participant_insert.sql</file>
         <file>member/participant/create_participant_update.sql</file>
+        <file>member/participant/create_participant.sql</file>
     </qresource>
     <qresource prefix="/global">
         <file>global/last_insert_rowid.sql</file>

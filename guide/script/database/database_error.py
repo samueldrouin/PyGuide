@@ -86,7 +86,7 @@ ERREUR_ACCES_INFORMATION = "Vérifiez dans les réglages que le chemin vers la b
 
 ERREUR_DONNEE = "Donnée invalide entrée"
 ERREUR_TOOBIG_INFORMATION = "Le texte entré est trop long pour pouvoir être ajouté."
-ERREUR_CONSTRAINT_INFORMATION = "Une contraine n'est pas respectée."
+ERREUR_CONSTRAINT_INFORMATION = "Une contrainte n'est pas respectée."
 ERREUR_MISMATCH_INFORMATION = "Le format de donnée ne correspond pas à ce qui est attendu"
 
 ERREUR_FICHIER = "Fichier invalide"
@@ -133,20 +133,70 @@ def sql_error_handler(err):
     msgbox.setStandardButtons(QMessageBox.Ok)
     msgbox.setDefaultButton(QMessageBox.Ok)
 
-    if err.type() == QSqlError.StatementError:
+    if err.nativeErrorCode() != "":
+        code = int(err.nativeErrorCode())
+        text = err.text()
+        msgbox.setDetailedText(text)
+
+        if code == SQLITE_ERROR:
+            msgbox.setText(ERREUR_GENERIQUE)
+            msgbox.setInformativeText(ERREUR_GENERIQUE_INFORMATION)
+        elif code == SQLITE_PERM:
+            msgbox.setText(ERREUR_PERM)
+            msgbox.setInformativeText(ERREUR_PERM_INFORMATION)
+        elif code == SQLITE_BUSY:
+            msgbox.setText(ERREUR_DB_LOCKED)
+            msgbox.setInformativeText(ERREUR_DB_LOCKED_INFORMATION)
+        elif code == SQLITE_LOCKED:
+            msgbox.setText(ERREUR_TABLE_LOCKED)
+            msgbox.setInformativeText(ERREUR_TABLE_LOCKED_INFORMATION)
+        elif code == SQLITE_NOMEM:
+            msgbox.setText(ERREUR_MEMOIRE)
+            msgbox.setInformativeText(ERREUR_MEMOIRE_INFORMATION)
+        elif code == SQLITE_READONLY:
+            msgbox.setText(ERREUR_PERM)
+            msgbox.setInformativeText(ERREUR_PERM_INFORMATION)
+        elif code == SQLITE_IOERR:
+            msgbox.setText(ERREUR_DISQUE)
+            msgbox.setInformativeText(ERREUR_DISQUE_INFORMATION)
+        elif code == SQLITE_CORRUPT:
+            msgbox.setText(ERREUR_CORRUPTION)
+            msgbox.setInformativeText(ERREUR_CORRUPTION_INFORMATION)
+        elif code == SQLITE_NOTFOUND:
+            msgbox.setText(ERREUR_ACCES)
+            msgbox.setInformativeText(ERREUR_ACCES_INFORMATION)
+        elif code == SQLITE_CANTOPEN:
+            msgbox.setText(ERREUR_OUVERTURE)
+            msgbox.setInformativeText(ERREUR_ACCES_INFORMATION)
+        elif code == SQLITE_TOOBIG:
+            msgbox.setText(ERREUR_DONNEE)
+            msgbox.setInformativeText(ERREUR_TOOBIG_INFORMATION)
+        elif code == SQLITE_CONSTRAINT:
+            msgbox.setText(ERREUR_DONNEE)
+            msgbox.setInformativeText(ERREUR_CONSTRAINT_INFORMATION)
+        elif code == SQLITE_MISMATCH:
+            msgbox.setText(ERREUR_DONNEE)
+            msgbox.setInformativeText(ERREUR_MISMATCH_INFORMATION)
+        elif code == SQLITE_NOTADB:
+            msgbox.setText(ERREUR_FICHIER)
+            msgbox.setInformativeText(ERREUR_FICHIER_INFORMATION)
+        else:
+            msgbox.setText(ERREUR_UNHANDELED)
+            msgbox.setInformativeText(ERREUR_UNHANDELED_INFORMATION)
+        msgbox.exec()
+        return True
+    elif err.type() == QSqlError.StatementError:
         msgbox.setText(ERREUR_STATEMENT)
         msgbox.setInformativeText(ERREUR_STATEMENT_INFORMATION)
         msgbox.setDetailedText(err.text())
         msgbox.exec()
         return True
-
     elif err.type() == QSqlError.TransactionError:
         msgbox.setText(ERREUR_TRANSACTION)
         msgbox.setInformativeText(ERREUR_TRANSACTION_INFORMATION)
         msgbox.setDetailedText(err.text())
         msgbox.exec()
         return True
-
     elif err.type() == QSqlError.ConnectionError:
         msgbox.setText(ERREUR_CONNECTION)
         msgbox.setInformativeText(ERREUR_CONNECTION_INFORMATION)
@@ -154,62 +204,9 @@ def sql_error_handler(err):
         msgbox.exec()
         return True
     elif err.type() == QSqlError.UnknownError:
-        # Informations sur l'erreur
-        if err.nativeErrorCode() != "":
-            code = int(err.nativeErrorCode())
-            text = err.text()
-            msgbox.setDetailedText(text)
-
-            # Afficher le MessageBox
-            msgbox = QMessageBox()
-            msgbox.setWindowTitle(BOX_TITLE)
-            if code == SQLITE_ERROR:
-                msgbox.setText(ERREUR_GENERIQUE)
-                msgbox.setInformativeText(ERREUR_GENERIQUE_INFORMATION)
-            elif code == SQLITE_PERM:
-                msgbox.setText(ERREUR_PERM)
-                msgbox.setInformativeText(ERREUR_PERM_INFORMATION)
-            elif code == SQLITE_BUSY:
-                msgbox.setText(ERREUR_DB_LOCKED)
-                msgbox.setInformativeText(ERREUR_DB_LOCKED_INFORMATION)
-            elif code == SQLITE_LOCKED:
-                msgbox.setText(ERREUR_TABLE_LOCKED)
-                msgbox.setInformativeText(ERREUR_TABLE_LOCKED_INFORMATION)
-            elif code == SQLITE_NOMEM:
-                msgbox.setText(ERREUR_MEMOIRE)
-                msgbox.setInformativeText(ERREUR_MEMOIRE_INFORMATION)
-            elif code == SQLITE_READONLY:
-                msgbox.setText(ERREUR_PERM)
-                msgbox.setInformativeText(ERREUR_PERM_INFORMATION)
-            elif code == SQLITE_IOERR:
-                msgbox.setText(ERREUR_DISQUE)
-                msgbox.setInformativeText(ERREUR_DISQUE_INFORMATION)
-            elif code == SQLITE_CORRUPT:
-                msgbox.setText(ERREUR_CORRUPTION)
-                msgbox.setInformativeText(ERREUR_CORRUPTION_INFORMATION)
-            elif code == SQLITE_NOTFOUND:
-                msgbox.setText(ERREUR_ACCES)
-                msgbox.setInformativeText(ERREUR_ACCES_INFORMATION)
-            elif code == SQLITE_CANTOPEN:
-                msgbox.setText(ERREUR_OUVERTURE)
-                msgbox.setInformativeText(ERREUR_ACCES_INFORMATION)
-            elif code == SQLITE_TOOBIG:
-                msgbox.setText(ERREUR_DONNEE)
-                msgbox.setInformativeText(ERREUR_TOOBIG_INFORMATION)
-            elif code == SQLITE_CONSTRAINT:
-                msgbox.setText(ERREUR_DONNEE)
-                msgbox.setInformativeText(ERREUR_CONSTRAINT_INFORMATION)
-            elif code == SQLITE_MISMATCH:
-                msgbox.setText(ERREUR_DONNEE)
-                msgbox.setInformativeText(ERREUR_MISMATCH_INFORMATION)
-            elif code == SQLITE_NOTADB:
-                msgbox.setText(ERREUR_FICHIER)
-                msgbox.setInformativeText(ERREUR_FICHIER_INFORMATION)
-            else:
-                msgbox.setText(ERREUR_UNHANDELED)
-                msgbox.setInformativeText(ERREUR_UNHANDELED_INFORMATION)
+        msgbox.setText(ERREUR_UNHANDELED)
+        msgbox.setInformativeText(ERREUR_UNHANDELED_INFORMATION)
         msgbox.exec()
-
         return True
     return False
 

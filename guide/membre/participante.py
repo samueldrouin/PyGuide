@@ -158,10 +158,12 @@ class _Participant(QDialog, Ui_Participante):
             if len(self.txt_telephone1.text()) == 12:
                 return True
             else:
-                data_error.message_box_missing_information("Le premier numéro de téléphone doit être valide.")
+                data_error.message_box_missing_information("Le premier numéro de téléphone doit être valide "
+                                                           "(numéro de téléphone à dix chiffres).")
         else:
             if self.txt_prenom.text() == "" and len(self.txt_telephone1.text()) != 12:
-                informative_text = "Le prénom et le premier numéro de téléphone doivent être valide."
+                informative_text = "Le prénom et le premier numéro de téléphone doivent être valide "\
+                                   "(numéro de téléphone à dix chiffres)."
             else:
                 informative_text = "Le prénom doit être valide."
             data_error.message_box_missing_information(informative_text)
@@ -177,7 +179,7 @@ class _Participant(QDialog, Ui_Participante):
         return {
             'appellation': data_processing.check_string(self.cbx_appelation.currentText()),
             'prenom': data_processing.check_string(self.txt_prenom.text()),
-            'nom': data_processing.check_string(self.txt_nom.text()),
+            'nom': self.txt_nom.text(),
             'adresse_1': data_processing.check_string(self.txt_adresse1.text()),
             'adresse_2': data_processing.check_string(self.txt_adresse2.text()),
             'ville': data_processing.check_string(self.txt_ville.text()),
@@ -199,24 +201,8 @@ class _Participant(QDialog, Ui_Participante):
         the class name.
         """
         if self.check_fields():
-            prepared_data = self.prepare_data()
-
-            if prepared_data is not None:
-                if self.__class__.__name__ == 'NewParticipant':
-                    successfull_insert = sqlite_query.execute(
-                        ":/member/participant/member/participant/create_participant_insert.sql",
-                        prepared_data, self.DATABASE)
-
-                    successfull_update = sqlite_query.execute(
-                        ":/member/participant/member/participant/create_participant_update.sql",
-                        prepared_data, self.DATABASE)
-                    successfull = successfull_insert and successfull_update
-                elif self.__class__.__name__ == 'UpdateParticipant':
-                    successfull = sqlite_query.execute(":/member/participant/member/participant/update_participant.sql",
-                                                       prepared_data, self.DATABASE)
-                if successfull:
-                    if self.sender() == self.btn_add:
-                        self.accept()
+            return self.prepare_data()
+        return None
 
     def renew_membership(self):
         """
@@ -496,6 +482,30 @@ class NewParticipant(_Participant):
         else:
             self.member_inscription_canceled()
 
+    def process_data(self):
+        """
+        Process the prepared form data in the database. This function support both creation and update depending on
+        the class name.
+        """
+        prepared_data = super(NewParticipant, self).process_data()
+
+        if prepared_data is not None:
+            if self.chk_membre.isChecked():
+                successfull_insert = sqlite_query.execute(
+                    ":/member/participant/member/participant/create_participant_insert.sql",
+                    prepared_data, self.DATABASE)
+
+                successfull_update = sqlite_query.execute(
+                    ":/member/participant/member/participant/create_participant_update.sql",
+                    prepared_data, self.DATABASE)
+                successfull = successfull_insert and successfull_update
+            else:
+                successfull = sqlite_query.execute(":/member/participant/member/participant/create_participant.sql",
+                                                   prepared_data, self.DATABASE)
+            if successfull:
+                if self.sender() == self.btn_add:
+                    self.accept()
+
 
 class UpdateParticipant(_Participant):
     """Dialog permettant la modification de participante"""
@@ -516,3 +526,17 @@ class UpdateParticipant(_Participant):
         self.show_participante_informations()
         self.show_transaction()
         self.show_inscription()
+
+    def process_data(self):
+        """
+        Process the prepared form data in the database. This function support both creation and update depending on
+        the class name.
+        """
+        prepared_data = super(UpdateParticipant, self).process_data()
+
+        if prepared_data is not None:
+            successfull = sqlite_query.execute(":/member/participant/member/participant/update_participant.sql",
+                                               prepared_data, self.DATABASE)
+            if successfull:
+                if self.sender() == self.btn_add:
+                    self.accept()
