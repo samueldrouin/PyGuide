@@ -177,7 +177,8 @@ def sql_error_handler(err):
 
             if 'UNIQUE constraint failed' in text:
                 fields = text.lstrip('UNIQUE constraint failed: ').rstrip(' Unable to fetch row')
-                msgbox.setInformativeText('Le(s) champ(s) {} ne sont (n\'est) pas unique(s).'.format(fields))
+                msgbox.setInformativeText('Une entrée avec le(s) champs {} existe déjà. Ce(s) champs doivent être '
+                                          'unique(s)'.format(fields))
         elif code == SQLITE_MISMATCH:
             msgbox.setText(ERREUR_DONNEE)
             msgbox.setInformativeText(ERREUR_MISMATCH_INFORMATION)
